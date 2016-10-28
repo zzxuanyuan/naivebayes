@@ -1,4 +1,4 @@
-# Install script for directory: /Users/zhezhang/Desktop/naivebayes
+# Install script for directory: /home/zhe/naivebayes
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -27,11 +27,16 @@ if(NOT CMAKE_INSTALL_COMPONENT)
   endif()
 endif()
 
+# Install shared libraries without execute permission?
+if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
+  set(CMAKE_INSTALL_SO_NO_EXE "1")
+endif()
+
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/Users/zhezhang/Desktop/naivebayes/tinyxml2/cmake_install.cmake")
-  include("/Users/zhezhang/Desktop/naivebayes/naivebayes/cmake_install.cmake")
-  include("/Users/zhezhang/Desktop/naivebayes/examples/cmake_install.cmake")
+  include("/home/zhe/naivebayes/tinyxml2/cmake_install.cmake")
+  include("/home/zhe/naivebayes/naivebayes/cmake_install.cmake")
+  include("/home/zhe/naivebayes/examples/cmake_install.cmake")
 
 endif()
 
@@ -43,5 +48,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/zhezhang/Desktop/naivebayes/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/zhe/naivebayes/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

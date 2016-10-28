@@ -34,19 +34,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /Users/zhezhang/cmake-3.6.2-Darwin-x86_64/CMake.app/Contents/bin/cmake
+CMAKE_COMMAND = /home/zhe/cmake-3.6.2-Linux-x86_64/bin/cmake
 
 # The command to remove a file.
-RM = /Users/zhezhang/cmake-3.6.2-Darwin-x86_64/CMake.app/Contents/bin/cmake -E remove -f
+RM = /home/zhe/cmake-3.6.2-Linux-x86_64/bin/cmake -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/zhezhang/Desktop/naivebayes
+CMAKE_SOURCE_DIR = /home/zhe/naivebayes
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/zhezhang/Desktop/naivebayes
+CMAKE_BINARY_DIR = /home/zhe/naivebayes
 
 # Include any dependencies generated for this target.
 include naivebayes/CMakeFiles/naivebayes.dir/depend.make
@@ -59,16 +59,16 @@ include naivebayes/CMakeFiles/naivebayes.dir/flags.make
 
 naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o: naivebayes/CMakeFiles/naivebayes.dir/flags.make
 naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o: naivebayes/variables.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/zhezhang/Desktop/naivebayes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o"
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/naivebayes.dir/variables.cpp.o -c /Users/zhezhang/Desktop/naivebayes/naivebayes/variables.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zhe/naivebayes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o"
+	cd /home/zhe/naivebayes/naivebayes && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/naivebayes.dir/variables.cpp.o -c /home/zhe/naivebayes/naivebayes/variables.cpp
 
 naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/naivebayes.dir/variables.cpp.i"
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/zhezhang/Desktop/naivebayes/naivebayes/variables.cpp > CMakeFiles/naivebayes.dir/variables.cpp.i
+	cd /home/zhe/naivebayes/naivebayes && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zhe/naivebayes/naivebayes/variables.cpp > CMakeFiles/naivebayes.dir/variables.cpp.i
 
 naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/naivebayes.dir/variables.cpp.s"
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/zhezhang/Desktop/naivebayes/naivebayes/variables.cpp -o CMakeFiles/naivebayes.dir/variables.cpp.s
+	cd /home/zhe/naivebayes/naivebayes && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zhe/naivebayes/naivebayes/variables.cpp -o CMakeFiles/naivebayes.dir/variables.cpp.s
 
 naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o.requires:
 
@@ -83,16 +83,16 @@ naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o.provides.build: naivebayes/
 
 naivebayes/CMakeFiles/naivebayes.dir/instances.cpp.o: naivebayes/CMakeFiles/naivebayes.dir/flags.make
 naivebayes/CMakeFiles/naivebayes.dir/instances.cpp.o: naivebayes/instances.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/zhezhang/Desktop/naivebayes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object naivebayes/CMakeFiles/naivebayes.dir/instances.cpp.o"
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/naivebayes.dir/instances.cpp.o -c /Users/zhezhang/Desktop/naivebayes/naivebayes/instances.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zhe/naivebayes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object naivebayes/CMakeFiles/naivebayes.dir/instances.cpp.o"
+	cd /home/zhe/naivebayes/naivebayes && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/naivebayes.dir/instances.cpp.o -c /home/zhe/naivebayes/naivebayes/instances.cpp
 
 naivebayes/CMakeFiles/naivebayes.dir/instances.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/naivebayes.dir/instances.cpp.i"
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/zhezhang/Desktop/naivebayes/naivebayes/instances.cpp > CMakeFiles/naivebayes.dir/instances.cpp.i
+	cd /home/zhe/naivebayes/naivebayes && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zhe/naivebayes/naivebayes/instances.cpp > CMakeFiles/naivebayes.dir/instances.cpp.i
 
 naivebayes/CMakeFiles/naivebayes.dir/instances.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/naivebayes.dir/instances.cpp.s"
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/zhezhang/Desktop/naivebayes/naivebayes/instances.cpp -o CMakeFiles/naivebayes.dir/instances.cpp.s
+	cd /home/zhe/naivebayes/naivebayes && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zhe/naivebayes/naivebayes/instances.cpp -o CMakeFiles/naivebayes.dir/instances.cpp.s
 
 naivebayes/CMakeFiles/naivebayes.dir/instances.cpp.o.requires:
 
@@ -107,16 +107,16 @@ naivebayes/CMakeFiles/naivebayes.dir/instances.cpp.o.provides.build: naivebayes/
 
 naivebayes/CMakeFiles/naivebayes.dir/missing_values.cpp.o: naivebayes/CMakeFiles/naivebayes.dir/flags.make
 naivebayes/CMakeFiles/naivebayes.dir/missing_values.cpp.o: naivebayes/missing_values.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/zhezhang/Desktop/naivebayes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object naivebayes/CMakeFiles/naivebayes.dir/missing_values.cpp.o"
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/naivebayes.dir/missing_values.cpp.o -c /Users/zhezhang/Desktop/naivebayes/naivebayes/missing_values.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zhe/naivebayes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object naivebayes/CMakeFiles/naivebayes.dir/missing_values.cpp.o"
+	cd /home/zhe/naivebayes/naivebayes && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/naivebayes.dir/missing_values.cpp.o -c /home/zhe/naivebayes/naivebayes/missing_values.cpp
 
 naivebayes/CMakeFiles/naivebayes.dir/missing_values.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/naivebayes.dir/missing_values.cpp.i"
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/zhezhang/Desktop/naivebayes/naivebayes/missing_values.cpp > CMakeFiles/naivebayes.dir/missing_values.cpp.i
+	cd /home/zhe/naivebayes/naivebayes && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zhe/naivebayes/naivebayes/missing_values.cpp > CMakeFiles/naivebayes.dir/missing_values.cpp.i
 
 naivebayes/CMakeFiles/naivebayes.dir/missing_values.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/naivebayes.dir/missing_values.cpp.s"
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/zhezhang/Desktop/naivebayes/naivebayes/missing_values.cpp -o CMakeFiles/naivebayes.dir/missing_values.cpp.s
+	cd /home/zhe/naivebayes/naivebayes && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zhe/naivebayes/naivebayes/missing_values.cpp -o CMakeFiles/naivebayes.dir/missing_values.cpp.s
 
 naivebayes/CMakeFiles/naivebayes.dir/missing_values.cpp.o.requires:
 
@@ -131,16 +131,16 @@ naivebayes/CMakeFiles/naivebayes.dir/missing_values.cpp.o.provides.build: naiveb
 
 naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o: naivebayes/CMakeFiles/naivebayes.dir/flags.make
 naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o: naivebayes/data_set.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/zhezhang/Desktop/naivebayes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o"
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/naivebayes.dir/data_set.cpp.o -c /Users/zhezhang/Desktop/naivebayes/naivebayes/data_set.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zhe/naivebayes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o"
+	cd /home/zhe/naivebayes/naivebayes && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/naivebayes.dir/data_set.cpp.o -c /home/zhe/naivebayes/naivebayes/data_set.cpp
 
 naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/naivebayes.dir/data_set.cpp.i"
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/zhezhang/Desktop/naivebayes/naivebayes/data_set.cpp > CMakeFiles/naivebayes.dir/data_set.cpp.i
+	cd /home/zhe/naivebayes/naivebayes && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zhe/naivebayes/naivebayes/data_set.cpp > CMakeFiles/naivebayes.dir/data_set.cpp.i
 
 naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/naivebayes.dir/data_set.cpp.s"
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/zhezhang/Desktop/naivebayes/naivebayes/data_set.cpp -o CMakeFiles/naivebayes.dir/data_set.cpp.s
+	cd /home/zhe/naivebayes/naivebayes && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zhe/naivebayes/naivebayes/data_set.cpp -o CMakeFiles/naivebayes.dir/data_set.cpp.s
 
 naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o.requires:
 
@@ -155,16 +155,16 @@ naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o.provides.build: naivebayes/C
 
 naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o: naivebayes/CMakeFiles/naivebayes.dir/flags.make
 naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o: naivebayes/probability.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/zhezhang/Desktop/naivebayes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o"
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/naivebayes.dir/probability.cpp.o -c /Users/zhezhang/Desktop/naivebayes/naivebayes/probability.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zhe/naivebayes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o"
+	cd /home/zhe/naivebayes/naivebayes && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/naivebayes.dir/probability.cpp.o -c /home/zhe/naivebayes/naivebayes/probability.cpp
 
 naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/naivebayes.dir/probability.cpp.i"
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/zhezhang/Desktop/naivebayes/naivebayes/probability.cpp > CMakeFiles/naivebayes.dir/probability.cpp.i
+	cd /home/zhe/naivebayes/naivebayes && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zhe/naivebayes/naivebayes/probability.cpp > CMakeFiles/naivebayes.dir/probability.cpp.i
 
 naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/naivebayes.dir/probability.cpp.s"
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/zhezhang/Desktop/naivebayes/naivebayes/probability.cpp -o CMakeFiles/naivebayes.dir/probability.cpp.s
+	cd /home/zhe/naivebayes/naivebayes && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zhe/naivebayes/naivebayes/probability.cpp -o CMakeFiles/naivebayes.dir/probability.cpp.s
 
 naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o.requires:
 
@@ -195,9 +195,9 @@ naivebayes/libnaivebayes.a: naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o
 naivebayes/libnaivebayes.a: naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o
 naivebayes/libnaivebayes.a: naivebayes/CMakeFiles/naivebayes.dir/build.make
 naivebayes/libnaivebayes.a: naivebayes/CMakeFiles/naivebayes.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/zhezhang/Desktop/naivebayes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX static library libnaivebayes.a"
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && $(CMAKE_COMMAND) -P CMakeFiles/naivebayes.dir/cmake_clean_target.cmake
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/naivebayes.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/zhe/naivebayes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX static library libnaivebayes.a"
+	cd /home/zhe/naivebayes/naivebayes && $(CMAKE_COMMAND) -P CMakeFiles/naivebayes.dir/cmake_clean_target.cmake
+	cd /home/zhe/naivebayes/naivebayes && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/naivebayes.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 naivebayes/CMakeFiles/naivebayes.dir/build: naivebayes/libnaivebayes.a
@@ -213,10 +213,10 @@ naivebayes/CMakeFiles/naivebayes.dir/requires: naivebayes/CMakeFiles/naivebayes.
 .PHONY : naivebayes/CMakeFiles/naivebayes.dir/requires
 
 naivebayes/CMakeFiles/naivebayes.dir/clean:
-	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && $(CMAKE_COMMAND) -P CMakeFiles/naivebayes.dir/cmake_clean.cmake
+	cd /home/zhe/naivebayes/naivebayes && $(CMAKE_COMMAND) -P CMakeFiles/naivebayes.dir/cmake_clean.cmake
 .PHONY : naivebayes/CMakeFiles/naivebayes.dir/clean
 
 naivebayes/CMakeFiles/naivebayes.dir/depend:
-	cd /Users/zhezhang/Desktop/naivebayes && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/zhezhang/Desktop/naivebayes /Users/zhezhang/Desktop/naivebayes/naivebayes /Users/zhezhang/Desktop/naivebayes /Users/zhezhang/Desktop/naivebayes/naivebayes /Users/zhezhang/Desktop/naivebayes/naivebayes/CMakeFiles/naivebayes.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/zhe/naivebayes && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/zhe/naivebayes /home/zhe/naivebayes/naivebayes /home/zhe/naivebayes /home/zhe/naivebayes/naivebayes /home/zhe/naivebayes/naivebayes/CMakeFiles/naivebayes.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : naivebayes/CMakeFiles/naivebayes.dir/depend
 

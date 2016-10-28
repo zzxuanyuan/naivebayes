@@ -18,6 +18,7 @@
 #include <iostream>
 #include <time.h>
 #include <unordered_map>
+#include <utility>
 
 // OpenNN includes
 
@@ -42,6 +43,7 @@ int main(void)
 		data_set.load_data();
 
 		data_set.set_file_type("dat");
+
 
 		// Variables
 
@@ -101,13 +103,14 @@ int main(void)
 		const Matrix<std::string> inputs_information = variables_pointer->arrange_inputs_information();
 		const Matrix<std::string> targets_information = variables_pointer->arrange_targets_information();
 
-		const Vector< Statistics<double> > inputs_statistics = data_set.scale_inputs_minimum_maximum();
+//		const Vector< Statistics<double> > inputs_statistics = data_set.scale_inputs_minimum_maximum();
+		const Matrix<double> data = data_set.get_data();
+		std::cout << "data rows = " << data.get_rows_number() << "\n" << "data columns = " << data.get_columns_number() << "\n";
+//		data.print();
+
 
 		const Vector<double> range = variables_pointer->get_range(0);
 		std::cout << "size of range = " << range.size() << std::endl;
-
-		const Matrix<double> data = data_set.get_data();
-		std::cout << "data rows = " << data.get_rows_number() << "\n" << "data columns = " << data.get_columns_number() << "\n";
 
 		std::unordered_map<int, PriorProbability> prior_probs = data_set.calculate_training_target_prior_probabilities();
 		std::cout << "mymap contains:";
@@ -126,7 +129,21 @@ int main(void)
 		std::cout << prob_map[0] << " " << prob_map[1] << "\n";
 
 		std::unordered_map< std::pair<int, int>, ConditionalProbability, pair_hash> conditional_probs;
-		conditional_probs = data_set.calculate_training_conditional_probabilities();
+		ConditionalProbability prob;
+		prob.set_indices(-1,-2);
+		prob.set_names("neg one", "neg two");
+		std::pair<double, double> pair(1.0,2.0);
+		std::unordered_map< std::pair<double,double>, double, pair_hash > map;
+		map.insert({pair,0.5});
+		prob.set_conditional_probs(map);
+		std::pair<int,int> int_pair(1,2);
+		conditional_probs.insert({int_pair,prob});
+		ConditionalProbability cp_out = conditional_probs[int_pair];
+		std::pair<int,int> cp_out_ins = cp_out.get_indices();
+		std::cout << cp_out_ins.first << " " << cp_out_ins.second << "\n";
+		std::pair<std::string, std::string> cp_out_names = cp_out.get_names();
+		std::cout << cp_out_names.first << " " << cp_out_names.second << "\n";
+		data_set.calculate_training_conditional_probabilities();
 //		for ( auto it = conditional_probs.begin(); it != conditional_probs.end(); ++it )
 //			std::cout << " " << (it->first).first << "," << (it->first).second;
 //		std::cout << "\n";

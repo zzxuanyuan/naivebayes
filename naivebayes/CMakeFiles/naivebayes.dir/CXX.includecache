@@ -6,31 +6,31 @@
 
 #IncludeRegexTransform: 
 
-/Users/zhezhang/Desktop/naivebayes/eigen/Cholesky
+/home/zhe/naivebayes/eigen/Cholesky
 Core
-/Users/zhezhang/Desktop/naivebayes/eigen/Core
+/home/zhe/naivebayes/eigen/Core
 src/Core/util/DisableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
 src/misc/Solve.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/misc/Solve.h
+/home/zhe/naivebayes/eigen/src/misc/Solve.h
 src/Cholesky/LLT.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Cholesky/LLT.h
+/home/zhe/naivebayes/eigen/src/Cholesky/LLT.h
 src/Cholesky/LDLT.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Cholesky/LDLT.h
+/home/zhe/naivebayes/eigen/src/Cholesky/LDLT.h
 src/Cholesky/LLT_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Cholesky/LLT_MKL.h
+/home/zhe/naivebayes/eigen/src/Cholesky/LLT_MKL.h
 src/Core/util/ReenableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/Core
+/home/zhe/naivebayes/eigen/Core
 src/Core/util/DisableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
 src/Core/util/Macros.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/Macros.h
+/home/zhe/naivebayes/eigen/src/Core/util/Macros.h
 complex
 -
 src/Core/util/MKL_support.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/MKL_support.h
+/home/zhe/naivebayes/eigen/src/Core/util/MKL_support.h
 malloc.h
 -
 immintrin.h
@@ -84,947 +84,947 @@ intrin.h
 new
 -
 src/Core/util/Constants.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/Constants.h
+/home/zhe/naivebayes/eigen/src/Core/util/Constants.h
 src/Core/util/ForwardDeclarations.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/ForwardDeclarations.h
+/home/zhe/naivebayes/eigen/src/Core/util/ForwardDeclarations.h
 src/Core/util/Meta.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/Meta.h
+/home/zhe/naivebayes/eigen/src/Core/util/Meta.h
 src/Core/util/StaticAssert.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/StaticAssert.h
+/home/zhe/naivebayes/eigen/src/Core/util/StaticAssert.h
 src/Core/util/XprHelper.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/XprHelper.h
+/home/zhe/naivebayes/eigen/src/Core/util/XprHelper.h
 src/Core/util/Memory.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/Memory.h
+/home/zhe/naivebayes/eigen/src/Core/util/Memory.h
 src/Core/NumTraits.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/NumTraits.h
+/home/zhe/naivebayes/eigen/src/Core/NumTraits.h
 src/Core/MathFunctions.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/MathFunctions.h
+/home/zhe/naivebayes/eigen/src/Core/MathFunctions.h
 src/Core/GenericPacketMath.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/GenericPacketMath.h
+/home/zhe/naivebayes/eigen/src/Core/GenericPacketMath.h
 src/Core/arch/SSE/PacketMath.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/arch/SSE/PacketMath.h
+/home/zhe/naivebayes/eigen/src/Core/arch/SSE/PacketMath.h
 src/Core/arch/SSE/MathFunctions.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/arch/SSE/MathFunctions.h
+/home/zhe/naivebayes/eigen/src/Core/arch/SSE/MathFunctions.h
 src/Core/arch/SSE/Complex.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/arch/SSE/Complex.h
+/home/zhe/naivebayes/eigen/src/Core/arch/SSE/Complex.h
 src/Core/arch/AltiVec/PacketMath.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/arch/AltiVec/PacketMath.h
+/home/zhe/naivebayes/eigen/src/Core/arch/AltiVec/PacketMath.h
 src/Core/arch/AltiVec/Complex.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/arch/AltiVec/Complex.h
+/home/zhe/naivebayes/eigen/src/Core/arch/AltiVec/Complex.h
 src/Core/arch/NEON/PacketMath.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/arch/NEON/PacketMath.h
+/home/zhe/naivebayes/eigen/src/Core/arch/NEON/PacketMath.h
 src/Core/arch/NEON/Complex.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/arch/NEON/Complex.h
+/home/zhe/naivebayes/eigen/src/Core/arch/NEON/Complex.h
 src/Core/arch/Default/Settings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/arch/Default/Settings.h
+/home/zhe/naivebayes/eigen/src/Core/arch/Default/Settings.h
 src/Core/Functors.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Functors.h
+/home/zhe/naivebayes/eigen/src/Core/Functors.h
 src/Core/DenseCoeffsBase.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/DenseCoeffsBase.h
+/home/zhe/naivebayes/eigen/src/Core/DenseCoeffsBase.h
 src/Core/DenseBase.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/DenseBase.h
+/home/zhe/naivebayes/eigen/src/Core/DenseBase.h
 src/Core/MatrixBase.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/MatrixBase.h
+/home/zhe/naivebayes/eigen/src/Core/MatrixBase.h
 src/Core/EigenBase.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/EigenBase.h
+/home/zhe/naivebayes/eigen/src/Core/EigenBase.h
 src/Core/Assign.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Assign.h
+/home/zhe/naivebayes/eigen/src/Core/Assign.h
 src/Core/util/BlasUtil.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/BlasUtil.h
+/home/zhe/naivebayes/eigen/src/Core/util/BlasUtil.h
 src/Core/DenseStorage.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/DenseStorage.h
+/home/zhe/naivebayes/eigen/src/Core/DenseStorage.h
 src/Core/NestByValue.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/NestByValue.h
+/home/zhe/naivebayes/eigen/src/Core/NestByValue.h
 src/Core/ForceAlignedAccess.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/ForceAlignedAccess.h
+/home/zhe/naivebayes/eigen/src/Core/ForceAlignedAccess.h
 src/Core/ReturnByValue.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/ReturnByValue.h
+/home/zhe/naivebayes/eigen/src/Core/ReturnByValue.h
 src/Core/NoAlias.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/NoAlias.h
+/home/zhe/naivebayes/eigen/src/Core/NoAlias.h
 src/Core/PlainObjectBase.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/PlainObjectBase.h
+/home/zhe/naivebayes/eigen/src/Core/PlainObjectBase.h
 src/Core/Matrix.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Matrix.h
+/home/zhe/naivebayes/eigen/src/Core/Matrix.h
 src/Core/Array.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Array.h
+/home/zhe/naivebayes/eigen/src/Core/Array.h
 src/Core/CwiseBinaryOp.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/CwiseBinaryOp.h
+/home/zhe/naivebayes/eigen/src/Core/CwiseBinaryOp.h
 src/Core/CwiseUnaryOp.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/CwiseUnaryOp.h
+/home/zhe/naivebayes/eigen/src/Core/CwiseUnaryOp.h
 src/Core/CwiseNullaryOp.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/CwiseNullaryOp.h
+/home/zhe/naivebayes/eigen/src/Core/CwiseNullaryOp.h
 src/Core/CwiseUnaryView.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/CwiseUnaryView.h
+/home/zhe/naivebayes/eigen/src/Core/CwiseUnaryView.h
 src/Core/SelfCwiseBinaryOp.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/SelfCwiseBinaryOp.h
+/home/zhe/naivebayes/eigen/src/Core/SelfCwiseBinaryOp.h
 src/Core/Dot.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Dot.h
+/home/zhe/naivebayes/eigen/src/Core/Dot.h
 src/Core/StableNorm.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/StableNorm.h
+/home/zhe/naivebayes/eigen/src/Core/StableNorm.h
 src/Core/MapBase.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/MapBase.h
+/home/zhe/naivebayes/eigen/src/Core/MapBase.h
 src/Core/Stride.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Stride.h
+/home/zhe/naivebayes/eigen/src/Core/Stride.h
 src/Core/Map.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Map.h
+/home/zhe/naivebayes/eigen/src/Core/Map.h
 src/Core/Block.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Block.h
+/home/zhe/naivebayes/eigen/src/Core/Block.h
 src/Core/VectorBlock.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/VectorBlock.h
+/home/zhe/naivebayes/eigen/src/Core/VectorBlock.h
 src/Core/Ref.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Ref.h
+/home/zhe/naivebayes/eigen/src/Core/Ref.h
 src/Core/Transpose.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Transpose.h
+/home/zhe/naivebayes/eigen/src/Core/Transpose.h
 src/Core/DiagonalMatrix.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/DiagonalMatrix.h
+/home/zhe/naivebayes/eigen/src/Core/DiagonalMatrix.h
 src/Core/Diagonal.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Diagonal.h
+/home/zhe/naivebayes/eigen/src/Core/Diagonal.h
 src/Core/DiagonalProduct.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/DiagonalProduct.h
+/home/zhe/naivebayes/eigen/src/Core/DiagonalProduct.h
 src/Core/PermutationMatrix.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/PermutationMatrix.h
+/home/zhe/naivebayes/eigen/src/Core/PermutationMatrix.h
 src/Core/Transpositions.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Transpositions.h
+/home/zhe/naivebayes/eigen/src/Core/Transpositions.h
 src/Core/Redux.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Redux.h
+/home/zhe/naivebayes/eigen/src/Core/Redux.h
 src/Core/Visitor.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Visitor.h
+/home/zhe/naivebayes/eigen/src/Core/Visitor.h
 src/Core/Fuzzy.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Fuzzy.h
+/home/zhe/naivebayes/eigen/src/Core/Fuzzy.h
 src/Core/IO.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/IO.h
+/home/zhe/naivebayes/eigen/src/Core/IO.h
 src/Core/Swap.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Swap.h
+/home/zhe/naivebayes/eigen/src/Core/Swap.h
 src/Core/CommaInitializer.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/CommaInitializer.h
+/home/zhe/naivebayes/eigen/src/Core/CommaInitializer.h
 src/Core/Flagged.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Flagged.h
+/home/zhe/naivebayes/eigen/src/Core/Flagged.h
 src/Core/ProductBase.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/ProductBase.h
+/home/zhe/naivebayes/eigen/src/Core/ProductBase.h
 src/Core/GeneralProduct.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/GeneralProduct.h
+/home/zhe/naivebayes/eigen/src/Core/GeneralProduct.h
 src/Core/TriangularMatrix.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/TriangularMatrix.h
+/home/zhe/naivebayes/eigen/src/Core/TriangularMatrix.h
 src/Core/SelfAdjointView.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/SelfAdjointView.h
+/home/zhe/naivebayes/eigen/src/Core/SelfAdjointView.h
 src/Core/products/GeneralBlockPanelKernel.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/GeneralBlockPanelKernel.h
+/home/zhe/naivebayes/eigen/src/Core/products/GeneralBlockPanelKernel.h
 src/Core/products/Parallelizer.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/Parallelizer.h
+/home/zhe/naivebayes/eigen/src/Core/products/Parallelizer.h
 src/Core/products/CoeffBasedProduct.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/CoeffBasedProduct.h
+/home/zhe/naivebayes/eigen/src/Core/products/CoeffBasedProduct.h
 src/Core/products/GeneralMatrixVector.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/GeneralMatrixVector.h
+/home/zhe/naivebayes/eigen/src/Core/products/GeneralMatrixVector.h
 src/Core/products/GeneralMatrixMatrix.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/GeneralMatrixMatrix.h
+/home/zhe/naivebayes/eigen/src/Core/products/GeneralMatrixMatrix.h
 src/Core/SolveTriangular.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/SolveTriangular.h
+/home/zhe/naivebayes/eigen/src/Core/SolveTriangular.h
 src/Core/products/GeneralMatrixMatrixTriangular.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/GeneralMatrixMatrixTriangular.h
+/home/zhe/naivebayes/eigen/src/Core/products/GeneralMatrixMatrixTriangular.h
 src/Core/products/SelfadjointMatrixVector.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/SelfadjointMatrixVector.h
+/home/zhe/naivebayes/eigen/src/Core/products/SelfadjointMatrixVector.h
 src/Core/products/SelfadjointMatrixMatrix.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/SelfadjointMatrixMatrix.h
+/home/zhe/naivebayes/eigen/src/Core/products/SelfadjointMatrixMatrix.h
 src/Core/products/SelfadjointProduct.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/SelfadjointProduct.h
+/home/zhe/naivebayes/eigen/src/Core/products/SelfadjointProduct.h
 src/Core/products/SelfadjointRank2Update.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/SelfadjointRank2Update.h
+/home/zhe/naivebayes/eigen/src/Core/products/SelfadjointRank2Update.h
 src/Core/products/TriangularMatrixVector.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/TriangularMatrixVector.h
+/home/zhe/naivebayes/eigen/src/Core/products/TriangularMatrixVector.h
 src/Core/products/TriangularMatrixMatrix.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/TriangularMatrixMatrix.h
+/home/zhe/naivebayes/eigen/src/Core/products/TriangularMatrixMatrix.h
 src/Core/products/TriangularSolverMatrix.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/TriangularSolverMatrix.h
+/home/zhe/naivebayes/eigen/src/Core/products/TriangularSolverMatrix.h
 src/Core/products/TriangularSolverVector.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/TriangularSolverVector.h
+/home/zhe/naivebayes/eigen/src/Core/products/TriangularSolverVector.h
 src/Core/BandMatrix.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/BandMatrix.h
+/home/zhe/naivebayes/eigen/src/Core/BandMatrix.h
 src/Core/CoreIterators.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/CoreIterators.h
+/home/zhe/naivebayes/eigen/src/Core/CoreIterators.h
 src/Core/BooleanRedux.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/BooleanRedux.h
+/home/zhe/naivebayes/eigen/src/Core/BooleanRedux.h
 src/Core/Select.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Select.h
+/home/zhe/naivebayes/eigen/src/Core/Select.h
 src/Core/VectorwiseOp.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/VectorwiseOp.h
+/home/zhe/naivebayes/eigen/src/Core/VectorwiseOp.h
 src/Core/Random.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Random.h
+/home/zhe/naivebayes/eigen/src/Core/Random.h
 src/Core/Replicate.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Replicate.h
+/home/zhe/naivebayes/eigen/src/Core/Replicate.h
 src/Core/Reverse.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Reverse.h
+/home/zhe/naivebayes/eigen/src/Core/Reverse.h
 src/Core/ArrayBase.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/ArrayBase.h
+/home/zhe/naivebayes/eigen/src/Core/ArrayBase.h
 src/Core/ArrayWrapper.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/ArrayWrapper.h
+/home/zhe/naivebayes/eigen/src/Core/ArrayWrapper.h
 src/Core/products/GeneralMatrixMatrix_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/GeneralMatrixMatrix_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/products/GeneralMatrixMatrix_MKL.h
 src/Core/products/GeneralMatrixVector_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/GeneralMatrixVector_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/products/GeneralMatrixVector_MKL.h
 src/Core/products/GeneralMatrixMatrixTriangular_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/GeneralMatrixMatrixTriangular_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/products/GeneralMatrixMatrixTriangular_MKL.h
 src/Core/products/SelfadjointMatrixMatrix_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/SelfadjointMatrixMatrix_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/products/SelfadjointMatrixMatrix_MKL.h
 src/Core/products/SelfadjointMatrixVector_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/SelfadjointMatrixVector_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/products/SelfadjointMatrixVector_MKL.h
 src/Core/products/TriangularMatrixMatrix_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/TriangularMatrixMatrix_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/products/TriangularMatrixMatrix_MKL.h
 src/Core/products/TriangularMatrixVector_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/TriangularMatrixVector_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/products/TriangularMatrixVector_MKL.h
 src/Core/products/TriangularSolverMatrix_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/TriangularSolverMatrix_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/products/TriangularSolverMatrix_MKL.h
 src/Core/Assign_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Assign_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/Assign_MKL.h
 src/Core/GlobalFunctions.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/GlobalFunctions.h
+/home/zhe/naivebayes/eigen/src/Core/GlobalFunctions.h
 src/Core/util/ReenableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
 Eigen2Support
-/Users/zhezhang/Desktop/naivebayes/eigen/Eigen2Support
+/home/zhe/naivebayes/eigen/Eigen2Support
 
-/Users/zhezhang/Desktop/naivebayes/eigen/Dense
+/home/zhe/naivebayes/eigen/Dense
 Core
-/Users/zhezhang/Desktop/naivebayes/eigen/Core
+/home/zhe/naivebayes/eigen/Core
 LU
-/Users/zhezhang/Desktop/naivebayes/eigen/LU
+/home/zhe/naivebayes/eigen/LU
 Cholesky
-/Users/zhezhang/Desktop/naivebayes/eigen/Cholesky
+/home/zhe/naivebayes/eigen/Cholesky
 QR
-/Users/zhezhang/Desktop/naivebayes/eigen/QR
+/home/zhe/naivebayes/eigen/QR
 SVD
-/Users/zhezhang/Desktop/naivebayes/eigen/SVD
+/home/zhe/naivebayes/eigen/SVD
 Geometry
-/Users/zhezhang/Desktop/naivebayes/eigen/Geometry
+/home/zhe/naivebayes/eigen/Geometry
 Eigenvalues
-/Users/zhezhang/Desktop/naivebayes/eigen/Eigenvalues
+/home/zhe/naivebayes/eigen/Eigenvalues
 
-/Users/zhezhang/Desktop/naivebayes/eigen/Eigen
+/home/zhe/naivebayes/eigen/Eigen
 Dense
-/Users/zhezhang/Desktop/naivebayes/eigen/Dense
+/home/zhe/naivebayes/eigen/Dense
 
-/Users/zhezhang/Desktop/naivebayes/eigen/Eigen2Support
+/home/zhe/naivebayes/eigen/Eigen2Support
 src/Core/util/DisableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
 src/Eigen2Support/Macros.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Macros.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Macros.h
 src/Eigen2Support/Memory.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Memory.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Memory.h
 src/Eigen2Support/Meta.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Meta.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Meta.h
 src/Eigen2Support/Lazy.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Lazy.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Lazy.h
 src/Eigen2Support/Cwise.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Cwise.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Cwise.h
 src/Eigen2Support/CwiseOperators.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/CwiseOperators.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/CwiseOperators.h
 src/Eigen2Support/TriangularSolver.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/TriangularSolver.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/TriangularSolver.h
 src/Eigen2Support/Block.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Block.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Block.h
 src/Eigen2Support/VectorBlock.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/VectorBlock.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/VectorBlock.h
 src/Eigen2Support/Minor.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Minor.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Minor.h
 src/Eigen2Support/MathFunctions.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/MathFunctions.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/MathFunctions.h
 src/Core/util/ReenableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
 iostream
 -
 
-/Users/zhezhang/Desktop/naivebayes/eigen/Eigenvalues
+/home/zhe/naivebayes/eigen/Eigenvalues
 Core
-/Users/zhezhang/Desktop/naivebayes/eigen/Core
+/home/zhe/naivebayes/eigen/Core
 src/Core/util/DisableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
 Cholesky
-/Users/zhezhang/Desktop/naivebayes/eigen/Cholesky
+/home/zhe/naivebayes/eigen/Cholesky
 Jacobi
-/Users/zhezhang/Desktop/naivebayes/eigen/Jacobi
+/home/zhe/naivebayes/eigen/Jacobi
 Householder
-/Users/zhezhang/Desktop/naivebayes/eigen/Householder
+/home/zhe/naivebayes/eigen/Householder
 LU
-/Users/zhezhang/Desktop/naivebayes/eigen/LU
+/home/zhe/naivebayes/eigen/LU
 Geometry
-/Users/zhezhang/Desktop/naivebayes/eigen/Geometry
+/home/zhe/naivebayes/eigen/Geometry
 src/Eigenvalues/Tridiagonalization.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/Tridiagonalization.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/Tridiagonalization.h
 src/Eigenvalues/RealSchur.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/RealSchur.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/RealSchur.h
 src/Eigenvalues/EigenSolver.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/EigenSolver.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/EigenSolver.h
 src/Eigenvalues/SelfAdjointEigenSolver.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/SelfAdjointEigenSolver.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/SelfAdjointEigenSolver.h
 src/Eigenvalues/GeneralizedSelfAdjointEigenSolver.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/GeneralizedSelfAdjointEigenSolver.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/GeneralizedSelfAdjointEigenSolver.h
 src/Eigenvalues/HessenbergDecomposition.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/HessenbergDecomposition.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/HessenbergDecomposition.h
 src/Eigenvalues/ComplexSchur.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/ComplexSchur.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/ComplexSchur.h
 src/Eigenvalues/ComplexEigenSolver.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/ComplexEigenSolver.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/ComplexEigenSolver.h
 src/Eigenvalues/RealQZ.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/RealQZ.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/RealQZ.h
 src/Eigenvalues/GeneralizedEigenSolver.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/GeneralizedEigenSolver.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/GeneralizedEigenSolver.h
 src/Eigenvalues/MatrixBaseEigenvalues.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/MatrixBaseEigenvalues.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/MatrixBaseEigenvalues.h
 src/Eigenvalues/RealSchur_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/RealSchur_MKL.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/RealSchur_MKL.h
 src/Eigenvalues/ComplexSchur_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/ComplexSchur_MKL.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/ComplexSchur_MKL.h
 src/Eigenvalues/SelfAdjointEigenSolver_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/SelfAdjointEigenSolver_MKL.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/SelfAdjointEigenSolver_MKL.h
 src/Core/util/ReenableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/Geometry
+/home/zhe/naivebayes/eigen/Geometry
 Core
-/Users/zhezhang/Desktop/naivebayes/eigen/Core
+/home/zhe/naivebayes/eigen/Core
 src/Core/util/DisableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
 SVD
-/Users/zhezhang/Desktop/naivebayes/eigen/SVD
+/home/zhe/naivebayes/eigen/SVD
 LU
-/Users/zhezhang/Desktop/naivebayes/eigen/LU
+/home/zhe/naivebayes/eigen/LU
 limits
 -
 src/Geometry/OrthoMethods.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/OrthoMethods.h
+/home/zhe/naivebayes/eigen/src/Geometry/OrthoMethods.h
 src/Geometry/EulerAngles.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/EulerAngles.h
+/home/zhe/naivebayes/eigen/src/Geometry/EulerAngles.h
 src/Geometry/Homogeneous.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/Homogeneous.h
+/home/zhe/naivebayes/eigen/src/Geometry/Homogeneous.h
 src/Geometry/RotationBase.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/RotationBase.h
+/home/zhe/naivebayes/eigen/src/Geometry/RotationBase.h
 src/Geometry/Rotation2D.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/Rotation2D.h
+/home/zhe/naivebayes/eigen/src/Geometry/Rotation2D.h
 src/Geometry/Quaternion.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/Quaternion.h
+/home/zhe/naivebayes/eigen/src/Geometry/Quaternion.h
 src/Geometry/AngleAxis.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/AngleAxis.h
+/home/zhe/naivebayes/eigen/src/Geometry/AngleAxis.h
 src/Geometry/Transform.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/Transform.h
+/home/zhe/naivebayes/eigen/src/Geometry/Transform.h
 src/Geometry/Translation.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/Translation.h
+/home/zhe/naivebayes/eigen/src/Geometry/Translation.h
 src/Geometry/Scaling.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/Scaling.h
+/home/zhe/naivebayes/eigen/src/Geometry/Scaling.h
 src/Geometry/Hyperplane.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/Hyperplane.h
+/home/zhe/naivebayes/eigen/src/Geometry/Hyperplane.h
 src/Geometry/ParametrizedLine.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/ParametrizedLine.h
+/home/zhe/naivebayes/eigen/src/Geometry/ParametrizedLine.h
 src/Geometry/AlignedBox.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/AlignedBox.h
+/home/zhe/naivebayes/eigen/src/Geometry/AlignedBox.h
 src/Geometry/Umeyama.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/Umeyama.h
+/home/zhe/naivebayes/eigen/src/Geometry/Umeyama.h
 src/Geometry/arch/Geometry_SSE.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/arch/Geometry_SSE.h
+/home/zhe/naivebayes/eigen/src/Geometry/arch/Geometry_SSE.h
 src/Eigen2Support/Geometry/All.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/All.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/All.h
 src/Core/util/ReenableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/Householder
+/home/zhe/naivebayes/eigen/Householder
 Core
-/Users/zhezhang/Desktop/naivebayes/eigen/Core
+/home/zhe/naivebayes/eigen/Core
 src/Core/util/DisableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
 src/Householder/Householder.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Householder/Householder.h
+/home/zhe/naivebayes/eigen/src/Householder/Householder.h
 src/Householder/HouseholderSequence.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Householder/HouseholderSequence.h
+/home/zhe/naivebayes/eigen/src/Householder/HouseholderSequence.h
 src/Householder/BlockHouseholder.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Householder/BlockHouseholder.h
+/home/zhe/naivebayes/eigen/src/Householder/BlockHouseholder.h
 src/Core/util/ReenableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/Jacobi
+/home/zhe/naivebayes/eigen/Jacobi
 Core
-/Users/zhezhang/Desktop/naivebayes/eigen/Core
+/home/zhe/naivebayes/eigen/Core
 src/Core/util/DisableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
 src/Jacobi/Jacobi.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Jacobi/Jacobi.h
+/home/zhe/naivebayes/eigen/src/Jacobi/Jacobi.h
 src/Core/util/ReenableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/LU
+/home/zhe/naivebayes/eigen/LU
 Core
-/Users/zhezhang/Desktop/naivebayes/eigen/Core
+/home/zhe/naivebayes/eigen/Core
 src/Core/util/DisableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
 src/misc/Solve.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/misc/Solve.h
+/home/zhe/naivebayes/eigen/src/misc/Solve.h
 src/misc/Kernel.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/misc/Kernel.h
+/home/zhe/naivebayes/eigen/src/misc/Kernel.h
 src/misc/Image.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/misc/Image.h
+/home/zhe/naivebayes/eigen/src/misc/Image.h
 src/LU/FullPivLU.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/LU/FullPivLU.h
+/home/zhe/naivebayes/eigen/src/LU/FullPivLU.h
 src/LU/PartialPivLU.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/LU/PartialPivLU.h
+/home/zhe/naivebayes/eigen/src/LU/PartialPivLU.h
 src/LU/PartialPivLU_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/LU/PartialPivLU_MKL.h
+/home/zhe/naivebayes/eigen/src/LU/PartialPivLU_MKL.h
 src/LU/Determinant.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/LU/Determinant.h
+/home/zhe/naivebayes/eigen/src/LU/Determinant.h
 src/LU/Inverse.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/LU/Inverse.h
+/home/zhe/naivebayes/eigen/src/LU/Inverse.h
 src/LU/arch/Inverse_SSE.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/LU/arch/Inverse_SSE.h
+/home/zhe/naivebayes/eigen/src/LU/arch/Inverse_SSE.h
 src/Eigen2Support/LU.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/LU.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/LU.h
 src/Core/util/ReenableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/QR
+/home/zhe/naivebayes/eigen/QR
 Core
-/Users/zhezhang/Desktop/naivebayes/eigen/Core
+/home/zhe/naivebayes/eigen/Core
 src/Core/util/DisableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
 Cholesky
-/Users/zhezhang/Desktop/naivebayes/eigen/Cholesky
+/home/zhe/naivebayes/eigen/Cholesky
 Jacobi
-/Users/zhezhang/Desktop/naivebayes/eigen/Jacobi
+/home/zhe/naivebayes/eigen/Jacobi
 Householder
-/Users/zhezhang/Desktop/naivebayes/eigen/Householder
+/home/zhe/naivebayes/eigen/Householder
 src/misc/Solve.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/misc/Solve.h
+/home/zhe/naivebayes/eigen/src/misc/Solve.h
 src/QR/HouseholderQR.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/QR/HouseholderQR.h
+/home/zhe/naivebayes/eigen/src/QR/HouseholderQR.h
 src/QR/FullPivHouseholderQR.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/QR/FullPivHouseholderQR.h
+/home/zhe/naivebayes/eigen/src/QR/FullPivHouseholderQR.h
 src/QR/ColPivHouseholderQR.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/QR/ColPivHouseholderQR.h
+/home/zhe/naivebayes/eigen/src/QR/ColPivHouseholderQR.h
 src/QR/HouseholderQR_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/QR/HouseholderQR_MKL.h
+/home/zhe/naivebayes/eigen/src/QR/HouseholderQR_MKL.h
 src/QR/ColPivHouseholderQR_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/QR/ColPivHouseholderQR_MKL.h
+/home/zhe/naivebayes/eigen/src/QR/ColPivHouseholderQR_MKL.h
 src/Eigen2Support/QR.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/QR.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/QR.h
 src/Core/util/ReenableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
 Eigenvalues
-/Users/zhezhang/Desktop/naivebayes/eigen/Eigenvalues
+/home/zhe/naivebayes/eigen/Eigenvalues
 
-/Users/zhezhang/Desktop/naivebayes/eigen/SVD
+/home/zhe/naivebayes/eigen/SVD
 QR
-/Users/zhezhang/Desktop/naivebayes/eigen/QR
+/home/zhe/naivebayes/eigen/QR
 Householder
-/Users/zhezhang/Desktop/naivebayes/eigen/Householder
+/home/zhe/naivebayes/eigen/Householder
 Jacobi
-/Users/zhezhang/Desktop/naivebayes/eigen/Jacobi
+/home/zhe/naivebayes/eigen/Jacobi
 src/Core/util/DisableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
 src/misc/Solve.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/misc/Solve.h
+/home/zhe/naivebayes/eigen/src/misc/Solve.h
 src/SVD/JacobiSVD.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/SVD/JacobiSVD.h
+/home/zhe/naivebayes/eigen/src/SVD/JacobiSVD.h
 src/SVD/JacobiSVD_MKL.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/SVD/JacobiSVD_MKL.h
+/home/zhe/naivebayes/eigen/src/SVD/JacobiSVD_MKL.h
 src/SVD/UpperBidiagonalization.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/SVD/UpperBidiagonalization.h
+/home/zhe/naivebayes/eigen/src/SVD/UpperBidiagonalization.h
 src/Eigen2Support/SVD.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/SVD.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/SVD.h
 src/Core/util/ReenableStupidWarnings.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Cholesky/LDLT.h
+/home/zhe/naivebayes/eigen/src/Cholesky/LDLT.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Cholesky/LLT.h
+/home/zhe/naivebayes/eigen/src/Cholesky/LLT.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Cholesky/LLT_MKL.h
+/home/zhe/naivebayes/eigen/src/Cholesky/LLT_MKL.h
 Eigen/src/Core/util/MKL_support.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Cholesky/Eigen/src/Core/util/MKL_support.h
+/home/zhe/naivebayes/eigen/src/Cholesky/Eigen/src/Core/util/MKL_support.h
 iostream
 -
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Array.h
+/home/zhe/naivebayes/eigen/src/Core/Array.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/ArrayBase.h
+/home/zhe/naivebayes/eigen/src/Core/ArrayBase.h
 ../plugins/CommonCwiseUnaryOps.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/CommonCwiseUnaryOps.h
+/home/zhe/naivebayes/eigen/src/plugins/CommonCwiseUnaryOps.h
 ../plugins/MatrixCwiseUnaryOps.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/MatrixCwiseUnaryOps.h
+/home/zhe/naivebayes/eigen/src/plugins/MatrixCwiseUnaryOps.h
 ../plugins/ArrayCwiseUnaryOps.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/ArrayCwiseUnaryOps.h
+/home/zhe/naivebayes/eigen/src/plugins/ArrayCwiseUnaryOps.h
 ../plugins/CommonCwiseBinaryOps.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/CommonCwiseBinaryOps.h
+/home/zhe/naivebayes/eigen/src/plugins/CommonCwiseBinaryOps.h
 ../plugins/MatrixCwiseBinaryOps.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/MatrixCwiseBinaryOps.h
+/home/zhe/naivebayes/eigen/src/plugins/MatrixCwiseBinaryOps.h
 ../plugins/ArrayCwiseBinaryOps.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/ArrayCwiseBinaryOps.h
+/home/zhe/naivebayes/eigen/src/plugins/ArrayCwiseBinaryOps.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/ArrayWrapper.h
+/home/zhe/naivebayes/eigen/src/Core/ArrayWrapper.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Assign.h
+/home/zhe/naivebayes/eigen/src/Core/Assign.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Assign_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/Assign_MKL.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/BandMatrix.h
+/home/zhe/naivebayes/eigen/src/Core/BandMatrix.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Block.h
+/home/zhe/naivebayes/eigen/src/Core/Block.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/BooleanRedux.h
+/home/zhe/naivebayes/eigen/src/Core/BooleanRedux.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/CommaInitializer.h
+/home/zhe/naivebayes/eigen/src/Core/CommaInitializer.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/CoreIterators.h
+/home/zhe/naivebayes/eigen/src/Core/CoreIterators.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/CwiseBinaryOp.h
+/home/zhe/naivebayes/eigen/src/Core/CwiseBinaryOp.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/CwiseNullaryOp.h
+/home/zhe/naivebayes/eigen/src/Core/CwiseNullaryOp.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/CwiseUnaryOp.h
+/home/zhe/naivebayes/eigen/src/Core/CwiseUnaryOp.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/CwiseUnaryView.h
+/home/zhe/naivebayes/eigen/src/Core/CwiseUnaryView.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/DenseBase.h
+/home/zhe/naivebayes/eigen/src/Core/DenseBase.h
 ../plugins/BlockMethods.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/BlockMethods.h
+/home/zhe/naivebayes/eigen/src/plugins/BlockMethods.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/DenseCoeffsBase.h
+/home/zhe/naivebayes/eigen/src/Core/DenseCoeffsBase.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/DenseStorage.h
+/home/zhe/naivebayes/eigen/src/Core/DenseStorage.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Diagonal.h
+/home/zhe/naivebayes/eigen/src/Core/Diagonal.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/DiagonalMatrix.h
+/home/zhe/naivebayes/eigen/src/Core/DiagonalMatrix.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/DiagonalProduct.h
+/home/zhe/naivebayes/eigen/src/Core/DiagonalProduct.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Dot.h
+/home/zhe/naivebayes/eigen/src/Core/Dot.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/EigenBase.h
+/home/zhe/naivebayes/eigen/src/Core/EigenBase.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Flagged.h
+/home/zhe/naivebayes/eigen/src/Core/Flagged.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/ForceAlignedAccess.h
+/home/zhe/naivebayes/eigen/src/Core/ForceAlignedAccess.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Functors.h
+/home/zhe/naivebayes/eigen/src/Core/Functors.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Fuzzy.h
+/home/zhe/naivebayes/eigen/src/Core/Fuzzy.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/GeneralProduct.h
+/home/zhe/naivebayes/eigen/src/Core/GeneralProduct.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/GenericPacketMath.h
+/home/zhe/naivebayes/eigen/src/Core/GenericPacketMath.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/GlobalFunctions.h
+/home/zhe/naivebayes/eigen/src/Core/GlobalFunctions.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/IO.h
+/home/zhe/naivebayes/eigen/src/Core/IO.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Map.h
+/home/zhe/naivebayes/eigen/src/Core/Map.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/MapBase.h
+/home/zhe/naivebayes/eigen/src/Core/MapBase.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/MathFunctions.h
+/home/zhe/naivebayes/eigen/src/Core/MathFunctions.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Matrix.h
+/home/zhe/naivebayes/eigen/src/Core/Matrix.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/MatrixBase.h
+/home/zhe/naivebayes/eigen/src/Core/MatrixBase.h
 ../plugins/CommonCwiseUnaryOps.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/CommonCwiseUnaryOps.h
+/home/zhe/naivebayes/eigen/src/plugins/CommonCwiseUnaryOps.h
 ../plugins/CommonCwiseBinaryOps.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/CommonCwiseBinaryOps.h
+/home/zhe/naivebayes/eigen/src/plugins/CommonCwiseBinaryOps.h
 ../plugins/MatrixCwiseUnaryOps.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/MatrixCwiseUnaryOps.h
+/home/zhe/naivebayes/eigen/src/plugins/MatrixCwiseUnaryOps.h
 ../plugins/MatrixCwiseBinaryOps.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/MatrixCwiseBinaryOps.h
+/home/zhe/naivebayes/eigen/src/plugins/MatrixCwiseBinaryOps.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/NestByValue.h
+/home/zhe/naivebayes/eigen/src/Core/NestByValue.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/NoAlias.h
+/home/zhe/naivebayes/eigen/src/Core/NoAlias.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/NumTraits.h
+/home/zhe/naivebayes/eigen/src/Core/NumTraits.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/PermutationMatrix.h
+/home/zhe/naivebayes/eigen/src/Core/PermutationMatrix.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/PlainObjectBase.h
+/home/zhe/naivebayes/eigen/src/Core/PlainObjectBase.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/ProductBase.h
+/home/zhe/naivebayes/eigen/src/Core/ProductBase.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Random.h
+/home/zhe/naivebayes/eigen/src/Core/Random.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Redux.h
+/home/zhe/naivebayes/eigen/src/Core/Redux.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Ref.h
+/home/zhe/naivebayes/eigen/src/Core/Ref.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Replicate.h
+/home/zhe/naivebayes/eigen/src/Core/Replicate.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/ReturnByValue.h
+/home/zhe/naivebayes/eigen/src/Core/ReturnByValue.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Reverse.h
+/home/zhe/naivebayes/eigen/src/Core/Reverse.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Select.h
+/home/zhe/naivebayes/eigen/src/Core/Select.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/SelfAdjointView.h
+/home/zhe/naivebayes/eigen/src/Core/SelfAdjointView.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/SelfCwiseBinaryOp.h
+/home/zhe/naivebayes/eigen/src/Core/SelfCwiseBinaryOp.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/SolveTriangular.h
+/home/zhe/naivebayes/eigen/src/Core/SolveTriangular.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/StableNorm.h
+/home/zhe/naivebayes/eigen/src/Core/StableNorm.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Stride.h
+/home/zhe/naivebayes/eigen/src/Core/Stride.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Swap.h
+/home/zhe/naivebayes/eigen/src/Core/Swap.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Transpose.h
+/home/zhe/naivebayes/eigen/src/Core/Transpose.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Transpositions.h
+/home/zhe/naivebayes/eigen/src/Core/Transpositions.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/TriangularMatrix.h
+/home/zhe/naivebayes/eigen/src/Core/TriangularMatrix.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/VectorBlock.h
+/home/zhe/naivebayes/eigen/src/Core/VectorBlock.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/VectorwiseOp.h
+/home/zhe/naivebayes/eigen/src/Core/VectorwiseOp.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/Visitor.h
+/home/zhe/naivebayes/eigen/src/Core/Visitor.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/arch/AltiVec/Complex.h
+/home/zhe/naivebayes/eigen/src/Core/arch/AltiVec/Complex.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/arch/AltiVec/PacketMath.h
+/home/zhe/naivebayes/eigen/src/Core/arch/AltiVec/PacketMath.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/arch/Default/Settings.h
+/home/zhe/naivebayes/eigen/src/Core/arch/Default/Settings.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/arch/NEON/Complex.h
+/home/zhe/naivebayes/eigen/src/Core/arch/NEON/Complex.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/arch/NEON/PacketMath.h
+/home/zhe/naivebayes/eigen/src/Core/arch/NEON/PacketMath.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/arch/SSE/Complex.h
+/home/zhe/naivebayes/eigen/src/Core/arch/SSE/Complex.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/arch/SSE/MathFunctions.h
+/home/zhe/naivebayes/eigen/src/Core/arch/SSE/MathFunctions.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/arch/SSE/PacketMath.h
+/home/zhe/naivebayes/eigen/src/Core/arch/SSE/PacketMath.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/CoeffBasedProduct.h
+/home/zhe/naivebayes/eigen/src/Core/products/CoeffBasedProduct.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/GeneralBlockPanelKernel.h
+/home/zhe/naivebayes/eigen/src/Core/products/GeneralBlockPanelKernel.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/GeneralMatrixMatrix.h
+/home/zhe/naivebayes/eigen/src/Core/products/GeneralMatrixMatrix.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/GeneralMatrixMatrixTriangular.h
+/home/zhe/naivebayes/eigen/src/Core/products/GeneralMatrixMatrixTriangular.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/GeneralMatrixMatrixTriangular_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/products/GeneralMatrixMatrixTriangular_MKL.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/GeneralMatrixMatrix_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/products/GeneralMatrixMatrix_MKL.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/GeneralMatrixVector.h
+/home/zhe/naivebayes/eigen/src/Core/products/GeneralMatrixVector.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/GeneralMatrixVector_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/products/GeneralMatrixVector_MKL.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/Parallelizer.h
+/home/zhe/naivebayes/eigen/src/Core/products/Parallelizer.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/SelfadjointMatrixMatrix.h
+/home/zhe/naivebayes/eigen/src/Core/products/SelfadjointMatrixMatrix.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/SelfadjointMatrixMatrix_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/products/SelfadjointMatrixMatrix_MKL.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/SelfadjointMatrixVector.h
+/home/zhe/naivebayes/eigen/src/Core/products/SelfadjointMatrixVector.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/SelfadjointMatrixVector_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/products/SelfadjointMatrixVector_MKL.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/SelfadjointProduct.h
+/home/zhe/naivebayes/eigen/src/Core/products/SelfadjointProduct.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/SelfadjointRank2Update.h
+/home/zhe/naivebayes/eigen/src/Core/products/SelfadjointRank2Update.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/TriangularMatrixMatrix.h
+/home/zhe/naivebayes/eigen/src/Core/products/TriangularMatrixMatrix.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/TriangularMatrixMatrix_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/products/TriangularMatrixMatrix_MKL.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/TriangularMatrixVector.h
+/home/zhe/naivebayes/eigen/src/Core/products/TriangularMatrixVector.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/TriangularMatrixVector_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/products/TriangularMatrixVector_MKL.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/TriangularSolverMatrix.h
+/home/zhe/naivebayes/eigen/src/Core/products/TriangularSolverMatrix.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/TriangularSolverMatrix_MKL.h
+/home/zhe/naivebayes/eigen/src/Core/products/TriangularSolverMatrix_MKL.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/products/TriangularSolverVector.h
+/home/zhe/naivebayes/eigen/src/Core/products/TriangularSolverVector.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/BlasUtil.h
+/home/zhe/naivebayes/eigen/src/Core/util/BlasUtil.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/Constants.h
+/home/zhe/naivebayes/eigen/src/Core/util/Constants.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/DisableStupidWarnings.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/ForwardDeclarations.h
+/home/zhe/naivebayes/eigen/src/Core/util/ForwardDeclarations.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/MKL_support.h
+/home/zhe/naivebayes/eigen/src/Core/util/MKL_support.h
 mkl.h
 -
 mkl_lapacke.h
 -
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/Macros.h
+/home/zhe/naivebayes/eigen/src/Core/util/Macros.h
 cstdlib
 -
 iostream
 -
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/Memory.h
+/home/zhe/naivebayes/eigen/src/Core/util/Memory.h
 unistd.h
 -
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/Meta.h
+/home/zhe/naivebayes/eigen/src/Core/util/Meta.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
+/home/zhe/naivebayes/eigen/src/Core/util/ReenableStupidWarnings.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/StaticAssert.h
+/home/zhe/naivebayes/eigen/src/Core/util/StaticAssert.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Core/util/XprHelper.h
+/home/zhe/naivebayes/eigen/src/Core/util/XprHelper.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Block.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Block.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Cwise.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Cwise.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/CwiseOperators.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/CwiseOperators.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/AlignedBox.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/AlignedBox.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/All.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/All.h
 limits
 -
 RotationBase.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/RotationBase.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/RotationBase.h
 Rotation2D.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Rotation2D.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Rotation2D.h
 Quaternion.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Quaternion.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Quaternion.h
 AngleAxis.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/AngleAxis.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/AngleAxis.h
 Transform.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Transform.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Transform.h
 Translation.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Translation.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Translation.h
 Scaling.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Scaling.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Scaling.h
 AlignedBox.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/AlignedBox.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/AlignedBox.h
 Hyperplane.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Hyperplane.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Hyperplane.h
 ParametrizedLine.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/ParametrizedLine.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/ParametrizedLine.h
 RotationBase.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/RotationBase.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/RotationBase.h
 Rotation2D.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Rotation2D.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Rotation2D.h
 Quaternion.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Quaternion.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Quaternion.h
 AngleAxis.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/AngleAxis.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/AngleAxis.h
 Transform.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Transform.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Transform.h
 Translation.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Translation.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Translation.h
 Scaling.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Scaling.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Scaling.h
 AlignedBox.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/AlignedBox.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/AlignedBox.h
 Hyperplane.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Hyperplane.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Hyperplane.h
 ParametrizedLine.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/ParametrizedLine.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/ParametrizedLine.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/AngleAxis.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/AngleAxis.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Hyperplane.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Hyperplane.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/ParametrizedLine.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/ParametrizedLine.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Quaternion.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Quaternion.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Rotation2D.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Rotation2D.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/RotationBase.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/RotationBase.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Scaling.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Scaling.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Transform.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Transform.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Geometry/Translation.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Geometry/Translation.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/LU.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/LU.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Lazy.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Lazy.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Macros.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Macros.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/MathFunctions.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/MathFunctions.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Memory.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Memory.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Meta.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Meta.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/Minor.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/Minor.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/QR.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/QR.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/SVD.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/SVD.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/TriangularSolver.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/TriangularSolver.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigen2Support/VectorBlock.h
+/home/zhe/naivebayes/eigen/src/Eigen2Support/VectorBlock.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/./ComplexSchur.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/./ComplexSchur.h
 ./HessenbergDecomposition.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/././HessenbergDecomposition.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/././HessenbergDecomposition.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/./HessenbergDecomposition.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/./HessenbergDecomposition.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/./RealQZ.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/./RealQZ.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/./RealSchur.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/./RealSchur.h
 ./HessenbergDecomposition.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/././HessenbergDecomposition.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/././HessenbergDecomposition.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/./Tridiagonalization.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/./Tridiagonalization.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/ComplexEigenSolver.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/ComplexEigenSolver.h
 ./ComplexSchur.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/./ComplexSchur.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/./ComplexSchur.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/ComplexSchur.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/ComplexSchur.h
 ./HessenbergDecomposition.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/./HessenbergDecomposition.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/./HessenbergDecomposition.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/ComplexSchur_MKL.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/ComplexSchur_MKL.h
 Eigen/src/Core/util/MKL_support.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/Eigen/src/Core/util/MKL_support.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/Eigen/src/Core/util/MKL_support.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/EigenSolver.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/EigenSolver.h
 ./RealSchur.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/./RealSchur.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/./RealSchur.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/GeneralizedEigenSolver.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/GeneralizedEigenSolver.h
 ./RealQZ.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/./RealQZ.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/./RealQZ.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/GeneralizedSelfAdjointEigenSolver.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/GeneralizedSelfAdjointEigenSolver.h
 ./Tridiagonalization.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/./Tridiagonalization.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/./Tridiagonalization.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/HessenbergDecomposition.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/HessenbergDecomposition.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/MatrixBaseEigenvalues.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/MatrixBaseEigenvalues.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/RealQZ.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/RealQZ.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/RealSchur.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/RealSchur.h
 ./HessenbergDecomposition.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/./HessenbergDecomposition.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/./HessenbergDecomposition.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/RealSchur_MKL.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/RealSchur_MKL.h
 Eigen/src/Core/util/MKL_support.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/Eigen/src/Core/util/MKL_support.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/Eigen/src/Core/util/MKL_support.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/SelfAdjointEigenSolver.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/SelfAdjointEigenSolver.h
 ./Tridiagonalization.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/./Tridiagonalization.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/./Tridiagonalization.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/SelfAdjointEigenSolver_MKL.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/SelfAdjointEigenSolver_MKL.h
 Eigen/src/Core/util/MKL_support.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/Eigen/src/Core/util/MKL_support.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/Eigen/src/Core/util/MKL_support.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Eigenvalues/Tridiagonalization.h
+/home/zhe/naivebayes/eigen/src/Eigenvalues/Tridiagonalization.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/AlignedBox.h
+/home/zhe/naivebayes/eigen/src/Geometry/AlignedBox.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/AngleAxis.h
+/home/zhe/naivebayes/eigen/src/Geometry/AngleAxis.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/EulerAngles.h
+/home/zhe/naivebayes/eigen/src/Geometry/EulerAngles.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/Homogeneous.h
+/home/zhe/naivebayes/eigen/src/Geometry/Homogeneous.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/Hyperplane.h
+/home/zhe/naivebayes/eigen/src/Geometry/Hyperplane.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/OrthoMethods.h
+/home/zhe/naivebayes/eigen/src/Geometry/OrthoMethods.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/ParametrizedLine.h
+/home/zhe/naivebayes/eigen/src/Geometry/ParametrizedLine.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/Quaternion.h
+/home/zhe/naivebayes/eigen/src/Geometry/Quaternion.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/Rotation2D.h
+/home/zhe/naivebayes/eigen/src/Geometry/Rotation2D.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/RotationBase.h
+/home/zhe/naivebayes/eigen/src/Geometry/RotationBase.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/Scaling.h
+/home/zhe/naivebayes/eigen/src/Geometry/Scaling.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/Transform.h
+/home/zhe/naivebayes/eigen/src/Geometry/Transform.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/Translation.h
+/home/zhe/naivebayes/eigen/src/Geometry/Translation.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/Umeyama.h
+/home/zhe/naivebayes/eigen/src/Geometry/Umeyama.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Geometry/arch/Geometry_SSE.h
+/home/zhe/naivebayes/eigen/src/Geometry/arch/Geometry_SSE.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Householder/BlockHouseholder.h
+/home/zhe/naivebayes/eigen/src/Householder/BlockHouseholder.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Householder/Householder.h
+/home/zhe/naivebayes/eigen/src/Householder/Householder.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Householder/HouseholderSequence.h
+/home/zhe/naivebayes/eigen/src/Householder/HouseholderSequence.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/Jacobi/Jacobi.h
+/home/zhe/naivebayes/eigen/src/Jacobi/Jacobi.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/LU/Determinant.h
+/home/zhe/naivebayes/eigen/src/LU/Determinant.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/LU/FullPivLU.h
+/home/zhe/naivebayes/eigen/src/LU/FullPivLU.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/LU/Inverse.h
+/home/zhe/naivebayes/eigen/src/LU/Inverse.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/LU/PartialPivLU.h
+/home/zhe/naivebayes/eigen/src/LU/PartialPivLU.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/LU/PartialPivLU_MKL.h
+/home/zhe/naivebayes/eigen/src/LU/PartialPivLU_MKL.h
 Eigen/src/Core/util/MKL_support.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/LU/Eigen/src/Core/util/MKL_support.h
+/home/zhe/naivebayes/eigen/src/LU/Eigen/src/Core/util/MKL_support.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/LU/arch/Inverse_SSE.h
+/home/zhe/naivebayes/eigen/src/LU/arch/Inverse_SSE.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/QR/ColPivHouseholderQR.h
+/home/zhe/naivebayes/eigen/src/QR/ColPivHouseholderQR.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/QR/ColPivHouseholderQR_MKL.h
+/home/zhe/naivebayes/eigen/src/QR/ColPivHouseholderQR_MKL.h
 Eigen/src/Core/util/MKL_support.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/QR/Eigen/src/Core/util/MKL_support.h
+/home/zhe/naivebayes/eigen/src/QR/Eigen/src/Core/util/MKL_support.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/QR/FullPivHouseholderQR.h
+/home/zhe/naivebayes/eigen/src/QR/FullPivHouseholderQR.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/QR/HouseholderQR.h
+/home/zhe/naivebayes/eigen/src/QR/HouseholderQR.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/QR/HouseholderQR_MKL.h
+/home/zhe/naivebayes/eigen/src/QR/HouseholderQR_MKL.h
 Eigen/src/Core/util/MKL_support.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/QR/Eigen/src/Core/util/MKL_support.h
+/home/zhe/naivebayes/eigen/src/QR/Eigen/src/Core/util/MKL_support.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/SVD/JacobiSVD.h
+/home/zhe/naivebayes/eigen/src/SVD/JacobiSVD.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/SVD/JacobiSVD_MKL.h
+/home/zhe/naivebayes/eigen/src/SVD/JacobiSVD_MKL.h
 Eigen/src/Core/util/MKL_support.h
-/Users/zhezhang/Desktop/naivebayes/eigen/src/SVD/Eigen/src/Core/util/MKL_support.h
+/home/zhe/naivebayes/eigen/src/SVD/Eigen/src/Core/util/MKL_support.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/SVD/UpperBidiagonalization.h
+/home/zhe/naivebayes/eigen/src/SVD/UpperBidiagonalization.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/misc/Image.h
+/home/zhe/naivebayes/eigen/src/misc/Image.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/misc/Kernel.h
+/home/zhe/naivebayes/eigen/src/misc/Kernel.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/misc/Solve.h
+/home/zhe/naivebayes/eigen/src/misc/Solve.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/ArrayCwiseBinaryOps.h
+/home/zhe/naivebayes/eigen/src/plugins/ArrayCwiseBinaryOps.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/ArrayCwiseUnaryOps.h
+/home/zhe/naivebayes/eigen/src/plugins/ArrayCwiseUnaryOps.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/BlockMethods.h
+/home/zhe/naivebayes/eigen/src/plugins/BlockMethods.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/CommonCwiseBinaryOps.h
+/home/zhe/naivebayes/eigen/src/plugins/CommonCwiseBinaryOps.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/CommonCwiseUnaryOps.h
+/home/zhe/naivebayes/eigen/src/plugins/CommonCwiseUnaryOps.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/MatrixCwiseBinaryOps.h
+/home/zhe/naivebayes/eigen/src/plugins/MatrixCwiseBinaryOps.h
 
-/Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/MatrixCwiseUnaryOps.h
+/home/zhe/naivebayes/eigen/src/plugins/MatrixCwiseUnaryOps.h
 
-/Users/zhezhang/Desktop/naivebayes/naivebayes/data_set.cpp
+/home/zhe/naivebayes/naivebayes/data_set.cpp
 data_set.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/data_set.h
+/home/zhe/naivebayes/naivebayes/data_set.h
 
-/Users/zhezhang/Desktop/naivebayes/naivebayes/data_set.h
+/home/zhe/naivebayes/naivebayes/data_set.h
 iostream
 -
 fstream
@@ -1050,25 +1050,25 @@ utility
 unordered_map
 -
 vector.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/vector.h
+/home/zhe/naivebayes/naivebayes/vector.h
 matrix.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/matrix.h
+/home/zhe/naivebayes/naivebayes/matrix.h
 missing_values.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/missing_values.h
+/home/zhe/naivebayes/naivebayes/missing_values.h
 variables.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/variables.h
+/home/zhe/naivebayes/naivebayes/variables.h
 instances.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/instances.h
+/home/zhe/naivebayes/naivebayes/instances.h
 probability.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/probability.h
+/home/zhe/naivebayes/naivebayes/probability.h
 ../tinyxml2/tinyxml2.h
-/Users/zhezhang/Desktop/naivebayes/tinyxml2/tinyxml2.h
+/home/zhe/naivebayes/tinyxml2/tinyxml2.h
 
-/Users/zhezhang/Desktop/naivebayes/naivebayes/instances.cpp
+/home/zhe/naivebayes/naivebayes/instances.cpp
 instances.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/instances.h
+/home/zhe/naivebayes/naivebayes/instances.h
 
-/Users/zhezhang/Desktop/naivebayes/naivebayes/instances.h
+/home/zhe/naivebayes/naivebayes/instances.h
 iostream
 -
 fstream
@@ -1090,13 +1090,13 @@ ctime
 exception
 -
 vector.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/vector.h
+/home/zhe/naivebayes/naivebayes/vector.h
 matrix.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/matrix.h
+/home/zhe/naivebayes/naivebayes/matrix.h
 ../tinyxml2/tinyxml2.h
-/Users/zhezhang/Desktop/naivebayes/tinyxml2/tinyxml2.h
+/home/zhe/naivebayes/tinyxml2/tinyxml2.h
 
-/Users/zhezhang/Desktop/naivebayes/naivebayes/matrix.h
+/home/zhe/naivebayes/naivebayes/matrix.h
 cmath
 -
 cstdlib
@@ -1112,13 +1112,13 @@ sstream
 stdexcept
 -
 vector.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/vector.h
+/home/zhe/naivebayes/naivebayes/vector.h
 
-/Users/zhezhang/Desktop/naivebayes/naivebayes/missing_values.cpp
+/home/zhe/naivebayes/naivebayes/missing_values.cpp
 missing_values.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/missing_values.h
+/home/zhe/naivebayes/naivebayes/missing_values.h
 
-/Users/zhezhang/Desktop/naivebayes/naivebayes/missing_values.h
+/home/zhe/naivebayes/naivebayes/missing_values.h
 iostream
 -
 fstream
@@ -1140,33 +1140,35 @@ ctime
 exception
 -
 vector.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/vector.h
+/home/zhe/naivebayes/naivebayes/vector.h
 matrix.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/matrix.h
+/home/zhe/naivebayes/naivebayes/matrix.h
 ../tinyxml2/tinyxml2.h
-/Users/zhezhang/Desktop/naivebayes/tinyxml2/tinyxml2.h
+/home/zhe/naivebayes/tinyxml2/tinyxml2.h
 
-/Users/zhezhang/Desktop/naivebayes/naivebayes/probability.cpp
+/home/zhe/naivebayes/naivebayes/probability.cpp
+iostream
+-
 utility
 -
 probability.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/probability.h
+/home/zhe/naivebayes/naivebayes/probability.h
 
-/Users/zhezhang/Desktop/naivebayes/naivebayes/probability.h
+/home/zhe/naivebayes/naivebayes/probability.h
 string
 -
 unordered_map
 -
 
-/Users/zhezhang/Desktop/naivebayes/naivebayes/variables.cpp
+/home/zhe/naivebayes/naivebayes/variables.cpp
 variables.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/variables.h
+/home/zhe/naivebayes/naivebayes/variables.h
 limits
 -
 climits
 -
 
-/Users/zhezhang/Desktop/naivebayes/naivebayes/variables.h
+/home/zhe/naivebayes/naivebayes/variables.h
 iostream
 -
 fstream
@@ -1190,19 +1192,19 @@ exception
 unordered_map
 -
 vector.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/vector.h
+/home/zhe/naivebayes/naivebayes/vector.h
 matrix.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/matrix.h
+/home/zhe/naivebayes/naivebayes/matrix.h
 probability.h
-/Users/zhezhang/Desktop/naivebayes/naivebayes/probability.h
+/home/zhe/naivebayes/naivebayes/probability.h
 limits
 -
 climits
 -
 ../tinyxml2/tinyxml2.h
-/Users/zhezhang/Desktop/naivebayes/tinyxml2/tinyxml2.h
+/home/zhe/naivebayes/tinyxml2/tinyxml2.h
 
-/Users/zhezhang/Desktop/naivebayes/naivebayes/vector.h
+/home/zhe/naivebayes/naivebayes/vector.h
 algorithm
 -
 cassert
@@ -1242,9 +1244,9 @@ limits
 climits
 -
 ../eigen/Eigen
-/Users/zhezhang/Desktop/naivebayes/eigen/Eigen
+/home/zhe/naivebayes/eigen/Eigen
 
-/Users/zhezhang/Desktop/naivebayes/tinyxml2/tinyxml2.h
+/home/zhe/naivebayes/tinyxml2/tinyxml2.h
 ctype.h
 -
 limits.h

@@ -39,38 +39,49 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /Users/zhezhang/cmake-3.6.2-Darwin-x86_64/CMake.app/Contents/bin/cmake
+CMAKE_COMMAND = /home/zhe/cmake-3.6.2-Linux-x86_64/bin/cmake
 
 # The command to remove a file.
-RM = /Users/zhezhang/cmake-3.6.2-Darwin-x86_64/CMake.app/Contents/bin/cmake -E remove -f
+RM = /home/zhe/cmake-3.6.2-Linux-x86_64/bin/cmake -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/zhezhang/Desktop/naivebayes
+CMAKE_SOURCE_DIR = /home/zhe/naivebayes
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/zhezhang/Desktop/naivebayes
+CMAKE_BINARY_DIR = /home/zhe/naivebayes
 
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/Users/zhezhang/cmake-3.6.2-Darwin-x86_64/CMake.app/Contents/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
+# Special rule for the target package
+package: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool..."
+	cd /home/zhe/naivebayes && /home/zhe/cmake-3.6.2-Linux-x86_64/bin/cpack --config ./CPackConfig.cmake
+.PHONY : package
 
-# Special rule for the target install/strip
-install/strip/fast: install/strip
+# Special rule for the target package
+package/fast: package
 
-.PHONY : install/strip/fast
+.PHONY : package/fast
+
+# Special rule for the target package_source
+package_source:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool for source..."
+	cd /home/zhe/naivebayes && /home/zhe/cmake-3.6.2-Linux-x86_64/bin/cpack --config ./CPackSourceConfig.cmake /home/zhe/naivebayes/CPackSourceConfig.cmake
+.PHONY : package_source
+
+# Special rule for the target package_source
+package_source/fast: package_source
+
+.PHONY : package_source/fast
 
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/Users/zhezhang/cmake-3.6.2-Darwin-x86_64/CMake.app/Contents/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/home/zhe/cmake-3.6.2-Linux-x86_64/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -81,7 +92,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/Users/zhezhang/cmake-3.6.2-Darwin-x86_64/CMake.app/Contents/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/home/zhe/cmake-3.6.2-Linux-x86_64/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -89,17 +100,27 @@ rebuild_cache/fast: rebuild_cache
 
 .PHONY : rebuild_cache/fast
 
-# Special rule for the target install
-install: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/Users/zhezhang/cmake-3.6.2-Darwin-x86_64/CMake.app/Contents/bin/cmake -P cmake_install.cmake
-.PHONY : install
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/home/zhe/cmake-3.6.2-Linux-x86_64/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
 
-# Special rule for the target install
-install/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/Users/zhezhang/cmake-3.6.2-Darwin-x86_64/CMake.app/Contents/bin/cmake -P cmake_install.cmake
-.PHONY : install/fast
+# Special rule for the target install/local
+install/local/fast: install/local
+
+.PHONY : install/local/fast
+
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/home/zhe/cmake-3.6.2-Linux-x86_64/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
+
+# Special rule for the target install/strip
+install/strip/fast: install/strip
+
+.PHONY : install/strip/fast
 
 # Special rule for the target list_install_components
 list_install_components:
@@ -111,49 +132,28 @@ list_install_components/fast: list_install_components
 
 .PHONY : list_install_components/fast
 
-# Special rule for the target package
-package: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool..."
-	cd /Users/zhezhang/Desktop/naivebayes && /Users/zhezhang/cmake-3.6.2-Darwin-x86_64/CMake.app/Contents/bin/cpack --config ./CPackConfig.cmake
-.PHONY : package
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/home/zhe/cmake-3.6.2-Linux-x86_64/bin/cmake -P cmake_install.cmake
+.PHONY : install
 
-# Special rule for the target package
-package/fast: package
-
-.PHONY : package/fast
-
-# Special rule for the target package_source
-package_source:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool for source..."
-	cd /Users/zhezhang/Desktop/naivebayes && /Users/zhezhang/cmake-3.6.2-Darwin-x86_64/CMake.app/Contents/bin/cpack --config ./CPackSourceConfig.cmake /Users/zhezhang/Desktop/naivebayes/CPackSourceConfig.cmake
-.PHONY : package_source
-
-# Special rule for the target package_source
-package_source/fast: package_source
-
-.PHONY : package_source/fast
-
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/Users/zhezhang/cmake-3.6.2-Darwin-x86_64/CMake.app/Contents/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: install/local
-
-.PHONY : install/local/fast
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/home/zhe/cmake-3.6.2-Linux-x86_64/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
 
 # The main all target
 all: cmake_check_build_system
-	cd /Users/zhezhang/Desktop/naivebayes && $(CMAKE_COMMAND) -E cmake_progress_start /Users/zhezhang/Desktop/naivebayes/CMakeFiles /Users/zhezhang/Desktop/naivebayes/tinyxml2/CMakeFiles/progress.marks
-	cd /Users/zhezhang/Desktop/naivebayes && $(MAKE) -f CMakeFiles/Makefile2 tinyxml2/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/zhezhang/Desktop/naivebayes/CMakeFiles 0
+	cd /home/zhe/naivebayes && $(CMAKE_COMMAND) -E cmake_progress_start /home/zhe/naivebayes/CMakeFiles /home/zhe/naivebayes/tinyxml2/CMakeFiles/progress.marks
+	cd /home/zhe/naivebayes && $(MAKE) -f CMakeFiles/Makefile2 tinyxml2/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/zhe/naivebayes/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /Users/zhezhang/Desktop/naivebayes && $(MAKE) -f CMakeFiles/Makefile2 tinyxml2/clean
+	cd /home/zhe/naivebayes && $(MAKE) -f CMakeFiles/Makefile2 tinyxml2/clean
 .PHONY : clean
 
 # The main clean target
@@ -163,22 +163,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /Users/zhezhang/Desktop/naivebayes && $(MAKE) -f CMakeFiles/Makefile2 tinyxml2/preinstall
+	cd /home/zhe/naivebayes && $(MAKE) -f CMakeFiles/Makefile2 tinyxml2/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /Users/zhezhang/Desktop/naivebayes && $(MAKE) -f CMakeFiles/Makefile2 tinyxml2/preinstall
+	cd /home/zhe/naivebayes && $(MAKE) -f CMakeFiles/Makefile2 tinyxml2/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /Users/zhezhang/Desktop/naivebayes && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/zhe/naivebayes && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 tinyxml2/CMakeFiles/tinyxml2.dir/rule:
-	cd /Users/zhezhang/Desktop/naivebayes && $(MAKE) -f CMakeFiles/Makefile2 tinyxml2/CMakeFiles/tinyxml2.dir/rule
+	cd /home/zhe/naivebayes && $(MAKE) -f CMakeFiles/Makefile2 tinyxml2/CMakeFiles/tinyxml2.dir/rule
 .PHONY : tinyxml2/CMakeFiles/tinyxml2.dir/rule
 
 # Convenience name for target.
@@ -188,7 +188,7 @@ tinyxml2: tinyxml2/CMakeFiles/tinyxml2.dir/rule
 
 # fast build rule for target.
 tinyxml2/fast:
-	cd /Users/zhezhang/Desktop/naivebayes && $(MAKE) -f tinyxml2/CMakeFiles/tinyxml2.dir/build.make tinyxml2/CMakeFiles/tinyxml2.dir/build
+	cd /home/zhe/naivebayes && $(MAKE) -f tinyxml2/CMakeFiles/tinyxml2.dir/build.make tinyxml2/CMakeFiles/tinyxml2.dir/build
 .PHONY : tinyxml2/fast
 
 tinyxml2.o: tinyxml2.cpp.o
@@ -197,7 +197,7 @@ tinyxml2.o: tinyxml2.cpp.o
 
 # target to build an object file
 tinyxml2.cpp.o:
-	cd /Users/zhezhang/Desktop/naivebayes && $(MAKE) -f tinyxml2/CMakeFiles/tinyxml2.dir/build.make tinyxml2/CMakeFiles/tinyxml2.dir/tinyxml2.cpp.o
+	cd /home/zhe/naivebayes && $(MAKE) -f tinyxml2/CMakeFiles/tinyxml2.dir/build.make tinyxml2/CMakeFiles/tinyxml2.dir/tinyxml2.cpp.o
 .PHONY : tinyxml2.cpp.o
 
 tinyxml2.i: tinyxml2.cpp.i
@@ -206,7 +206,7 @@ tinyxml2.i: tinyxml2.cpp.i
 
 # target to preprocess a source file
 tinyxml2.cpp.i:
-	cd /Users/zhezhang/Desktop/naivebayes && $(MAKE) -f tinyxml2/CMakeFiles/tinyxml2.dir/build.make tinyxml2/CMakeFiles/tinyxml2.dir/tinyxml2.cpp.i
+	cd /home/zhe/naivebayes && $(MAKE) -f tinyxml2/CMakeFiles/tinyxml2.dir/build.make tinyxml2/CMakeFiles/tinyxml2.dir/tinyxml2.cpp.i
 .PHONY : tinyxml2.cpp.i
 
 tinyxml2.s: tinyxml2.cpp.s
@@ -215,7 +215,7 @@ tinyxml2.s: tinyxml2.cpp.s
 
 # target to generate assembly for a file
 tinyxml2.cpp.s:
-	cd /Users/zhezhang/Desktop/naivebayes && $(MAKE) -f tinyxml2/CMakeFiles/tinyxml2.dir/build.make tinyxml2/CMakeFiles/tinyxml2.dir/tinyxml2.cpp.s
+	cd /home/zhe/naivebayes && $(MAKE) -f tinyxml2/CMakeFiles/tinyxml2.dir/build.make tinyxml2/CMakeFiles/tinyxml2.dir/tinyxml2.cpp.s
 .PHONY : tinyxml2.cpp.s
 
 # Help Target
@@ -224,15 +224,15 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... install/strip"
-	@echo "... edit_cache"
-	@echo "... rebuild_cache"
-	@echo "... install"
-	@echo "... tinyxml2"
-	@echo "... list_install_components"
 	@echo "... package"
 	@echo "... package_source"
+	@echo "... edit_cache"
+	@echo "... rebuild_cache"
 	@echo "... install/local"
+	@echo "... install/strip"
+	@echo "... list_install_components"
+	@echo "... install"
+	@echo "... tinyxml2"
 	@echo "... tinyxml2.o"
 	@echo "... tinyxml2.i"
 	@echo "... tinyxml2.s"
@@ -247,6 +247,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /Users/zhezhang/Desktop/naivebayes && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/zhe/naivebayes && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

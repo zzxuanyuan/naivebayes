@@ -2443,7 +2443,9 @@ namespace NaiveBayes
 		std::cout << "probs size = " << probs.size() << "\n";
 		int pos;
 		double total = 0;
+		int select_index = 8;
 		for(int i = 0; i < training_indices.size(); ++i) {
+			std::cout << "calculate_prior_probs and target_index = " << target_index << " " << "data(i,target_index)= " << data(i,target_index) << " and data(i,0)= " << data(i,select_index) << "\n";
 			pos = find(range.begin(), range.end(), data(i,target_index)) - range.begin();
 			std::cout << "pos = " << pos << "\n";
 			probs[pos]++;
@@ -2509,21 +2511,42 @@ namespace NaiveBayes
 		int index_range_input;
 		int index_range_target;
 		double total = 0;
+		std::cout << "input_index = " << input_index << ", target_index = " << target_index << "\n";
+		std::cout << "training_indices = " << training_indices.size() << "\n";
+
 		for(int i = 0; i < training_indices.size(); ++i) {
+			std::cout << "data(i,input_index) = " << data(i,input_index) << "\n";
 			index_range_input = find(range_input.begin(), range_input.end(), data(i,input_index)) - range_input.begin();
 			index_range_target = find(range_target.begin(), range_target.end(), data(i,target_index)) - range_target.begin();
-			pos = index_range_input * size_range_input + index_range_target;
+			pos = index_range_target * size_range_target + index_range_input;
+			std::cout << "index_range_input:" << index_range_input << "\n";
+			std::cout << "index_range_target:" << index_range_target << "\n";
 			std::cout << "pos = " << pos << "\n";
 			probs[pos]++;
 			target_probs[index_range_target]++;
 		}
-		std::cout << "probs = " << probs[0] << " " << probs[1] << "\n";
-		for(int i = 0; i < size_range_input; ++i) {
-			for(int j = 0; j < size_range_target; ++j) {
-				int index_probs = range_input[i]*size_range_input+range_target[j];
-				conditional_probs.insert({std::make_pair(range_input[i],range_target[j]), probs[index_probs]/target_probs[j]});
+
+		int sum = 0;
+		for(int isum = 0 ; isum < probs.size(); ++isum) sum+=probs[isum];
+		std::cout << "sum = " << sum << "\n";
+		for(int i = 0 ; i < probs.size(); ++i) {
+			std::cout << "probs[" << i << "] = " << probs[i] << "\n";
+			for(int j = 0; j < target_probs.size(); ++j) {
+				std::cout << "target_probs[" << j << "] = " << target_probs[j] << "\n";
 			}
 		}
+
+		int index_probs;
+		std::pair<double,double> range_pair;
+		for(int i = 0; i < size_range_input; ++i) {
+			for(int j = 0; j < size_range_target; ++j) {
+				index_probs = i * size_range_input + j;
+				range_pair = std::make_pair(range_input[i],range_target[j]);
+				std::cout << "probs[] = " << probs[index_probs] << " " << target_probs[j] << "\n";
+				conditional_probs.insert({range_pair, probs[index_probs]/target_probs[j]});
+			}
+		}
+
 		ConditionalProbability ret_conditional_prob;
 		ret_conditional_prob.set_indices(input_index, target_index);
 		ret_conditional_prob.set_names(variables.get_name(input_index), variables.get_name(target_index));
@@ -2532,7 +2555,7 @@ namespace NaiveBayes
 
 	}
 
-	std::unordered_map< std::pair<int, int>, ConditionalProbability, pair_hash > DataSet::calculate_training_conditional_probabilities(void) const //##
+	std::unordered_map< std::pair<int, int>, ConditionalProbability, pair_hash > DataSet::calculate_training_conditional_probabilities(void) const//##
 	{
 		std::cout << "\nIn calculate_training_conditional_probabilities 1\n";
 		std::unordered_map< std::pair<int, int>, ConditionalProbability, pair_hash > prob_map;
@@ -2548,12 +2571,15 @@ namespace NaiveBayes
 		int inputs_number = inputs_indices.size();
 		ConditionalProbability conditional_prob;
 		std::cout << "\nIn calculate_training_conditional_probabilities\n";
+
+		std::pair<int, int> temp_pair;
 		for(int i = 0; i < targets_number; ++i) {
 			range_target = variables.get_range(targets_indices[i]);
 			for(int j = 0; j < inputs_number; ++j) {
 				range_input = variables.get_range(inputs_indices[j]);
 				conditional_prob = calculate_conditional_probs(range_input, range_target, inputs_indices[j], targets_indices[i], training_indices);
-				prob_map.insert({std::make_pair(inputs_indices[j], targets_indices[i]), conditional_prob});
+				temp_pair = std::make_pair(inputs_indices[j], targets_indices[i]);
+				prob_map.insert({temp_pair, conditional_prob});
 			}
 		}
 

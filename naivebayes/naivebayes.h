@@ -20,7 +20,7 @@
 #include "instances.h"
 #include "variables.h"
 #include "missing_values.h"
-
+#include "probability.h"
 
 // Utilities
 

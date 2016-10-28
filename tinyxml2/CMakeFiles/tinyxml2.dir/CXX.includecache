@@ -6,9 +6,9 @@
 
 #IncludeRegexTransform: 
 
-/Users/zhezhang/Desktop/naivebayes/tinyxml2/tinyxml2.cpp
+/home/zhe/naivebayes/tinyxml2/tinyxml2.cpp
 tinyxml2.h
-/Users/zhezhang/Desktop/naivebayes/tinyxml2/tinyxml2.h
+/home/zhe/naivebayes/tinyxml2/tinyxml2.h
 new
 -
 stddef.h
@@ -16,7 +16,7 @@ stddef.h
 cstddef
 -
 
-/Users/zhezhang/Desktop/naivebayes/tinyxml2/tinyxml2.h
+/home/zhe/naivebayes/tinyxml2/tinyxml2.h
 ctype.h
 -
 limits.h

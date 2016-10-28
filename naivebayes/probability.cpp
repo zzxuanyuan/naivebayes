@@ -1,3 +1,4 @@
+#include <iostream>
 #include <utility>
 
 #include "probability.h"
@@ -55,6 +56,9 @@ namespace NaiveBayes {
 	{
 		indices = std::make_pair(-1, -1);
 		names   = std::make_pair("not defined", "not defined");
+		std::cout << "indices = " << indices.first << "," << indices.second << "\n";
+		std::cout << "names = " << names.first << "," << names.second << "\n";
+
 	}
 
 	// COPY CONSTRUCTOR
