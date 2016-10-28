@@ -15,6718 +15,6864 @@
 
 #include "data_set.h"
 
-
 namespace NaiveBayes 
 {
 
-// DEFAULT CONSTRUCTOR
+	// DEFAULT CONSTRUCTOR
 
-/// Default constructor. It creates a data set object with zero instances and zero inputs and target variables. 
-/// It also initializes the rest of class members to their default values.
+	/// Default constructor. It creates a data set object with zero instances and zero inputs and target variables. 
+	/// It also initializes the rest of class members to their default values.
 
-DataSet::DataSet(void)
-{
-   set();  
-
-   set_default();
-}
-
-
-// DATA CONSTRUCTOR
-
-/// Data constructor. It creates a data set object from a data matrix.
-/// It also initializes the rest of class members to their default values.
-/// @param data Data matrix.
-
-DataSet::DataSet(const Matrix<double>& data)
-{
-   set(data);
-
-   set_default();
-}
-
-
-// GENERAL CONSTRUCTOR
-
-/// Instances and variables number constructor. 
-/// It creates a data set object with given instances and variables numbers.
-/// All the variables are set as inputs. 
-/// It also initializes the rest of class members to their default values.
-/// @param new_instances_number Number of instances in the data set.
-/// @param new_variables_number Number of variables.
-
-DataSet::DataSet(const size_t& new_instances_number, const size_t& new_variables_number)
-{
-   set(new_instances_number, new_variables_number);
-
-   set_default();
-}
-
-
-// INSTANCES, INPUTS AND TARGETS NUMBERS CONSTRUCTORS
-
-/// Instances number, input variables number and target variables number constructor. 
-/// It creates a data set object with given instances and inputs and target variables numbers.
-/// It also initializes the rest of class members to their default values.
-/// @param new_instances_number Number of instances in the data set.
-/// @param new_inputs_number Number of input variables.
-/// @param new_targets_number Number of target variables.
-
-DataSet::DataSet(const size_t& new_instances_number, const size_t& new_inputs_number, const size_t& new_targets_number)
-{
-   set(new_instances_number, new_inputs_number, new_targets_number);
-
-   set_default();
-}
-
-
-// XML CONSTRUCTOR
-
-/// Sets the data set members from a XML document.
-/// @param data_set_document TinyXML document containing the member data.
-
-DataSet::DataSet(const tinyxml2::XMLDocument& data_set_document)
-{
-   set_default();
-
-   from_XML(data_set_document);
-}
-
-
-// FILE CONSTRUCTOR
-
-/// File constructor. It creates a data set object by loading the object members from a XML-type file. 
-/// Please mind about the file format. This is specified in the User's Guide.
-/// @param file_name Data set file name.
-
-DataSet::DataSet(const std::string& file_name)
-{
-   set();
-
-   set_default();
-
-   load(file_name);
-}
-
-
-// COPY CONSTRUCTOR
-
-/// Copy constructor. 
-/// It creates a copy of an existing inputs targets data set object. 
-/// @param other_data_set Data set object to be copied.
-
-DataSet::DataSet(const DataSet& other_data_set)
-{
-   set_default();
-
-   set(other_data_set);
-}
-
-
-// DESTRUCTOR
-
-/// Destructor. 
-
-DataSet::~DataSet(void)
-{
-}
-
-
-// ASSIGNMENT OPERATOR
-
-/// Assignment operator. 
-/// It assigns to the current object the members of an existing data set object.
-/// @param other_data_set Data set object to be assigned.
-
-DataSet& DataSet::operator = (const DataSet& other_data_set)
-{
-   if(this != &other_data_set) 
-   {
-      data_file_name = other_data_set.data_file_name;
-
-      // Data matrix
-
-      data = other_data_set.data;
-
-      // Variables
-
-      variables = other_data_set.variables;
-
-      // Instances
-
-      instances = other_data_set.instances;
-
-      // Utilities
-
-      display = other_data_set.display;
-   }
-
-   return(*this);
-}
-
-
-// EQUAL TO OPERATOR
-
-// bool operator == (const DataSet&) const method
-
-/// Equal to operator. 
-/// It compares this object with another object of the same class. 
-/// It returns true if the members of the two objects have the same values, and false otherwise.
-/// @ param other_data_set Data set object to be compared with.
-
-bool DataSet::operator == (const DataSet& other_data_set) const
-{
-   if(data_file_name == other_data_set.data_file_name
-   && data == other_data_set.data
-   && variables == other_data_set.variables
-   && instances == other_data_set.instances
-   && display == other_data_set.display)
-   {
-      return(true);
-   }
-   else
-   {
-      return(false);
-   }
-}
-
-
-// METHODS
-
-// const Variables& get_variables(void) const
-
-/// Returns a constant reference to the variables object composing this data set object. 
-
-const Variables& DataSet::get_variables(void) const
-{
-   return(variables);
-}
-
-
-// Variables* get_variables_pointer(void) const
-
-/// Returns a pointer to the variables object composing this data set object. 
-
-Variables* DataSet::get_variables_pointer(void) 
-{
-   return(&variables);
-}
-
-
-// const Instances& get_instances(void) const
-
-/// Returns a constant reference to the instances object composing this data set object. 
-
-const Instances& DataSet::get_instances(void) const
-{
-   return(instances);
-}
-
-
-// Instances* get_instances_pointer(void)
-
-/// Returns a pointer to the variables object composing this data set object. 
-
-Instances* DataSet::get_instances_pointer(void) 
-{
-   return(&instances);
-}
-
-
-// const bool& get_display(void) const method
-
-/// Returns true if messages from this class can be displayed on the screen,
-/// or false if messages from this class can't be displayed on the screen.
-
-const bool& DataSet::get_display(void) const
-{
-   return(display);   
-}
-
-
-// bool is_binary_classification(void) const method
-
-bool DataSet::is_binary_classification(void) const
-{
-    if(variables.count_targets_number() != 1)
-    {
-        return(false);
-    }
-
-    if(!arrange_target_data().is_binary())
-    {
-        return(false);
-    }
-
-    return(true);
-}
-
-
-// bool is_multiple_classification(void) const method
-
-bool DataSet::is_multiple_classification(void) const
-{
-    const Matrix<double> target_data = arrange_target_data();
-
-    if(!arrange_target_data().is_binary())
-    {
-        return(false);
-    }
-
-    for(size_t i = 0; i < target_data.get_rows_number(); i++)
-    {
-        if(target_data.arrange_row(i).calculate_sum() != 0.0)
-        {
-            return(false);
-        }
-    }
-
-    return(true);
-}
-
-
-// bool is_binary_variable(const size_t&) const method
-
-/// Returns true if the given variable is binary and false in other case.
-/// @param variable_index Index of the variable that is going to be checked.
-
-bool DataSet::is_binary_variable(const size_t& variable_index) const
-{
-    const size_t instances_number = instances.get_instances_number();
-
-    for(size_t i = 0; i < instances_number; i++)
-    {
-        if(data(i,variable_index) == 0.0 || data(i,variable_index) == 1.0)
-        {
-            continue;
-        }
-        else
-        {
-            return false;
-        }
-
-    }
-
-    return true;
-}
-
-
-// bool empty(void) const method
-
-/// Returns true if the data matrix is empty, and false otherwise.
-
-bool DataSet::empty(void) const
-{
-   return(data.empty());
-}
-
-
-// const Matrix<double>& get_data(void) const method
-
-/// Returns a reference to the data matrix in the data set. 
-/// The number of rows is equal to the number of instances.
-/// The number of columns is equal to the number of variables. 
-
-const Matrix<double>& DataSet::get_data(void) const
-{
-   return(data);
-}
-
-
-// const Matrix<double>& get_time_series_data(void) const method
-
-/// Returns a reference to the time series data matrix in the data set.
-/// Only for time series problems.
-
-const Matrix<double>& DataSet::get_time_series_data(void) const
-{
-   return(time_series_data);
-}
-
-
-// FileType get_file_type(void) const method
-
-/// Returns the file type.
-
-DataSet::FileType DataSet::get_file_type(void) const
-{
-    return(file_type);
-}
-
-
-// std::string write_file_type(void) const
-
-/// Returns a string with the name of the file type.
-
-std::string DataSet::write_file_type(void) const
-{
-    switch(file_type)
-    {
-        case TXT:
-        return "txt";
-
-        case DAT:
-        return "dat";
-
-        case CSV:
-        return "csv";
-
-        case ODS:
-        return "ods";
-
-        case XLSX:
-        return "xlsx";
-
-        case ARFF:
-        return "arff";
-
-        default:
-        {
-           std::ostringstream buffer;
-
-           buffer << "OpenNN Exception: DataSet class.\n"
-                  << "std::string write_file_type(void) const method.\n"
-                  << "Unknown file type.\n";
-
-           throw std::logic_error(buffer.str());
-        }
-    }
-}
-
-
-// std::string write_first_cell(void) const
-
-/// Returns a string with the first cell for excel files.
-
-std::string DataSet::write_first_cell(void) const
-{
-   return first_cell;
-}
-
-
-// std::string write_last_cell(void) const
-
-/// Returns a string with the last cell for excel files.
-
-std::string DataSet::write_last_cell(void) const
-{
-   return last_cell;
-}
-
-
-// int write_sheet_number(void) const
-
-/// Returns a string with the sheet number for excel files.
-
-size_t DataSet::write_sheet_number(void) const
-{
-   return sheet_number;
-}
-
-
-// LearningTask get_learning_task(void) const
-
-/// Returns the learning task.
-
-DataSet::LearningTask DataSet::get_learning_task(void) const
-{
-    return learning_task;
-}
-
-
-// string write_learning_task(void) const
-
-/// Returns a string with the name of the learning task.
-
-std::string DataSet::write_learning_task(void) const
-{
-    switch(learning_task)
-    {
-        case FunctionRegression:
-        return "FunctionRegression";
-
-        case PatternRecognition:
-        return "PatternRecognition";
-
-        case TimeSeriesPrediction:
-        return "TimeSeriesPrediction";
-
-        case Autoassociation:
-        return "Autoassociation";
-
-        default:
-        {
-            std::ostringstream buffer;
-
-            buffer << "OpenNN Exception: DataSet class.\n"
-                   << "std::string write_learning_task(void) const method.\n"
-                   << "Unknown learning task.\n";
-
-            throw std::logic_error(buffer.str());
-        }
-    }
-}
-
-
-// const MissingValues& get_missing_values(void) const method
-
-/// Returns a reference to the missing values object in the data set.
-
-const MissingValues& DataSet::get_missing_values(void) const
-{
-   return(missing_values);
-}
-
-
-// MissingValues* get_missing_values_pointer(void) method
-
-/// Returns a pointer to the missing values object in the data set.
-
-MissingValues* DataSet::get_missing_values_pointer(void)
-{
-   return(&missing_values);
-}
-
-
-// const std::string& get_data_file_name(void) const method
-
-/// Returns the name of the data file. 
-
-const std::string& DataSet::get_data_file_name(void) const
-{
-   return(data_file_name);
-}
-
-
-// const bool& get_header(void) const
-
-/// Returns true if the first line of the data file has a header with the names of the variables, and false otherwise.
-
-const bool& DataSet::get_header_line(void) const
-{
-    return(header_line);
-}
-
-
-// const bool& get_rows_label(void) const
-
-/// Returns true if the data file has rows label, and false otherwise.
-
-const bool& DataSet::get_rows_label(void) const
-{
-    return(rows_label);
-}
-
-
-// const Separator& get_separator(void) const
-
-/// Returns the separator to be used in the data file.
-
-const DataSet::Separator& DataSet::get_separator(void) const
-{
-    return(separator);
-}
-
-
-// std::string get_separator_string(void) const
-
-/// Returns the string which will be used as separator in the data file.
-
-std::string DataSet::get_separator_string(void) const
-{
-    switch(separator)
-    {
-       case Space:
-       {
-          return(" ");
-       }
-       break;
-
-       case Tab:
-       {
-          return("\t");
-       }
-       break;
-
-        case Comma:
-        {
-           return(",");
-        }
-        break;
-
-        case Semicolon:
-        {
-           return(";");
-        }
-        break;
-
-       default:
-       {
-          std::ostringstream buffer;
-
-          buffer << "OpenNN Exception: DataSet class.\n"
-                 << "std::string get_separator_string(void) const method.\n"
-                 << "Unknown separator.\n";
-
-          throw std::logic_error(buffer.str());
-       }
-       break;
-    }
-}
-
-
-// std::string write_separator(void) const
-
-/// Returns the string which will be used as separator in the data file.
-
-std::string DataSet::write_separator(void) const
-{
-    switch(separator)
-    {
-       case Space:
-       {
-          return("Space");
-       }
-       break;
-
-       case Tab:
-       {
-          return("Tab");
-       }
-       break;
-
-        case Comma:
-        {
-           return("Comma");
-        }
-        break;
-
-        case Semicolon:
-        {
-           return("Semicolon");
-        }
-        break;
-
-       default:
-       {
-          std::ostringstream buffer;
-
-          buffer << "OpenNN Exception: DataSet class.\n"
-                 << "std::string write_separator(void) const method.\n"
-                 << "Unknown separator.\n";
-
-          throw std::logic_error(buffer.str());
-       }
-       break;
-    }
-}
-
-
-// const std::string& get_missing_values_label(void) const
-
-/// Returns the string which will be used as label for the missing values in the data file.
-
-const std::string& DataSet::get_missing_values_label(void) const
-{
-    return(missing_values_label);
-}
-
-
-// const size_t& get_lags_number(void) const
-
-/// Returns the number of lags to be used in a time series prediction application.
-
-const size_t& DataSet::get_lags_number(void) const
-{
-    return(lags_number);
-}
-
-
-// const size_t& get_steps_ahead(void) const
-
-/// Returns the number of steps ahead to be used in a time series prediction application.
-
-const size_t& DataSet::get_steps_ahead(void) const
-{
-    return(steps_ahead);
-}
-
-
-// const bool& get_autoassociation(void) const
-
-/// Returns true if the data set will be used for an autoassociation application, and false otherwise.
-/// In an autoassociation problem the target data is equal to the input data.
-
-const bool& DataSet::get_autoassociation(void) const
-{
-    return(autoassociation);
-}
-
-
-// const Vector<size_t>& get_angular_variables(void) const method
-
-/// Returns the indices of the angular variables in the data set.
-/// When loading a data set with angular variables,
-/// a transformation of the data will be performed in order to avoid discontinuities (from 359 degrees to 1 degree).
-
-const Vector<size_t>& DataSet::get_angular_variables(void) const
-{
-    return(angular_variables);
-}
-
-
-// const AngularUnits& get_angular_units(void) const method
-
-/// Returns the units used for the angular variables (Radians or Degrees).
-
-const DataSet::AngularUnits& DataSet::get_angular_units(void) const
-{
-    return(angular_units);
-}
-
-
-// static ScalingUnscalingMethod get_scaling_unscaling_method(const std::string&) method
-
-/// Returns a value of the scaling-unscaling method enumeration from a string containing the name of that method.
-/// @param scaling_unscaling_method String with the name of the scaling and unscaling method.
-
-DataSet::ScalingUnscalingMethod DataSet::get_scaling_unscaling_method(const std::string& scaling_unscaling_method)
-{
-    if(scaling_unscaling_method == "MinimumMaximum")
-    {
-        return(MinimumMaximum);
-    }
-    else if(scaling_unscaling_method == "MeanStandardDeviation")
-    {
-        return(MeanStandardDeviation);
-    }
-    else
-    {
-        std::ostringstream buffer;
-
-        buffer << "OpenNN Exception: DataSet class.\n"
-               << "static ScalingUnscalingMethod get_scaling_unscaling_method(const std::string).\n"
-               << "Unknown scaling-unscaling method: " << scaling_unscaling_method << ".\n";
-
-        throw std::logic_error(buffer.str());
-    }
-}
-
-
-// Matrix<double> arrange_training_data(void) const method
-
-/// Returns a matrix with the training instances in the data set. 
-/// The number of rows is the number of training instances.
-/// The number of columns is the number of variables. 
-
-Matrix<double> DataSet::arrange_training_data(void) const
-{
-   const size_t variables_number = variables.get_variables_number();
-   
-   Vector<size_t> variables_indices(0, 1, (int)variables_number-1);
-
-   const Vector<size_t> training_indices = instances.arrange_training_indices();
-
-   return(data.arrange_submatrix(training_indices, variables_indices));
-}
-
-
-// Matrix<double> arrange_selection_data(void) const method
-
-/// Returns a matrix with the selection instances in the data set. 
-/// The number of rows is the number of selection instances.
-/// The number of columns is the number of variables. 
-
-Matrix<double> DataSet::arrange_selection_data(void) const
-{
-   const size_t variables_number = variables.get_variables_number();
-
-   const Vector<size_t> selection_indices = instances.arrange_selection_indices();
-
-   Vector<size_t> variables_indices(0, 1, (int)variables_number-1);
-
-   return(data.arrange_submatrix(selection_indices, variables_indices));
-}
-
-
-// Matrix<double> arrange_testing_data(void) const method
-
-/// Returns a matrix with the testing instances in the data set. 
-/// The number of rows is the number of testing instances.
-/// The number of columns is the number of variables. 
-
-Matrix<double> DataSet::arrange_testing_data(void) const
-{
-   const size_t variables_number = variables.get_variables_number();
-   Vector<size_t> variables_indices(0, 1, (int)variables_number-1);
-
-   const Vector<size_t> testing_indices = instances.arrange_testing_indices();
-
-   return(data.arrange_submatrix(testing_indices, variables_indices));
-}
-
-
-// Matrix<double> arrange_input_data(void) const method
-
-/// Returns a matrix with the input variables in the data set.
-/// The number of rows is the number of instances.
-/// The number of columns is the number of input variables.
-
-Matrix<double> DataSet::arrange_input_data(void) const
-{
-   const size_t instances_number = instances.get_instances_number();
-   Vector<size_t> indices(0, 1, (size_t)instances_number-1);
-
-   const Vector<size_t> input_indices = variables.arrange_inputs_indices();
-
-   return(data.arrange_submatrix(indices, input_indices));
-}
-
-
-// Matrix<double> arrange_target_data(void) const method
-
-/// Returns a matrix with the target variables in the data set.
-/// The number of rows is the number of instances.
-/// The number of columns is the number of target variables. 
-
-Matrix<double> DataSet::arrange_target_data(void) const
-{
-   const size_t instances_number = instances.get_instances_number();
-   Vector<size_t> indices(0, 1, (size_t)instances_number-1);
-
-   const Vector<size_t> targets_indices = variables.arrange_targets_indices();
-
-   return(data.arrange_submatrix(indices, targets_indices));
-}
-
-
-// Matrix<double> arrange_training_input_data(void) const method
-
-/// Returns a matrix with training instances and input variables.
-/// The number of rows is the number of training instances.
-/// The number of columns is the number of input variables. 
-
-Matrix<double> DataSet::arrange_training_input_data(void) const
-{
-   const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
-
-   const Vector<size_t> training_indices = instances.arrange_training_indices();
-
-   return(data.arrange_submatrix(training_indices, inputs_indices));
-}
-
-
-// Matrix<double> arrange_training_target_data(void) const method
-
-/// Returns a matrix with training instances and target variables.
-/// The number of rows is the number of training instances.
-/// The number of columns is the number of target variables. 
-
-Matrix<double> DataSet::arrange_training_target_data(void) const 
-{
-   const Vector<size_t> training_indices = instances.arrange_training_indices();
-
-   const Vector<size_t> targets_indices = variables.arrange_targets_indices();
-
-   return(data.arrange_submatrix(training_indices, targets_indices));
-}
-
-
-// Matrix<double> get_selection_input_data(void) const method
-
-/// Returns a matrix with selection instances and input variables.
-/// The number of rows is the number of selection instances.
-/// The number of columns is the number of input variables. 
-
-Matrix<double> DataSet::get_selection_input_data(void) const
-{
-   const Vector<size_t> selection_indices = instances.arrange_selection_indices();
-
-   const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
-
-   return(data.arrange_submatrix(selection_indices, inputs_indices));
-}
-
-
-// Matrix<double> get_selection_target_data(void) const method
-
-/// Returns a matrix with selection instances and target variables.
-/// The number of rows is the number of selection instances.
-/// The number of columns is the number of target variables. 
-
-Matrix<double> DataSet::get_selection_target_data(void) const
-{
-   const Vector<size_t> selection_indices = instances.arrange_selection_indices();
-
-   const Vector<size_t> targets_indices = variables.arrange_targets_indices();
-
-   return(data.arrange_submatrix(selection_indices, targets_indices));
-}
-
-
-// Matrix<double> arrange_testing_input_data(void) const method
-
-/// Returns a matrix with testing instances and input variables.
-/// The number of rows is the number of testing instances.
-/// The number of columns is the number of input variables. 
-
-Matrix<double> DataSet::arrange_testing_input_data(void) const
-{
-   const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
-
-   const Vector<size_t> testing_indices = instances.arrange_testing_indices();
-
-   return(data.arrange_submatrix(testing_indices, inputs_indices));
-}
-
-
-// Matrix<double> arrange_testing_target_data(void) const method
-
-/// Returns a matrix with testing instances and target variables.
-/// The number of rows is the number of testing instances.
-/// The number of columns is the number of target variables. 
-
-Matrix<double> DataSet::arrange_testing_target_data(void) const
-{
-   const Vector<size_t> targets_indices = variables.arrange_targets_indices();
-
-   const Vector<size_t> testing_indices = instances.arrange_testing_indices();
-
-   return(data.arrange_submatrix(testing_indices, targets_indices));
-}
-
-
-// Vector<double> get_instance(const size_t&) const method
-
-/// Returns the inputs and target values of a single instance in the data set. 
-/// @param i Index of the instance. 
-
-Vector<double> DataSet::get_instance(const size_t& i) const
-{
-   // Control sentence (if debug)
-
-   #ifdef __OPENNN_DEBUG__
-
-   const size_t instances_number = instances.get_instances_number();
-
-   if(i >= instances_number)
-   {
-      std::ostringstream buffer;
-
-      buffer << "OpenNN Exception: DataSet class.\n"
-             << "Vector<double> get_instance(const size_t&) const method.\n"
-             << "Index of instance must be less than number of instances.\n";
-
-	  throw std::logic_error(buffer.str());
-   }
-
-   #endif
-
-   // Get instance
-
-   return(data.arrange_row(i));
-}
-
-
-// Vector<double> get_instance(const size_t&, const Vector<size_t>&) const method
-
-/// Returns the inputs and target values of a single instance in the data set.
-/// @param instance_index Index of the instance.
-/// @param variables_indices Indices of the variables.
-
-Vector<double> DataSet::get_instance(const size_t& instance_index, const Vector<size_t>& variables_indices) const
-{
-   // Control sentence (if debug)
-
-   #ifdef __OPENNN_DEBUG__
-
-   const size_t instances_number = instances.get_instances_number();
-
-   if(instance_index >= instances_number)
-   {
-      std::ostringstream buffer;
-
-      buffer << "OpenNN Exception: DataSet class.\n"
-             << "Vector<double> get_instance(const size_t&, const Vector<size_t>&) const method.\n"
-             << "Index of instance must be less than number of instances.\n";
-
-      throw std::logic_error(buffer.str());
-   }
-
-   #endif
-
-   // Get instance
-
-   return(data.arrange_row(instance_index, variables_indices));
-}
-
-
-// Vector<double> get_variable(const size_t&) const method
-
-/// Returns all the instances of a single variable in the data set. 
-/// @param i Index of the variable. 
-
-Vector<double> DataSet::get_variable(const size_t& i) const
-{
-   // Control sentence (if debug)
-
-   #ifdef __OPENNN_DEBUG__
-
-   const size_t variables_number = variables.get_variables_number();
-
-   if(i >= variables_number)
-   {
-      std::ostringstream buffer;
-
-      buffer << "OpenNN Exception: DataSet class.\n"
-             << "Vector<double> get_variable(const size_t&) const method.\n"
-             << "Index of variable must be less than number of instances.\n";
-
-	  throw std::logic_error(buffer.str());
-   }
-
-   #endif
-
-   // Get variable
-
-   return(data.arrange_column(i));
-}
-
-
-// Vector<double> get_variable(const size_t&, const Vector<size_t>&) const method
-
-/// Returns a given set of instances of a single variable in the data set.
-/// @param variable_index Index of the variable.
-/// @param instances_indices Indices of the instances.
-
-Vector<double> DataSet::get_variable(const size_t& variable_index, const Vector<size_t>& instances_indices) const
-{
-   // Control sentence (if debug)
-
-   #ifdef __OPENNN_DEBUG__
-
-   const size_t variables_number = variables.get_variables_number();
-
-   if(variable_index >= variables_number)
-   {
-      std::ostringstream buffer;
-
-      buffer << "OpenNN Exception: DataSet class.\n"
-             << "Vector<double> get_variable(const size_t&, const Vector<double>&) const method.\n"
-             << "Index of variable must be less than number of instances.\n";
-
-      throw std::logic_error(buffer.str());
-   }
-
-   #endif
-
-   // Get variable
-
-   return(data.arrange_column(variable_index, instances_indices));
-}
-
-
-// void set(void) method
-
-/// Sets zero instances and zero variables in the data set. 
-
-void DataSet::set(void)
-{
-   data_file_name = "";
-
-   data.set();
-
-   variables.set();
-   instances.set();
-
-   missing_values.set();
-
-   display = true;
-
-   file_type = DAT;
-}
-
-
-// void set(const Matrix<double>&) method
-
-/// Sets all variables from a data matrix.
-/// @param new_data Data matrix.
-
-void DataSet::set(const Matrix<double>& new_data)
-{
-   data_file_name = "";
-
-   const size_t variables_number = new_data.get_columns_number();
-   const size_t instances_number = new_data.get_rows_number();
-
-   set(instances_number, variables_number);
-
-   data = new_data;
-
-   display = true;
-
-   file_type = DAT;
-}
-
-
-// void set(const size_t&, const size_t&) method
-
-/// Sets new numbers of instances and variables in the inputs targets data set. 
-/// All the instances are set for training. 
-/// All the variables are set as inputs. 
-/// @param new_instances_number Number of instances.
-/// @param new_variables_number Number of variables.
-
-void DataSet::set(const size_t& new_instances_number, const size_t& new_variables_number)
-{
-    // Control sentence (if debug)
-
-    #ifdef __OPENNN_DEBUG__
-
-    if(new_instances_number == 0)
-    {
-       std::ostringstream buffer;
-
-       buffer << "OpenNN Exception: DataSet class.\n"
-              << "void set(const size_t&, const size_t&) method.\n"
-              << "Number of instances must be greater than zero.\n";
-
-       throw std::logic_error(buffer.str());
-    }
-
-    if(new_variables_number == 0)
-    {
-       std::ostringstream buffer;
-
-       buffer << "OpenNN Exception: DataSet class.\n"
-              << "void set(const size_t&, const size_t&) method.\n"
-              << "Number of variables must be greater than zero.\n";
-
-       throw std::logic_error(buffer.str());
-    }
-
-    #endif
-
-   data.set(new_instances_number, new_variables_number);
-
-   instances.set(new_instances_number);
-
-   variables.set(new_variables_number);
-
-   missing_values.set(new_instances_number, new_variables_number);
-
-   display = true;
-
-   file_type = DAT;
-}
-
-
-// void set(const size_t&, const size_t&, const size_t&) method
-
-/// Sets new numbers of instances and inputs and target variables in the data set.
-/// The variables in the data set are the number of inputs plus the number of targets. 
-/// @param new_instances_number Number of instances.
-/// @param new_inputs_number Number of input variables.
-/// @param new_targets_number Number of target variables.
-
-void DataSet::set(const size_t& new_instances_number, const size_t& new_inputs_number, const size_t& new_targets_number)
-{   
-   data_file_name = "";
-
-   const size_t new_variables_number = new_inputs_number + new_targets_number;
-
-   data.set(new_instances_number, new_variables_number);
-
-   variables.set(new_inputs_number, new_targets_number);
-
-   instances.set(new_instances_number);
-
-   missing_values.set(new_instances_number, new_variables_number);
-
-   display = true;
-
-   file_type = DAT;
-}
-
-
-// void set(const DataSet& other_data_set)
-
-/// Sets the members of this data set object with those from another data set object. 
-/// @param other_data_set Data set object to be copied. 
-
-void DataSet::set(const DataSet& other_data_set)
-{
-   data_file_name = other_data_set.data_file_name;
-
-   header_line = other_data_set.header_line;
-
-   separator = other_data_set.separator;
-
-   missing_values_label = other_data_set.missing_values_label;
-
-   data = other_data_set.data;
-
-   variables = other_data_set.variables;
-
-   instances = other_data_set.instances;
-
-   missing_values = other_data_set.missing_values;
-
-   display = other_data_set.display;
-
-   file_type = other_data_set.file_type;
-}
-
-
-// void set(const tinyxml2::XMLDocument&) method
-
-/// Sets the data set members from a XML document.
-/// @param data_set_document TinyXML document containing the member data.
-
-void DataSet::set(const tinyxml2::XMLDocument& data_set_document)
-{
-    set_default();
-
-   from_XML(data_set_document);
-}
-
-
-// void set(const std::string&) method
-
-/// Sets the data set members by loading them from a XML file. 
-/// @param file_name Data set XML file_name.
-
-void DataSet::set(const std::string& file_name)
-{
-   load(file_name);
-}
-
-
-// void set_display(const bool&) method
-
-/// Sets a new display value. 
-/// If it is set to true messages from this class are to be displayed on the screen;
-/// if it is set to false messages from this class are not to be displayed on the screen.
-/// @param new_display Display value.
-
-void DataSet::set_display(const bool& new_display)
-{
-   display = new_display;
-}
-
-
-// void set_default(void) method
-
-/// Sets the default member values:
-/// <ul>
-/// <li> Display: True.
-/// </ul>
-
-void DataSet::set_default(void)
-{
-    header_line = false;
-
-    separator = Space;
-
-    missing_values_label = "?";
-
-    lags_number = 0;
-
-    steps_ahead = 0;
-
-    autoassociation = false;
-
-    angular_units = Degrees;
-
-    display = true;
-
-    file_type = DAT;
-
-    sheet_number = 1;
-}
-
-
-// void set_data(const Matrix<double>&) method
-
-/// Sets a new data matrix. 
-/// The number of rows must be equal to the number of instances.
-/// The number of columns must be equal to the number of variables. 
-/// Indices of all training, selection and testing instances and inputs and target variables do not change.
-/// @param new_data Data matrix.
-
-void DataSet::set_data(const Matrix<double>& new_data)
-{
-   // Control sentence (if debug)
-
-   #ifdef __OPENNN_DEBUG__
-
-   const size_t rows_number = new_data.get_rows_number();
-   const size_t instances_number = instances.get_instances_number();
-
-   if(rows_number != instances_number)
-   {
-      std::ostringstream buffer;
-
-      buffer << "OpenNN Exception: DataSet class.\n"
-             << "void set_data(const Matrix<double>&) method.\n"
-             << "Number of rows (" << rows_number << ") must be equal to number of instances (" << instances_number << ").\n";
-
-	  throw std::logic_error(buffer.str());
-   }
-
-   const size_t columns_number = new_data.get_columns_number();
-   const size_t variables_number = variables.get_variables_number();
-
-   if(columns_number != variables_number)
-   {
-      std::ostringstream buffer;
-
-      buffer << "OpenNN Exception: DataSet class.\n"
-             << "void set_data(const Matrix<double>&) method.\n"
-             << "Number of columns (" << columns_number << ") must be equal to number of variables (" << variables_number << ").\n";
-
-	  throw std::logic_error(buffer.str());
-   }
-
-   #endif
-
-   // Set data
-   
-   data = new_data;   
-
-   instances.set_instances_number(data.get_rows_number());
-   variables.set_variables_number(data.get_columns_number());
-
-}
-
-
-// void set_data_file_name(const std::string&) method
-
-/// Sets the name of the data file.
-/// It also loads the data from that file. 
-/// Moreover, it sets the variables and instances objects. 
-/// @param new_data_file_name Name of the file containing the data.
-
-void DataSet::set_data_file_name(const std::string& new_data_file_name)
-{   
-   data_file_name = new_data_file_name;
-}
-
-
-// void set_file_type(const FileType&) method
-
-/// Sets the file type.
-
-void DataSet::set_file_type(const DataSet::FileType& new_file_type)
-{
-    file_type = new_file_type;
-}
-
-
-// void set_file_type(const std::string&) method
-
-/// Sets the file type from a string
-
-void DataSet::set_file_type(const std::string& new_file_type)
-{
-    if(new_file_type == "txt")
-    {
-        file_type = TXT;
-    }
-    else if(new_file_type == "dat")
-    {
-        file_type = DAT;
-    }
-    else if(new_file_type == "csv")
-    {
-        file_type = CSV;
-    }
-    else if(new_file_type == "ods")
-    {
-        file_type = ODS;
-    }
-    else if(new_file_type == "xlsx")
-    {
-        file_type = XLSX;
-    }
-    else if(new_file_type == "arff")
-    {
-        file_type = ARFF;
-    }
-    else
-    {
-        std::ostringstream buffer;
-
-        buffer << "OpenNN Exception: DataSet class.\n"
-               << "void set_file_type(const std::string&) method.\n"
-               << "Unknown file type.";
-
-        throw std::logic_error(buffer.str());
-    }
-}
-
-
-// void set_header_line(const bool&) method
-
-/// Sets if the data file contains a header with the names of the variables.
-
-void DataSet::set_header_line(const bool& new_header_line)
-{
-    header_line = new_header_line;
-}
-
-
-// void set_rows_label(const bool&) method
-
-/// Sets if the data file contains rows label.
-
-void DataSet::set_rows_label(const bool& new_rows_label)
-{
-    rows_label = new_rows_label;
-}
-
-
-// void set_separator(const Separator&) method
-
-/// Sets a new separator.
-/// @param new_separator Separator value.
-
-void DataSet::set_separator(const Separator& new_separator)
-{
-    separator = new_separator;
-}
-
-
-// void set_separator(const std::string&) method
-
-/// Sets a new separator from a string.
-/// @param new_separator String with the separator value.
-
-void DataSet::set_separator(const std::string& new_separator)
-{
-    if(new_separator == "Space")
-    {
-        separator = Space;
-    }
-    else if(new_separator == "Tab")
-    {
-        separator = Tab;
-    }
-    else if(new_separator == "Comma")
-    {
-        separator = Comma;
-    }
-    else if(new_separator == "Semicolon")
-    {
-        separator = Semicolon;
-    }
-    else
-    {
-        std::ostringstream buffer;
-
-        buffer << "OpenNN Exception: DataSet class.\n"
-               << "void set_separator(const std::string&) method.\n"
-               << "Unknown separator: " << new_separator << ".\n";
-
-        throw std::logic_error(buffer.str());
-    }
-}
-
-
-// void set_missing_values_label(const std::string&) method
-
-/// Sets a new label for the missing values.
-/// @param new_missing_values_label Label for the missing values.
-
-void DataSet::set_missing_values_label(const std::string& new_missing_values_label)
-{
-    // Control sentence (if debug)
-
-    #ifdef __OPENNN_DEBUG__
-
-    if(get_trimmed(new_missing_values_label).empty())
-    {
-       std::ostringstream buffer;
-
-       buffer << "OpenNN Exception: DataSet class.\n"
-              << "void set_missing_values_label(const std::string&) method.\n"
-              << "Missing values label cannot be empty.\n";
-
-       throw std::logic_error(buffer.str());
-    }
-
-    #endif
-
-
-    missing_values_label = new_missing_values_label;
-}
-
-
-// void set_lags_number(const size_t&)
-
-/// Sets a new number of lags to be defined for a time series prediction application.
-/// When loading the data file, the time series data will be modified according to this number.
-/// @param new_lags_number Number of lags (x-1, ..., x-l) to be used.
-
-void DataSet::set_lags_number(const size_t& new_lags_number)
-{
-    lags_number = new_lags_number;
-}
-
-
-// void set_steps_ahead_number(const size_t&)
-
-/// Sets a new number of steps ahead to be defined for a time series prediction application.
-/// When loading the data file, the time series data will be modified according to this number.
-/// @param new_steps_ahead_number Number of steps ahead to be used.
-
-void DataSet::set_steps_ahead_number(const size_t& new_steps_ahead_number)
-{
-    steps_ahead = new_steps_ahead_number;
-}
-
-
-// void set_autoassociation(const size_t&)
-
-/// Sets a new autoasociation flag.
-/// If the new value is true, the data will be processed for autoassociation when loading.
-/// That is, the data file will contain the input data. The target data will be created as being equal to the input data.
-/// If the autoassociation value is set to false, the data from the file will not be processed.
-/// @param new_autoassociation Autoassociation value.
-
-void DataSet::set_autoassociation(const bool& new_autoassociation)
-{
-    autoassociation = new_autoassociation;
-}
-
-
-// void set_learning_task(const LearningTask&)
-
-/// Sets a new learning task.
-/// @param new_learning_task New learning task.
-
-void DataSet::set_learning_task(const DataSet::LearningTask& new_learning_task)
-{
-    learning_task = new_learning_task;
-}
-
-
-// void set_learning_task(const std::string&)
-
-/// Sets a new learning task from a string.
-/// @param new_learning_task New learning task.
-
-void DataSet::set_learning_task(const std::string& new_learning_task)
-{
-    if(new_learning_task == "FunctionRegression")
-    {
-        learning_task = FunctionRegression;
-    }
-    else if(new_learning_task == "PatternRecognition")
-    {
-        learning_task = PatternRecognition;
-    }
-    else if(new_learning_task == "TimeSeriesPrediction")
-    {
-        learning_task = TimeSeriesPrediction;
-    }
-    else if(new_learning_task == "Autoassociation")
-    {
-        learning_task = Autoassociation;
-    }
-    else
-    {
-        std::ostringstream buffer;
-
-        buffer << "OpenNN Exception: DataSet class.\n"
-               << "void set_learning_task(const std::string&) method.\n"
-               << "Not known learning task.\n";
-
-        throw std::logic_error(buffer.str());
-    }
-}
-
-
-// void set_angular_variables(const Vector<size_t>&)
-
-/// Sets the indices of those variables which represent angles.
-/// @param new_angular_variables Indices of angular variables.
-
-void DataSet::set_angular_variables(const Vector<size_t>& new_angular_variables)
-{
-    angular_variables = new_angular_variables;
-}
-
-
-// void set_angular_units(AngularUnits&)
-
-/// Sets the units of the angular variables (Radians or Degrees).
-
-void DataSet::set_angular_units(AngularUnits& new_angular_units)
-{
-    angular_units = new_angular_units;
-}
-
-
-
-// void set_instances_number(const size_t&) method
-
-/// Sets a new number of instances in the data set. 
-/// All instances are also set for training. 
-/// The indices of the inputs and target variables do not change. 
-/// @param new_instances_number Number of instances. 
-
-void DataSet::set_instances_number(const size_t& new_instances_number)
-{
-   const size_t variables_number = variables.get_variables_number();
-
-   data.set(new_instances_number, variables_number);
-
-   instances.set(new_instances_number);
-}
-
-
-// void set_variables_number(const size_t&) method
-
-/// Sets a new number of input variables in the data set. 
-/// The indices of the training, selection and testing instances do not change. 
-/// All variables are set as inputs. 
-/// @param new_variables_number Number of variables. 
-
-void DataSet::set_variables_number(const size_t& new_variables_number)
-{
-   const size_t instances_number = instances.get_instances_number();
-
-   data.set(instances_number, new_variables_number);
-
-   variables.set(new_variables_number);
-}
-
-
-// void set_instance(const size_t&, const Vector<double>&)
-
-/// Sets new inputs and target values of a single instance in the data set. 
-/// @param instance_index Index of the instance. 
-/// @param instance New inputs and target values of the instance.
-
-void DataSet::set_instance(const size_t& instance_index, const Vector<double>& instance)
-{
-   // Control sentence (if debug)
-
-   #ifdef __OPENNN_DEBUG__
-
-   const size_t instances_number = instances.get_instances_number();
-
-   if(instance_index >= instances_number)
-   {
-      std::ostringstream buffer;
-
-      buffer << "OpenNN Exception: DataSet class.\n"
-             << "void set_instance(const size_t&, const Vector<double>&) method.\n"
-             << "Index of instance must be less than number of instances.\n";
-
-	  throw std::logic_error(buffer.str());
-   }
-
-   const size_t size = instance.size();
-   const size_t variables_number = variables.get_variables_number();
-
-   if(size != variables_number)
-   {
-      std::ostringstream buffer;
-
-      buffer << "OpenNN Exception: DataSet class.\n"
-             << "void set_instance(const size_t&, const Vector<double>&) method.\n"
-             << "Size (" << size << ") must be equal to number of variables (" << variables_number << ").\n";
-
-	  throw std::logic_error(buffer.str());
-   } 
-
-   #endif
-
-   // Set instance
-
-   data.set_row(instance_index, instance);
-}
-
-
-// void add_instance(const Vector<double>&) method
-
-/// Adds a new instance to the data matrix from a vector of real numbers.
-/// The size of that vector must be equal to the number of variables. 
-/// Note that resizing is here necessary and therefore computationally expensive. 
-/// All instances are also set for training. 
-/// @param instance Input and target values of the instance to be added. 
-
-void DataSet::add_instance(const Vector<double>& instance)
-{
-   // Control sentence (if debug)
-
-   #ifdef __OPENNN_DEBUG__
-
-   const size_t size = instance.size();
-   const size_t variables_number = variables.get_variables_number();
-
-   if(size != variables_number)
-   {
-      std::ostringstream buffer;
-
-      buffer << "OpenNN Exception: DataSet class.\n"
-             << "void add_instance(const Vector<double>&) method.\n"
-             << "Size of instance must be equal to number of variables.\n";
-
-	  throw std::logic_error(buffer.str());
-   }
-
-   #endif
-
-   const size_t instances_number = instances.get_instances_number();
-
-   data.append_row(instance);
-
-   instances.set(instances_number+1);
-}
-
-
-// void subtract_instance(size_t) method
-
-/// Substracts the inputs-targets instance with a given index from the data set.
-/// All instances are also set for training. 
-/// Note that resizing is here necessary and therefore computationally expensive. 
-/// @param instance_index Index of instance to be removed. 
-
-void DataSet::subtract_instance(const size_t& instance_index)
-{
-    const size_t instances_number = instances.get_instances_number();
-
-   // Control sentence (if debug)
-
-   #ifdef __OPENNN_DEBUG__
-
-   if(instance_index >= instances_number)
-   {
-      std::ostringstream buffer;
-
-      buffer << "OpenNN Exception: DataSet class.\n"
-             << "void subtract_instance(size_t) method.\n"
-             << "Index of instance must be less than number of instances.\n";
-
-	  throw std::logic_error(buffer.str());
-   }
-
-   #endif
-
-   data.subtract_row(instance_index);
-
-   instances.set_instances_number(instances_number-1);
-
-}
-
-
-// void append_variable(const Vector<double>&) method
-
-/// Appends a variable with given values to the data matrix.
-/// @param variable Vector of values. The size must be equal to the number of instances. 
-
-void DataSet::append_variable(const Vector<double>& variable)
-{
-   // Control sentence (if debug)
-
-   #ifdef __OPENNN_DEBUG__
-
-   const size_t size = variable.size();
-   const size_t instances_number = instances.get_instances_number();
-
-   if(size != instances_number)
-   {
-      std::ostringstream buffer;
-
-      buffer << "OpenNN Exception: DataSet class.\n"
-             << "void append_variable(const Vector<double>&) method.\n"
-             << "Size of variable must be equal to number of instances.\n";
-
-	  throw std::logic_error(buffer.str());
-   }
-
-   #endif
-
-   const size_t variables_number = variables.get_variables_number();
-
-   data.append_column(variable);
-
-   Matrix<double> new_data(data);
-
-   const size_t new_variables_number = variables_number + 1;
-
-   set_variables_number(new_variables_number);
-
-   set_data(new_data);
-}
-
-
-// void subtract_variable(size_t) method
-
-/// Removes a variable with given index from the data matrix.
-/// @param variable_index Index of variable to be subtracted. 
-
-void DataSet::subtract_variable(const size_t& variable_index)
-{
-   const size_t variables_number = variables.get_variables_number();
-
-   // Control sentence (if debug)
-
-   #ifdef __OPENNN_DEBUG__
-
-   if(variable_index >= variables_number)
-   {
-      std::ostringstream buffer;
-
-      buffer << "OpenNN Exception: DataSet class.\n"
-             << "void subtract_variable(size_t) method.\n"
-             << "Index of variable must be less than number of variables.\n";
-
-	  throw std::logic_error(buffer.str());
-   }
-
-   #endif
-
-   data.subtract_column(variable_index);
-
-   Matrix<double> new_data(data);
-
-   const size_t new_variables_number = variables_number - 1;
-
-   set_variables_number(new_variables_number);
-
-   set_data(new_data);
-}
-
-
-// Vector<size_t> unuse_constant_variables(void) method
-
-/// Removes the input of target indices of that variables with zero standard deviation.
-/// It might change the size of the vectors containing the inputs and targets indices. 
-
-Vector<size_t> DataSet::unuse_constant_variables(void)
-{
-   const size_t variables_number = variables.get_variables_number();
-
-   // Control sentence (if debug)
-
-   #ifdef __OPENNN_DEBUG__
-
-   if(variables_number == 0)
-   {
-      std::ostringstream buffer;
-
-      buffer << "OpenNN Exception: DataSet class.\n"
-             << "Vector<size_t> unuse_constant_variables(void) method.\n"
-             << "Number of variables is zero.\n";
-
-      throw std::logic_error(buffer.str());
-   }
-
-   #endif
-
-   const Vector< Statistics<double> > statistics = data.calculate_statistics();
-
-   Vector<size_t> constant_variables;
-
-   for(size_t i = 0; i < variables_number; i++)
-   {
-      if(variables.get_use(i) ==  Variables::Input && statistics[i].standard_deviation < 1.0e-6)
-      {
-         variables.set_use(i, Variables::Unused);
-         constant_variables.push_back(i);
-	  }
-   }
-
-   return(constant_variables);
-}
-
-
-// Vector<size_t> unuse_repeated_instances(void) method
-
-/// Removes the training, selection and testing indices of that instances which are repeated in the data matrix.
-/// It might change the size of the vectors containing the training, selection and testing indices. 
-
-Vector<size_t> DataSet::unuse_repeated_instances(void)
-{
-    const size_t instances_number = instances.get_instances_number();
-
-    // Control sentence (if debug)
-
-    #ifdef __OPENNN_DEBUG__
-
-    if(instances_number == 0)
-    {
-       std::ostringstream buffer;
-
-       buffer << "OpenNN Exception: DataSet class.\n"
-              << "Vector<size_t> unuse_repeated_indices(void) method.\n"
-              << "Number of instances is zero.\n";
-
-       throw std::logic_error(buffer.str());
-    }
-
-    #endif
-
-    Vector<size_t> repeated_instances;
-
-	Vector<double> instance_i;
-	Vector<double> instance_j;    
-
-    int i = 0;
-
-    #pragma omp parallel for private(i, instance_i, instance_j)
-
-    for(i = 0; i < (int)instances_number; i++)
+	DataSet::DataSet(void)
 	{
-	   instance_i = get_instance(i);
+		set();  
 
-       for(size_t j = i+1; j < instances_number; j++)
-	   {	      
-          instance_j = get_instance(j);
-
-          if(instances.get_use(j) != Instances::Unused
-          && instance_j == instance_i)
-		  {
-              instances.set_use(j, Instances::Unused);
-              repeated_instances.push_back(j);
-		  }
-	   }	    
+		set_default();
 	}
 
-    return(repeated_instances);
-}
 
+	// DATA CONSTRUCTOR
 
-// Vector<size_t> unuse_non_significant_inputs(void)
+	/// Data constructor. It creates a data set object from a data matrix.
+	/// It also initializes the rest of class members to their default values.
+	/// @param data Data matrix.
 
-/// Unuses those binary inputs whose positives does not correspond to any positive in the target variables.
+	DataSet::DataSet(const Matrix<double>& data)
+	{
+		set(data);
 
-Vector<size_t> DataSet::unuse_non_significant_inputs(void)
-{
-    const Vector<size_t> inputs_indices = get_variables_pointer()->arrange_inputs_indices();
-    const size_t inputs_number = inputs_indices.size();
+		set_default();
+	}
 
-    const size_t target_index = get_variables_pointer()->arrange_targets_indices()[0];
 
-    const size_t instances_number = get_instances_pointer()->count_used_instances_number();
+	// GENERAL CONSTRUCTOR
 
-    Vector<size_t> non_significant_variables;
+	/// Instances and variables number constructor. 
+	/// It creates a data set object with given instances and variables numbers.
+	/// All the variables are set as inputs. 
+	/// It also initializes the rest of class members to their default values.
+	/// @param new_instances_number Number of instances in the data set.
+	/// @param new_variables_number Number of variables.
 
-    if(!is_binary_classification())
-    {
-        return non_significant_variables;
-    }
+	DataSet::DataSet(const size_t& new_instances_number, const size_t& new_variables_number)
+	{
+		set(new_instances_number, new_variables_number);
 
-    size_t positives = 0;
+		set_default();
+	}
 
-    size_t current_input_index;
 
-    for(size_t i = 0; i < inputs_number; i++)
-    {
-        positives = 0;
+	// INSTANCES, INPUTS AND TARGETS NUMBERS CONSTRUCTORS
 
-        current_input_index = inputs_indices[i];
+	/// Instances number, input variables number and target variables number constructor. 
+	/// It creates a data set object with given instances and inputs and target variables numbers.
+	/// It also initializes the rest of class members to their default values.
+	/// @param new_instances_number Number of instances in the data set.
+	/// @param new_inputs_number Number of input variables.
+	/// @param new_targets_number Number of target variables.
 
-        if(!is_binary_variable(current_input_index))
-        {
-            continue;
-        }
+	DataSet::DataSet(const size_t& new_instances_number, const size_t& new_inputs_number, const size_t& new_targets_number)
+	{
+		set(new_instances_number, new_inputs_number, new_targets_number);
 
-        for(size_t j = 0; j < instances_number; j++)
-        {
-            if(data(j, current_input_index) == 1.0 && data(j, target_index) == 1.0)
-            {
-                positives++;
-            }
-        }
+		set_default();
+	}
 
-        if(positives == 0)
-        {
-            variables.set_use(current_input_index, Variables::Unused);
-            non_significant_variables.push_back(current_input_index);
-        }
-    }
 
-    return non_significant_variables;
-}
+	// XML CONSTRUCTOR
 
+	/// Sets the data set members from a XML document.
+	/// @param data_set_document TinyXML document containing the member data.
 
+	DataSet::DataSet(const tinyxml2::XMLDocument& data_set_document)
+	{
+		set_default();
 
-// Vector<Histogram> calculate_data_histograms(const size_t&) const method
+		from_XML(data_set_document);
+	}
 
-/// Returns a histogram for each variable with a given number of bins. 
-/// The default number of bins is 10.
-/// The format is a vector of subvectors of subsubvectors.
-/// The size of the vector is the number of variables. 
-/// The size of the subvectors is 2 (centers and frequencies).
-/// The size of the subsubvectors is the number of bins.
-/// @param bins_number Number of bins.
 
-Vector< Histogram<double> > DataSet::calculate_data_histograms(const size_t& bins_number) const
-{
-   const size_t used_variables_number = variables.count_used_variables_number();
-   const Vector<size_t> used_variables_indices = variables.arrange_used_indices();
-   const size_t used_instances_number = instances.count_used_instances_number();
-   const Vector<size_t> used_instances_indices = instances.arrange_used_indices();
+	// FILE CONSTRUCTOR
 
-//   const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+	/// File constructor. It creates a data set object by loading the object members from a XML-type file. 
+	/// Please mind about the file format. This is specified in the User's Guide.
+	/// @param file_name Data set file name.
 
-   Vector< Histogram<double> > histograms(used_variables_number);
+	DataSet::DataSet(const std::string& file_name)
+	{
+		set();
 
-   Vector<double> column(used_instances_number);
+		set_default();
 
-   int i = 0;
+		load(file_name);
+	}
 
-   #pragma omp parallel for private(i, column) shared(histograms)
 
-   for(i = 0; i < (int)used_variables_number; i++)
-   {
-       column = data.arrange_column(used_variables_indices[i], used_instances_indices);
+	// COPY CONSTRUCTOR
 
-       histograms[i] = column.calculate_histogram(bins_number);
-   }
+	/// Copy constructor. 
+	/// It creates a copy of an existing inputs targets data set object. 
+	/// @param other_data_set Data set object to be copied.
 
-   return(histograms);
-}
+	DataSet::DataSet(const DataSet& other_data_set)
+	{
+		set_default();
 
+		set(other_data_set);
+	}
 
-// Vector<Histogram> calculate_targets_histograms(const size_t&) const method
 
-/// Returns a histogram for each target variable with a given number of bins.
-/// The default number of bins is 10.
-/// The format is a vector of subvectors of subsubvectors.
-/// The size of the vector is the number of variables.
-/// The size of the subvectors is 2 (centers and frequencies).
-/// The size of the subsubvectors is the number of bins.
-/// @param bins_number Number of bins.
+	// DESTRUCTOR
 
-Vector< Histogram<double> > DataSet::calculate_targets_histograms(const size_t& bins_number) const
-{
-   const size_t targets_number = variables.count_targets_number();
+	/// Destructor. 
 
-   const Vector<size_t> targets_indices = variables.arrange_targets_indices();
+	DataSet::~DataSet(void)
+	{
+	}
 
-   const size_t used_instances_number = instances.count_used_instances_number();
-   const Vector<size_t> used_instances_indices = instances.arrange_used_indices();
 
-   const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+	// ASSIGNMENT OPERATOR
 
-   Vector< Histogram<double> > histograms(targets_number);
+	/// Assignment operator. 
+	/// It assigns to the current object the members of an existing data set object.
+	/// @param other_data_set Data set object to be assigned.
 
-   Vector<double> column(used_instances_number);
+	DataSet& DataSet::operator = (const DataSet& other_data_set)
+	{
+		if(this != &other_data_set) 
+		{
+			data_file_name = other_data_set.data_file_name;
 
-   for(size_t i = 0; i < targets_number; i++)
-   {
-       column = data.arrange_column(targets_indices[i], used_instances_indices);
+			// Data matrix
 
-       histograms[i] = column.calculate_histogram_missing_values(missing_indices[i], bins_number);
-   }
+			data = other_data_set.data;
 
-   return(histograms);
-}
+			// Variables
 
+			variables = other_data_set.variables;
 
-// Vector<double> calculate_box_and_whiskers(void) const
+			// Instances
 
-/// Returns a vector of subvectors with the values of a box and whiskers plot.
-/// The size of the vector is equal to the number of used variables.
-/// The size of the subvectors is 5 and they consist on:
-/// <ul>
-/// <li> Minimum
-/// <li> First quartile
-/// <li> Second quartile
-/// <li> Third quartile
-/// <li> Maximum
-/// </ul>
+			instances = other_data_set.instances;
 
-Vector< Vector<double> > DataSet::calculate_box_plots(void) const
-{
-    const size_t variables_number = variables.count_used_variables_number();
-    const Vector<size_t> variables_indices = variables.arrange_used_indices();
+			// Utilities
 
-    const size_t instances_number = instances.count_used_instances_number();
-    const Vector<size_t> instances_indices = instances.arrange_used_indices();
+			display = other_data_set.display;
+		}
 
-    Vector< Vector<double> > box_plots;
-    box_plots.set(variables_number);
+		return(*this);
+	}
 
-    Vector<double> column(instances_number);
 
-    for(size_t i = 0; i < variables_number; i++)
-    {
-        column = data.arrange_column(variables_indices[i], instances_indices);
+	// EQUAL TO OPERATOR
 
-        box_plots[i] = column.calculate_box_plots();
-    }
+	// bool operator == (const DataSet&) const method
 
-    return(box_plots);
-}
+	/// Equal to operator. 
+	/// It compares this object with another object of the same class. 
+	/// It returns true if the members of the two objects have the same values, and false otherwise.
+	/// @ param other_data_set Data set object to be compared with.
 
+	bool DataSet::operator == (const DataSet& other_data_set) const
+	{
+		if(data_file_name == other_data_set.data_file_name
+				&& data == other_data_set.data
+				&& variables == other_data_set.variables
+				&& instances == other_data_set.instances
+				&& display == other_data_set.display)
+		{
+			return(true);
+		}
+		else
+		{
+			return(false);
+		}
+	}
 
-// size_t calculate_training_negatives(const size_t&) const method
 
-size_t DataSet::calculate_training_negatives(const size_t& target_index) const
-{
-    size_t negatives = 0;
+	// METHODS
 
-    const size_t training_instances_number = instances.count_training_instances_number();
+	// const Variables& get_variables(void) const
 
-    Vector<size_t> training_indices = instances.arrange_training_indices();
+	/// Returns a constant reference to the variables object composing this data set object. 
 
-    size_t training_index;
+	const Variables& DataSet::get_variables(void) const
+	{
+		return(variables);
+	}
 
-    for(size_t i = 0; i < training_instances_number; i++)
-    {
-        training_index = training_indices[i];
 
-        if(data(training_index, target_index) == 0.0)
-        {
-            negatives++;
-        }
-        else if(data(training_index, target_index) != 1.0)
-        {
-            std::ostringstream buffer;
+	// Variables* get_variables_pointer(void) const
 
-           buffer << "OpenNN Exception: DataSet class.\n"
-                  << "size_t calculate_training_negatives(const size_t&) const method.\n"
-                  << "Training instance is neither a positive nor a negative: " << data(training_index, target_index) << std::endl;
+	/// Returns a pointer to the variables object composing this data set object. 
 
-           throw std::logic_error(buffer.str());
-        }
-    }
+	Variables* DataSet::get_variables_pointer(void) 
+	{
+		return(&variables);
+	}
 
-    return(negatives);
-}
 
+	// const Instances& get_instances(void) const
 
-// size_t calculate_selection_negatives(const size_t&) const method
+	/// Returns a constant reference to the instances object composing this data set object. 
 
-size_t DataSet::calculate_selection_negatives(const size_t& target_index) const
-{
-    size_t negatives = 0;
+	const Instances& DataSet::get_instances(void) const
+	{
+		return(instances);
+	}
 
-    const size_t selection_instances_number = instances.count_selection_instances_number();
 
-    Vector<size_t> selection_indices = instances.arrange_selection_indices();
+	// Instances* get_instances_pointer(void)
 
-    size_t selection_index;
+	/// Returns a pointer to the variables object composing this data set object. 
 
-    for(size_t i = 0; i < selection_instances_number; i++)
-    {
-        selection_index = selection_indices[i];
+	Instances* DataSet::get_instances_pointer(void) 
+	{
+		return(&instances);
+	}
 
-        if(data(selection_index, target_index) == 0.0)
-        {
-            negatives++;
-        }
-        else if(data(selection_index, target_index) != 1.0)
-        {
-            std::ostringstream buffer;
+	// const std::unordered_map< std::pair<int, int>, ConditionalProbability >& get_conditional_probabilities(void) const
+	
+	/// Returns all conditional probabilities fo this data set.
+	
+	const std::unordered_map< std::pair<int, int>, ConditionalProbability, pair_hash >& DataSet::get_conditional_probabilities(void) const //##
+	{
+		return(conditional_probabilities);
+	}
 
-           buffer << "OpenNN Exception: DataSet class.\n"
-                  << "size_t calculate_selection_negatives(const size_t&) const method.\n"
-                  << "Selection instance is neither a positive nor a negative: " << data(selection_index, target_index) << std::endl;
+	// const bool& get_display(void) const method
 
-           throw std::logic_error(buffer.str());
-        }
-    }
+	/// Returns true if messages from this class can be displayed on the screen,
+	/// or false if messages from this class can't be displayed on the screen.
 
-    return(negatives);
-}
+	const bool& DataSet::get_display(void) const
+	{
+		return(display);   
+	}
 
 
-// size_t calculate_testing_negatives(const size_t&) const method
+	// bool is_binary_classification(void) const method
 
-size_t DataSet::calculate_testing_negatives(const size_t& target_index) const
-{
-    size_t negatives = 0;
+	bool DataSet::is_binary_classification(void) const
+	{
+		if(variables.count_targets_number() != 1)
+		{
+			return(false);
+		}
 
-    const size_t testing_instances_number = instances.count_testing_instances_number();
+		if(!arrange_target_data().is_binary())
+		{
+			return(false);
+		}
 
-    Vector<size_t> testing_indices = instances.arrange_testing_indices();
+		return(true);
+	}
 
-    size_t testing_index;
 
-    for(size_t i = 0; i < testing_instances_number; i++)
-    {
-        testing_index = testing_indices[i];
+	// bool is_multiple_classification(void) const method
 
-        if(data(testing_index, target_index) == 0.0)
-        {
-            negatives++;
-        }
-        else if(data(testing_index, target_index) != 1.0)
-        {
-            std::ostringstream buffer;
+	bool DataSet::is_multiple_classification(void) const
+	{
+		const Matrix<double> target_data = arrange_target_data();
 
-           buffer << "OpenNN Exception: DataSet class.\n"
-                  << "size_t calculate_selection_negatives(const size_t&) const method.\n"
-                  << "Testing instance is neither a positive nor a negative: " << data(testing_index, target_index) << std::endl;
+		if(!arrange_target_data().is_binary())
+		{
+			return(false);
+		}
 
-           throw std::logic_error(buffer.str());
-        }
-    }
+		for(size_t i = 0; i < target_data.get_rows_number(); i++)
+		{
+			if(target_data.arrange_row(i).calculate_sum() != 0.0)
+			{
+				return(false);
+			}
+		}
 
-    return(negatives);
-}
+		return(true);
+	}
 
 
-// Vector< Vector<double> > calculate_data_statistics(void) const method
+	// bool is_binary_variable(const size_t&) const method
 
-/// Returns a vector of vectors containing some basic statistics of all the variables in the data set.
-/// The size of this vector is four. The subvectors are:
-/// <ul>
-/// <li> Minimum.
-/// <li> Maximum.
-/// <li> Mean.
-/// <li> Standard deviation.
-/// </ul> 
+	/// Returns true if the given variable is binary and false in other case.
+	/// @param variable_index Index of the variable that is going to be checked.
 
-Vector< Statistics<double> > DataSet::calculate_data_statistics(void) const
-{
-    const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+	bool DataSet::is_binary_variable(const size_t& variable_index) const
+	{
+		const size_t instances_number = instances.get_instances_number();
 
-    return(data.calculate_statistics_missing_values(missing_indices));
-}
+		for(size_t i = 0; i < instances_number; i++)
+		{
+			if(data(i,variable_index) == 0.0 || data(i,variable_index) == 1.0)
+			{
+				continue;
+			}
+			else
+			{
+				return false;
+			}
 
+		}
 
-// Vector < Vector<double> > calculate_data_shape_parameters(void) const method
+		return true;
+	}
 
-/// Returns a vector fo subvectors containing the shape parameters for all the variables in the data set.
-/// The size of this vector is 2. The subvectors are:
-/// <ul>
-/// <li> Asymmetry.
-/// <li> Kurtosis.
-/// </ul>
 
-Vector< Vector<double> > DataSet::calculate_data_shape_parameters(void) const
-{
-    const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+	// bool empty(void) const method
 
-    return(data.calculate_shape_parameters_missing_values(missing_indices));
-}
+	/// Returns true if the data matrix is empty, and false otherwise.
 
+	bool DataSet::empty(void) const
+	{
+		return(data.empty());
+	}
 
-// Matrix<double> calculate_data_statistics_matrix(void) const method
 
-/// Returns all the variables statistics from a single matrix.
-/// The number of rows is the number of used variables.
-/// The number of columns is five (minimum, maximum, mean and standard deviation).
+	// const Matrix<double>& get_data(void) const method
 
-Matrix<double> DataSet::calculate_data_statistics_matrix(void) const
-{
-    const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+	/// Returns a reference to the data matrix in the data set. 
+	/// The number of rows is equal to the number of instances.
+	/// The number of columns is equal to the number of variables. 
 
-    const Vector<size_t> used_variables_indices = variables.arrange_used_indices();
-    const Vector<size_t> used_instances_indices = instances.arrange_used_indices();
+	const Matrix<double>& DataSet::get_data(void) const
+	{
+		return(data);
+	}
 
-    const Vector< Vector<size_t> > used_missing_indices = missing_indices.arrange_subvector(used_variables_indices);
 
-    const Matrix<double> used_data = data.arrange_submatrix(used_instances_indices, used_variables_indices);
+	// const Matrix<double>& get_time_series_data(void) const method
 
-    const Vector< Statistics<double> > data_statistics = used_data.calculate_statistics_missing_values(used_missing_indices);
+	/// Returns a reference to the time series data matrix in the data set.
+	/// Only for time series problems.
 
-    const size_t variables_number = used_variables_indices.size();//variables.count_used_variables_number();
+	const Matrix<double>& DataSet::get_time_series_data(void) const
+	{
+		return(time_series_data);
+	}
 
-    Matrix<double> data_statistics_matrix(variables_number, 4);
 
-    for(size_t i = 0; i < variables_number; i++)
-    {
-        data_statistics_matrix.set_row(i, data_statistics[i].to_vector());
-    }
+	// FileType get_file_type(void) const method
 
-    return(data_statistics_matrix);
-}
+	/// Returns the file type.
 
+	DataSet::FileType DataSet::get_file_type(void) const
+	{
+		return(file_type);
+	}
 
-// Matrix<double> calculate_data_shape_parameters_matrix(void) const method
 
-/// Returns all the variables shape parameters from a single matrix.
-/// The number of rows is the number of used variables.
-/// The number of columns is two (asymmetry, kurtosis).
+	// std::string write_file_type(void) const
 
-Matrix<double> DataSet::calculate_data_shape_parameters_matrix(void) const
-{
-    const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+	/// Returns a string with the name of the file type.
 
-    const Vector<size_t> used_variables_indices = variables.arrange_used_indices();
-    const Vector<size_t> used_instances_indices = instances.arrange_used_indices();
+	std::string DataSet::write_file_type(void) const
+	{
+		switch(file_type)
+		{
+			case TXT:
+				return "txt";
 
-    const Vector< Vector<size_t> > used_missing_indices = missing_indices.arrange_subvector(used_variables_indices);
+			case DAT:
+				return "dat";
 
-    const Matrix<double> used_data = data.arrange_submatrix(used_instances_indices, used_variables_indices);
+			case CSV:
+				return "csv";
 
-    const Vector< Vector<double> > shape_parameters = used_data.calculate_shape_parameters_missing_values(used_missing_indices);
+			case ODS:
+				return "ods";
 
-    const size_t variables_number = variables.count_used_variables_number();
+			case XLSX:
+				return "xlsx";
 
-    Matrix<double> data_shape_parameters_matrix(variables_number, 2);
+			case ARFF:
+				return "arff";
 
-    for(size_t i = 0; i < variables_number; i++)
-    {
-        data_shape_parameters_matrix.set_row(i, shape_parameters[i]);
-    }
+			default:
+				{
+					std::ostringstream buffer;
 
-    return(data_shape_parameters_matrix);
-}
+					buffer << "OpenNN Exception: DataSet class.\n"
+						<< "std::string write_file_type(void) const method.\n"
+						<< "Unknown file type.\n";
 
+					throw std::logic_error(buffer.str());
+				}
+		}
+	}
 
-// Vector< Vector<double> > calculate_training_instances_statistics(void) const method
 
-/// Returns a vector of vectors containing some basic statistics of all variables on the training instances.
-/// The size of this vector is two. The subvectors are:
-/// <ul>
-/// <li> Training data minimum.
-/// <li> Training data maximum.
-/// <li> Training data mean.
-/// <li> Training data standard deviation.
-/// </ul> 
+	// std::string write_first_cell(void) const
 
-Vector< Statistics<double> > DataSet::calculate_training_instances_statistics(void) const
-{
-   const Vector<size_t> training_indices = instances.arrange_training_indices();
+	/// Returns a string with the first cell for excel files.
 
-   const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+	std::string DataSet::write_first_cell(void) const
+	{
+		return first_cell;
+	}
 
-   return(data.calculate_rows_statistics_missing_values(training_indices, missing_indices));
-}
 
+	// std::string write_last_cell(void) const
 
-// Vector< Vector<double> > calculate_selection_instances_statistics(void) const method
+	/// Returns a string with the last cell for excel files.
 
-/// Returns a vector of vectors containing some basic statistics of all variables on the selection instances.
-/// The size of this vector is two. The subvectors are:
-/// <ul>
-/// <li> Selection data minimum.
-/// <li> Selection data maximum.
-/// <li> Selection data mean.
-/// <li> Selection data standard deviation.
-/// </ul>
+	std::string DataSet::write_last_cell(void) const
+	{
+		return last_cell;
+	}
 
-Vector< Statistics<double> > DataSet::calculate_selection_instances_statistics(void) const
-{
-    const Vector<size_t> selection_indices = instances.arrange_selection_indices();
 
-    const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+	// int write_sheet_number(void) const
 
-   return(data.calculate_rows_statistics_missing_values(selection_indices, missing_indices));
-}
+	/// Returns a string with the sheet number for excel files.
 
+	size_t DataSet::write_sheet_number(void) const
+	{
+		return sheet_number;
+	}
 
-// Vector< Vector<double> > calculate_testing_instances_statistics(void) const method
 
-/// Returns a vector of vectors containing some basic statistics of all variables on the testing instances.
-/// The size of this vector is five. The subvectors are:
-/// <ul>
-/// <li> Testing data minimum.
-/// <li> Testing data maximum.
-/// <li> Testing data mean.
-/// <li> Testing data standard deviation.
-/// </ul>
+	// LearningTask get_learning_task(void) const
 
-Vector< Statistics<double> > DataSet::calculate_testing_instances_statistics(void) const
-{
-    const Vector<size_t> testing_indices = instances.arrange_testing_indices();
+	/// Returns the learning task.
 
-    const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+	DataSet::LearningTask DataSet::get_learning_task(void) const
+	{
+		return learning_task;
+	}
 
-   return(data.calculate_rows_statistics_missing_values(testing_indices, missing_indices));
-}
 
+	// string write_learning_task(void) const
 
-// Vector< Vector<double> > calculate_training_instances_shape_parameters(void) const method
+	/// Returns a string with the name of the learning task.
 
-/// Returns a vector of vectors containing some shape parameters of all variables on the training instances.
-/// The size of this vector is two. The subvectors are:
-/// <ul>
-/// <li> Training data asymmetry.
-/// <li> Training data kurtosis.
-/// </ul>
+	std::string DataSet::write_learning_task(void) const
+	{
+		switch(learning_task)
+		{
+			case FunctionRegression:
+				return "FunctionRegression";
 
-Vector< Vector<double> > DataSet::calculate_training_instances_shape_parameters(void) const
-{
-   const Vector<size_t> training_indices = instances.arrange_training_indices();
+			case PatternRecognition:
+				return "PatternRecognition";
 
-   const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+			case TimeSeriesPrediction:
+				return "TimeSeriesPrediction";
 
-   return(data.calculate_rows_shape_parameters_missing_values(training_indices, missing_indices));
-}
+			case Autoassociation:
+				return "Autoassociation";
 
+			default:
+				{
+					std::ostringstream buffer;
 
-// Vector< Vector<double> > calculate_selection_instances_shape_parameters(void) const method
+					buffer << "OpenNN Exception: DataSet class.\n"
+						<< "std::string write_learning_task(void) const method.\n"
+						<< "Unknown learning task.\n";
 
-/// Returns a vector of vectors containing some shape parameters of all variables on the selection instances.
-/// The size of this vector is five. The subvectors are:
-/// <ul>
-/// <li> Selection data asymmetry.
-/// <li> Selection data kurtosis.
-/// </ul>
+					throw std::logic_error(buffer.str());
+				}
+		}
+	}
 
-Vector< Vector<double> > DataSet::calculate_selection_instances_shape_parameters(void) const
-{
-    const Vector<size_t> selection_indices = instances.arrange_selection_indices();
 
-    const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+	// const MissingValues& get_missing_values(void) const method
 
-   return(data.calculate_rows_shape_parameters_missing_values(selection_indices, missing_indices));
-}
+	/// Returns a reference to the missing values object in the data set.
 
+	const MissingValues& DataSet::get_missing_values(void) const
+	{
+		return(missing_values);
+	}
 
-// Vector< Vector<double> > calculate_testing_instances_shape_parameters(void) const method
 
-/// Returns a vector of vectors containing some shape parameters of all variables on the testing instances.
-/// The size of this vector is five. The subvectors are:
-/// <ul>
-/// <li> Testing data asymmetry.
-/// <li> Testing data kurtosis.
-/// </ul>
+	// MissingValues* get_missing_values_pointer(void) method
 
-Vector< Vector<double> > DataSet::calculate_testing_instances_shape_parameters(void) const
-{
-    const Vector<size_t> testing_indices = instances.arrange_testing_indices();
+	/// Returns a pointer to the missing values object in the data set.
 
-    const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+	MissingValues* DataSet::get_missing_values_pointer(void)
+	{
+		return(&missing_values);
+	}
 
-   return(data.calculate_rows_shape_parameters_missing_values(testing_indices, missing_indices));
-}
 
+	// const std::string& get_data_file_name(void) const method
 
+	/// Returns the name of the data file. 
 
-// Vector< Statistics<double> > calculate_inputs_statistics(void) const method
+	const std::string& DataSet::get_data_file_name(void) const
+	{
+		return(data_file_name);
+	}
 
-/// Returns a vector of vectors with some basic statistics of the input variables on all instances. 
-/// The size of this vector is five. The subvectors are:
-/// <ul>
-/// <li> Input variables minimum.
-/// <li> Input variables maximum.
-/// <li> Input variables mean.
-/// <li> Input variables standard deviation.
-/// </ul> 
 
-Vector< Statistics<double> > DataSet::calculate_inputs_statistics(void) const
-{
-    const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
+	// const bool& get_header(void) const
 
-    const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+	/// Returns true if the first line of the data file has a header with the names of the variables, and false otherwise.
 
-   return(data.calculate_columns_statistics_missing_values(inputs_indices, missing_indices));
-}
+	const bool& DataSet::get_header_line(void) const
+	{
+		return(header_line);
+	}
 
 
-// Vector< Statistics<double> > calculate_targets_statistics(void) const method
+	// const bool& get_rows_label(void) const
 
-/// Returns a vector of vectors with some basic statistics of the target variables on all instances. 
-/// The size of this vector is five. The subvectors are:
-/// <ul>
-/// <li> Target variables minimum.
-/// <li> Target variables maximum.
-/// <li> Target variables mean.
-/// <li> Target variables standard deviation.
-/// </ul> 
+	/// Returns true if the data file has rows label, and false otherwise.
 
-Vector< Statistics<double> > DataSet::calculate_targets_statistics(void) const
-{
-   const Vector<size_t> targets_indices = variables.arrange_targets_indices();
+	const bool& DataSet::get_rows_label(void) const
+	{
+		return(rows_label);
+	}
 
-   const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-   return(data.calculate_columns_statistics_missing_values(targets_indices, missing_indices));
-}
+	// const Separator& get_separator(void) const
 
+	/// Returns the separator to be used in the data file.
 
-// Vector<double> calculate_training_target_data_mean(void) const method
+	const DataSet::Separator& DataSet::get_separator(void) const
+	{
+		return(separator);
+	}
 
-/// Returns the mean values of the target variables on the training instances. 
 
-Vector<double> DataSet::calculate_training_target_data_mean(void) const
-{
-   const Vector<size_t> targets_indices = variables.arrange_targets_indices();
+	// std::string get_separator_string(void) const
 
-   const Vector<size_t> training_indices = instances.arrange_training_indices();
+	/// Returns the string which will be used as separator in the data file.
 
-   const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+	std::string DataSet::get_separator_string(void) const
+	{
+		switch(separator)
+		{
+			case Space:
+				{
+					return(" ");
+				}
+				break;
 
-   return(data.calculate_mean_missing_values(training_indices, targets_indices, missing_indices));
-}
+			case Tab:
+				{
+					return("\t");
+				}
+				break;
 
+			case Comma:
+				{
+					return(",");
+				}
+				break;
 
-// Vector<double> calculate_selection_target_data_mean(void) const method
+			case Semicolon:
+				{
+					return(";");
+				}
+				break;
 
-/// Returns the mean values of the target variables on the selection instances. 
+			default:
+				{
+					std::ostringstream buffer;
 
-Vector<double> DataSet::calculate_selection_target_data_mean(void) const
-{
-    const Vector<size_t> targets_indices = variables.arrange_targets_indices();
+					buffer << "OpenNN Exception: DataSet class.\n"
+						<< "std::string get_separator_string(void) const method.\n"
+						<< "Unknown separator.\n";
 
-   const Vector<size_t> selection_indices = instances.arrange_selection_indices();
+					throw std::logic_error(buffer.str());
+				}
+				break;
+		}
+	}
 
-   const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-   return(data.calculate_mean_missing_values(selection_indices, targets_indices, missing_indices));
-}
+	// std::string write_separator(void) const
 
+	/// Returns the string which will be used as separator in the data file.
 
-// Vector<double> calculate_testing_target_data_mean(void) const method
+	std::string DataSet::write_separator(void) const
+	{
+		switch(separator)
+		{
+			case Space:
+				{
+					return("Space");
+				}
+				break;
 
-/// Returns the mean values of the target variables on the testing instances. 
+			case Tab:
+				{
+					return("Tab");
+				}
+				break;
 
-Vector<double> DataSet::calculate_testing_target_data_mean(void) const
-{
-   const Vector<size_t> testing_indices = instances.arrange_testing_indices();
+			case Comma:
+				{
+					return("Comma");
+				}
+				break;
 
-   const Vector<size_t> targets_indices = variables.arrange_targets_indices();
+			case Semicolon:
+				{
+					return("Semicolon");
+				}
+				break;
 
-   const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+			default:
+				{
+					std::ostringstream buffer;
 
-   return(data.calculate_mean_missing_values(testing_indices, targets_indices, missing_indices));
-}
+					buffer << "OpenNN Exception: DataSet class.\n"
+						<< "std::string write_separator(void) const method.\n"
+						<< "Unknown separator.\n";
 
+					throw std::logic_error(buffer.str());
+				}
+				break;
+		}
+	}
 
-// Matrix<double> calculate_linear_correlations(void) const method
 
-/// Calculates the linear correlations between all outputs and all inputs.
-/// It returns a matrix with number of rows the targets number and number of columns the inputs number.
-/// Each element contains the linear correlation between a single target and a single output.
+	// const std::string& get_missing_values_label(void) const
 
-Matrix<double> DataSet::calculate_linear_correlations(void) const
-{
-   const size_t inputs_number = variables.count_inputs_number();
-   const size_t targets_number = variables.count_targets_number();
+	/// Returns the string which will be used as label for the missing values in the data file.
 
-   const Vector<size_t> input_indices = variables.arrange_inputs_indices();
-   const Vector<size_t> target_indices = variables.arrange_targets_indices();
+	const std::string& DataSet::get_missing_values_label(void) const
+	{
+		return(missing_values_label);
+	}
 
-   size_t input_index;
-   size_t target_index;
 
-   const size_t instances_number = instances.get_instances_number();
+	// const size_t& get_lags_number(void) const
 
-   const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+	/// Returns the number of lags to be used in a time series prediction application.
 
-   Vector<double> input_variable(instances_number);
-   Vector<double> target_variable(instances_number);
+	const size_t& DataSet::get_lags_number(void) const
+	{
+		return(lags_number);
+	}
 
-   Matrix<double> linear_correlations(inputs_number, targets_number);
 
-   for(size_t i = 0; i < inputs_number; i++)
-   {
-       input_index = input_indices[i];
+	// const size_t& get_steps_ahead(void) const
 
-       input_variable = data.arrange_column(input_index);
+	/// Returns the number of steps ahead to be used in a time series prediction application.
 
-       for(size_t j = 0; j < targets_number; j++)
-       {
-           target_index = target_indices[j];
+	const size_t& DataSet::get_steps_ahead(void) const
+	{
+		return(steps_ahead);
+	}
 
-           target_variable = data.arrange_column(target_index);
 
-//           linear_correlations(i,j) = input_variable.calculate_linear_correlation_missing_values(target_variable, missing_indices[target_index]);
-           linear_correlations(i,j) = input_variable.calculate_linear_correlation(target_variable);
-       }
-   }
+	// const bool& get_autoassociation(void) const
 
-   return(linear_correlations);
-}
+	/// Returns true if the data set will be used for an autoassociation application, and false otherwise.
+	/// In an autoassociation problem the target data is equal to the input data.
 
+	const bool& DataSet::get_autoassociation(void) const
+	{
+		return(autoassociation);
+	}
 
-// Matrix<double> calculate_covariance_matrix(void) const method
 
-/// Returns the covariance matrix for the data set.
-/// The number of rows of the matrix is the number of variables.
-/// The number of columns of the matrix is the number of variables.
+	// const Vector<size_t>& get_angular_variables(void) const method
 
-Matrix<double> DataSet::calculate_covariance_matrix(void) const
-{
-    const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
-    const Vector<size_t> used_instances_indices = instances.arrange_used_indices();
+	/// Returns the indices of the angular variables in the data set.
+	/// When loading a data set with angular variables,
+	/// a transformation of the data will be performed in order to avoid discontinuities (from 359 degrees to 1 degree).
 
-    return (data.arrange_submatrix(used_instances_indices, inputs_indices).calculate_covariance_matrix());
-}
+	const Vector<size_t>& DataSet::get_angular_variables(void) const
+	{
+		return(angular_variables);
+	}
 
 
-// Matrix<double> perform_principal_components_analysis(const double& = 0.0) const mehtod
+	// const AngularUnits& get_angular_units(void) const method
 
-/// Performs the principal components analysis of the inputs.
-/// It returns a matrix containing the principal components arranged in rows.
-/// @param minimum_explained_variance Minimum percentage of variance used to selec a principal component.
+	/// Returns the units used for the angular variables (Radians or Degrees).
 
-Matrix<double> DataSet::perform_principal_components_analysis(const double& minimum_explained_variance)
-{
-    // Scale data
+	const DataSet::AngularUnits& DataSet::get_angular_units(void) const
+	{
+		return(angular_units);
+	}
 
-    data.scale_mean_standard_deviation();
 
-    // Calculate covariance matrix
+	// static ScalingUnscalingMethod get_scaling_unscaling_method(const std::string&) method
 
-    const Matrix<double> covariance_matrix = calculate_covariance_matrix();
+	/// Returns a value of the scaling-unscaling method enumeration from a string containing the name of that method.
+	/// @param scaling_unscaling_method String with the name of the scaling and unscaling method.
 
-    // Calculate mean
+	DataSet::ScalingUnscalingMethod DataSet::get_scaling_unscaling_method(const std::string& scaling_unscaling_method)
+	{
+		if(scaling_unscaling_method == "MinimumMaximum")
+		{
+			return(MinimumMaximum);
+		}
+		else if(scaling_unscaling_method == "MeanStandardDeviation")
+		{
+			return(MeanStandardDeviation);
+		}
+		else
+		{
+			std::ostringstream buffer;
 
-    const Vector< Statistics<double> > input_data_statistics = calculate_inputs_statistics();
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "static ScalingUnscalingMethod get_scaling_unscaling_method(const std::string).\n"
+				<< "Unknown scaling-unscaling method: " << scaling_unscaling_method << ".\n";
 
-    const size_t inputs_number = covariance_matrix.get_columns_number();
+			throw std::logic_error(buffer.str());
+		}
+	}
 
-    Vector<double> inputs_mean(inputs_number);
 
-    for(size_t i = 0; i < inputs_number; i++)
-    {
-        inputs_mean[i] = input_data_statistics[i].mean;
-    }
+	// Matrix<double> arrange_training_data(void) const method
 
-    // Calculate eigenvectors
+	/// Returns a matrix with the training instances in the data set. 
+	/// The number of rows is the number of training instances.
+	/// The number of columns is the number of variables. 
 
-    const Matrix<double> eigenvectors = covariance_matrix.calculate_eigenvectors();
+	Matrix<double> DataSet::arrange_training_data(void) const
+	{
+		const size_t variables_number = variables.get_variables_number();
 
-    // Calculate eigenvalues
+		Vector<size_t> variables_indices(0, 1, (int)variables_number-1);
 
-    const Matrix<double> eigenvalues = covariance_matrix.calculate_eigenvalues();
+		const Vector<size_t> training_indices = instances.arrange_training_indices();
 
-    // Calculate explained variance
+		return(data.arrange_submatrix(training_indices, variables_indices));
+	}
 
-    const Vector<double> explained_variance = eigenvalues.arrange_column(0).calculate_explained_variance();
 
-    // Choose eigenvectors
+	// Matrix<double> arrange_selection_data(void) const method
 
-    Vector<size_t> principal_components_indices;
+	/// Returns a matrix with the selection instances in the data set. 
+	/// The number of rows is the number of selection instances.
+	/// The number of columns is the number of variables. 
 
-    for(size_t i = 0; i < inputs_number; i++)
-    {
-        if(explained_variance[i] > minimum_explained_variance)
-        {
-            principal_components_indices.push_back(i);
-        }
-        else
-        {
-            continue;
-        }
-    }
+	Matrix<double> DataSet::arrange_selection_data(void) const
+	{
+		const size_t variables_number = variables.get_variables_number();
 
-    const size_t principal_components_number = principal_components_indices.size();
+		const Vector<size_t> selection_indices = instances.arrange_selection_indices();
 
-    Matrix<double> feature_matrix(principal_components_number, inputs_number);
+		Vector<size_t> variables_indices(0, 1, (int)variables_number-1);
 
-    for(size_t i = 0; i < principal_components_number; i++)
-    {
-        feature_matrix.set_row(i, eigenvectors.arrange_column(principal_components_indices[i]));
-    }
+		return(data.arrange_submatrix(selection_indices, variables_indices));
+	}
 
-    // Return feature matrix
 
-    return feature_matrix;
-}
+	// Matrix<double> arrange_testing_data(void) const method
 
+	/// Returns a matrix with the testing instances in the data set. 
+	/// The number of rows is the number of testing instances.
+	/// The number of columns is the number of variables. 
 
-// void scale_data_mean_standard_deviation(const Vector< Statistics<double> >&) const method
+	Matrix<double> DataSet::arrange_testing_data(void) const
+	{
+		const size_t variables_number = variables.get_variables_number();
+		Vector<size_t> variables_indices(0, 1, (int)variables_number-1);
 
-/// Scales the data matrix with given mean and standard deviation values.
-/// It updates the data matrix.
-/// @param data_statistics Vector of statistics structures for all the variables in the data set.
-/// The size of that vector must be equal to the number of variables.
+		const Vector<size_t> testing_indices = instances.arrange_testing_indices();
 
-void DataSet::scale_data_mean_standard_deviation(const Vector< Statistics<double> >& data_statistics)
-{
-   // Control sentence (if debug)
+		return(data.arrange_submatrix(testing_indices, variables_indices));
+	}
 
-   #ifdef __OPENNN_DEBUG__
 
-   std::ostringstream buffer;
+	// Matrix<double> arrange_input_data(void) const method
 
-   const size_t columns_number = data.get_columns_number();
+	/// Returns a matrix with the input variables in the data set.
+	/// The number of rows is the number of instances.
+	/// The number of columns is the number of input variables.
 
-   const size_t statistics_size = data_statistics.size();
+	Matrix<double> DataSet::arrange_input_data(void) const
+	{
+		const size_t instances_number = instances.get_instances_number();
+		Vector<size_t> indices(0, 1, (size_t)instances_number-1);
 
-   if(statistics_size != columns_number)
-   {
-      buffer << "OpenNN Exception: DataSet class.\n"
-             << "void scale_data_mean_standard_deviation(const Vector< Statistics<double> >&) method.\n"
-             << "Size of statistics must be equal to number of columns.\n";
+		const Vector<size_t> input_indices = variables.arrange_inputs_indices();
 
-	  throw std::logic_error(buffer.str());
-   }
+		return(data.arrange_submatrix(indices, input_indices));
+	}
 
-   #endif
 
-   const size_t variables_number = variables.get_variables_number();
+	// Matrix<double> arrange_target_data(void) const method
 
-   for(size_t i = 0; i < variables_number; i++)
-   {
-       if(display && data_statistics[i].standard_deviation < 1.0e-99)
-       {
-          std::cout << "OpenNN Warning: DataSet class.\n"
-                    << "void scale_data_mean_standard_deviation(const Vector< Statistics<Type> >&) method.\n"
-                    << "Standard deviation of variable " <<  i << " is zero.\n"
-                    << "That variable won't be scaled.\n";
-        }
-    }
+	/// Returns a matrix with the target variables in the data set.
+	/// The number of rows is the number of instances.
+	/// The number of columns is the number of target variables. 
 
-   data.scale_mean_standard_deviation(data_statistics);
-}
+	Matrix<double> DataSet::arrange_target_data(void) const
+	{
+		const size_t instances_number = instances.get_instances_number();
+		Vector<size_t> indices(0, 1, (size_t)instances_number-1);
 
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
 
-// Vector< Statistics<double> > scale_data_minimum_maximum(void) method
+		return(data.arrange_submatrix(indices, targets_indices));
+	}
 
-/// Scales the data using the minimum and maximum method,
-/// and the minimum and maximum values calculated from the data matrix.
-/// It also returns the statistics from all columns.
 
-Vector< Statistics<double> > DataSet::scale_data_minimum_maximum(void)
-{
-    const Vector< Statistics<double> > data_statistics = calculate_data_statistics();
+	// Matrix<double> arrange_training_input_data(void) const method
 
-    scale_data_minimum_maximum(data_statistics);
+	/// Returns a matrix with training instances and input variables.
+	/// The number of rows is the number of training instances.
+	/// The number of columns is the number of input variables. 
 
-    return(data_statistics);
-}
+	Matrix<double> DataSet::arrange_training_input_data(void) const
+	{
+		const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
 
+		const Vector<size_t> training_indices = instances.arrange_training_indices();
 
-// Vector< Statistics<double> > scale_data_mean_standard_deviation(void) method
+		return(data.arrange_submatrix(training_indices, inputs_indices));
+	}
 
-/// Scales the data using the mean and standard deviation method,
-/// and the mean and standard deviation values calculated from the data matrix.
-/// It also returns the statistics from all columns.
 
-Vector< Statistics<double> > DataSet::scale_data_mean_standard_deviation(void)
-{
-    const Vector< Statistics<double> > data_statistics = calculate_data_statistics();
+	// Matrix<double> arrange_training_target_data(void) const method
 
-    scale_data_mean_standard_deviation(data_statistics);
+	/// Returns a matrix with training instances and target variables.
+	/// The number of rows is the number of training instances.
+	/// The number of columns is the number of target variables. 
 
-    return(data_statistics);
-}
+	Matrix<double> DataSet::arrange_training_target_data(void) const 
+	{
+		const Vector<size_t> training_indices = instances.arrange_training_indices();
 
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
 
-// void scale_data_minimum_maximum(const Vector< Statistics<double> >&) method
+		return(data.arrange_submatrix(training_indices, targets_indices));
+	}
 
-/// Scales the data matrix with given minimum and maximum values.
-/// It updates the data matrix.
-/// @param data_statistics Vector of statistics structures for all the variables in the data set.
-/// The size of that vector must be equal to the number of variables.
 
-void DataSet::scale_data_minimum_maximum(const Vector< Statistics<double> >& data_statistics)
-{
-    const size_t variables_number = variables.get_variables_number();
+	// Matrix<double> get_selection_input_data(void) const method
 
-   // Control sentence (if debug)
+	/// Returns a matrix with selection instances and input variables.
+	/// The number of rows is the number of selection instances.
+	/// The number of columns is the number of input variables. 
 
-   #ifdef __OPENNN_DEBUG__
+	Matrix<double> DataSet::get_selection_input_data(void) const
+	{
+		const Vector<size_t> selection_indices = instances.arrange_selection_indices();
 
-   std::ostringstream buffer;
+		const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
 
-   const size_t statistics_size = data_statistics.size();
+		return(data.arrange_submatrix(selection_indices, inputs_indices));
+	}
 
-   if(statistics_size != variables_number)
-   {
-      buffer << "OpenNN Exception: DataSet class.\n"
-             << "void scale_data_minimum_maximum(const Vector< Statistics<double> >&) method.\n"
-             << "Size of data statistics must be equal to number of variables.\n";
 
-	  throw std::logic_error(buffer.str());
-   }
+	// Matrix<double> get_selection_target_data(void) const method
 
-   #endif
+	/// Returns a matrix with selection instances and target variables.
+	/// The number of rows is the number of selection instances.
+	/// The number of columns is the number of target variables. 
 
-   for(size_t i = 0; i < variables_number; i++)
-   {
-       if(display && data_statistics[i].maximum-data_statistics[i].minimum < 1.0e-99)
-       {
-          std::cout << "OpenNN Warning: DataSet class.\n"
-                    << "void scale_data_minimum_maximum(const Vector< Statistics<Type> >&) method.\n"
-                    << "Range of variable " <<  i << " is zero.\n"
-                    << "That variable won't be scaled.\n";
-        }
-    }
+	Matrix<double> DataSet::get_selection_target_data(void) const
+	{
+		const Vector<size_t> selection_indices = instances.arrange_selection_indices();
 
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
 
-   data.scale_minimum_maximum(data_statistics);
-}
+		return(data.arrange_submatrix(selection_indices, targets_indices));
+	}
 
 
-// void scale_data(const std::string&, const Vector< Statistics<double> >&) method
+	// Matrix<double> arrange_testing_input_data(void) const method
 
-/// Scales the data matrix.
-/// The method to be used is that in the scaling and unscaling method variable. 
-/// @param scaling_unscaling_method_string String with the name of the scaling-unscaling method
-/// (MinimumMaximum or MeanStandardDeviation).
-/// @param data_statistics Vector of statistics structures for all the variables in the data set.
-/// The size of that vector must be equal to the number of variables.
-/*
-void DataSet::scale_data(const std::string& scaling_unscaling_method_string, const Vector< Statistics<double> >& data_statistics)
-{
-   switch(get_scaling_unscaling_method(scaling_unscaling_method_string))
-   {
-      case MinimumMaximum:
-      {
-         scale_data_minimum_maximum(data_statistics);
-      }            
-      break;
+	/// Returns a matrix with testing instances and input variables.
+	/// The number of rows is the number of testing instances.
+	/// The number of columns is the number of input variables. 
 
-      case MeanStandardDeviation:
-      {
-         scale_data_mean_standard_deviation(data_statistics);
-      }
-      break;
+	Matrix<double> DataSet::arrange_testing_input_data(void) const
+	{
+		const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
 
-      default:
-      {
-         std::ostringstream buffer;
+		const Vector<size_t> testing_indices = instances.arrange_testing_indices();
 
-         buffer << "OpenNN Exception: DataSet class\n"
-                << "void scale_data(const std::string&, const Vector< Vector<double> >&) method.\n"
-                << "Unknown data scaling and unscaling method.\n";
+		return(data.arrange_submatrix(testing_indices, inputs_indices));
+	}
 
-	     throw std::logic_error(buffer.str());
-      }
-      break;
-   }
-}
 
+	// Matrix<double> arrange_testing_target_data(void) const method
 
-// Vector< Statistics<double> > scale_data(void) method
+	/// Returns a matrix with testing instances and target variables.
+	/// The number of rows is the number of testing instances.
+	/// The number of columns is the number of target variables. 
 
-/// Calculates the data statistics, scales the data with that values and returns the statistics. 
-/// The method to be used is that in the scaling and unscaling method variable. 
+	Matrix<double> DataSet::arrange_testing_target_data(void) const
+	{
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
 
-Vector< Statistics<double> > DataSet::scale_data(const std::string& scaling_unscaling_method)
-{
-   const Vector< Statistics<double> > statistics = data.calculate_statistics();
+		const Vector<size_t> testing_indices = instances.arrange_testing_indices();
 
-   switch(get_scaling_unscaling_method(scaling_unscaling_method))
-   {
-      case MinimumMaximum:
-      {
-         scale_data_minimum_maximum(statistics);
-      }            
-      break;
+		return(data.arrange_submatrix(testing_indices, targets_indices));
+	}
 
-      case MeanStandardDeviation:
-      {
-         scale_data_mean_standard_deviation(statistics);
-      }
-      break;
 
-      default:
-      {
-         std::ostringstream buffer;
+	// Vector<double> get_instance(const size_t&) const method
 
-         buffer << "OpenNN Exception: DataSet class\n"
-                << "Vector< Statistics<double> > scale_data(const std::string&) method.\n"
-                << "Unknown scaling and unscaling method.\n";
+	/// Returns the inputs and target values of a single instance in the data set. 
+	/// @param i Index of the instance. 
 
-	     throw std::logic_error(buffer.str());
-      }
-      break;
-   }
+	Vector<double> DataSet::get_instance(const size_t& i) const
+	{
+		// Control sentence (if debug)
 
-   return(statistics);
-}
-*/
+#ifdef __OPENNN_DEBUG__
 
-// void scale_inputs_mean_standard_deviation(const Vector< Statistics<double> >&) method
+		const size_t instances_number = instances.get_instances_number();
 
-/// Scales the input variables with given mean and standard deviation values.
-/// It updates the input variables of the data matrix.
-/// @param inputs_statistics Vector of statistics structures for the input variables.
-/// The size of that vector must be equal to the number of inputs.
+		if(i >= instances_number)
+		{
+			std::ostringstream buffer;
 
-void DataSet::scale_inputs_mean_standard_deviation(const Vector< Statistics<double> >& inputs_statistics)
-{
-    const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "Vector<double> get_instance(const size_t&) const method.\n"
+				<< "Index of instance must be less than number of instances.\n";
 
-    data.scale_columns_mean_standard_deviation(inputs_statistics, inputs_indices);
-}
+			throw std::logic_error(buffer.str());
+		}
 
+#endif
 
-// Vector< Statistics<double> > scale_inputs_mean_standard_deviation(void) method
+		// Get instance
 
-/// Scales the input variables with the calculated mean and standard deviation values from the data matrix.
-/// It updates the input variables of the data matrix.
-/// It also returns a vector of vectors with the variables statistics. 
+		return(data.arrange_row(i));
+	}
 
-Vector< Statistics<double> > DataSet::scale_inputs_mean_standard_deviation(void)
-{
-    // Control sentence (if debug)
 
-    #ifdef __OPENNN_DEBUG__
+	// Vector<double> get_instance(const size_t&, const Vector<size_t>&) const method
 
-    if(data.empty())
-    {
-       std::ostringstream buffer;
+	/// Returns the inputs and target values of a single instance in the data set.
+	/// @param instance_index Index of the instance.
+	/// @param variables_indices Indices of the variables.
 
-       buffer << "OpenNN Exception: DataSet class.\n"
-              << "Vector< Statistics<double> > scale_inputs_mean_standard_deviation(void) method.\n"
-              << "Data file is not loaded.\n";
+	Vector<double> DataSet::get_instance(const size_t& instance_index, const Vector<size_t>& variables_indices) const
+	{
+		// Control sentence (if debug)
 
-       throw std::logic_error(buffer.str());
-    }
+#ifdef __OPENNN_DEBUG__
 
-    #endif
+		const size_t instances_number = instances.get_instances_number();
 
-   const Vector< Statistics<double> > inputs_statistics = calculate_inputs_statistics();
+		if(instance_index >= instances_number)
+		{
+			std::ostringstream buffer;
 
-   scale_inputs_mean_standard_deviation(inputs_statistics);
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "Vector<double> get_instance(const size_t&, const Vector<size_t>&) const method.\n"
+				<< "Index of instance must be less than number of instances.\n";
 
-   return(inputs_statistics);
-}
+			throw std::logic_error(buffer.str());
+		}
 
+#endif
 
-// void scale_inputs_minimum_maximum(const Vector< Statistics<double> >&) method
+		// Get instance
 
-/// Scales the input variables with given minimum and maximum values.
-/// It updates the input variables of the data matrix.
-/// @param inputs_statistics Vector of statistics structures for all the inputs in the data set.
-/// The size of that vector must be equal to the number of input variables.
+		return(data.arrange_row(instance_index, variables_indices));
+	}
 
-void DataSet::scale_inputs_minimum_maximum(const Vector< Statistics<double> >& inputs_statistics)
-{
-    const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
 
-    data.scale_columns_minimum_maximum(inputs_statistics, inputs_indices);
-}
+	// Vector<double> get_variable(const size_t&) const method
 
+	/// Returns all the instances of a single variable in the data set. 
+	/// @param i Index of the variable. 
 
-// Vector< Statistics<double> > scale_inputs_minimum_maximum(void) method
+	Vector<double> DataSet::get_variable(const size_t& i) const
+	{
+		// Control sentence (if debug)
 
-/// Scales the input variables with the calculated minimum and maximum values from the data matrix.
-/// It updates the input variables of the data matrix.
-/// It also returns a vector of vectors with the minimum and maximum values of the input variables. 
+#ifdef __OPENNN_DEBUG__
 
-Vector< Statistics<double> > DataSet::scale_inputs_minimum_maximum(void)
-{
-    // Control sentence (if debug)
+		const size_t variables_number = variables.get_variables_number();
 
-    #ifdef __OPENNN_DEBUG__
+		if(i >= variables_number)
+		{
+			std::ostringstream buffer;
 
-    if(data.empty())
-    {
-       std::ostringstream buffer;
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "Vector<double> get_variable(const size_t&) const method.\n"
+				<< "Index of variable must be less than number of instances.\n";
 
-       buffer << "OpenNN Exception: DataSet class.\n"
-              << "Vector< Statistics<double> > scale_inputs_minimum_maximum(void) method.\n"
-              << "Data file is not loaded.\n";
+			throw std::logic_error(buffer.str());
+		}
 
-       throw std::logic_error(buffer.str());
-    }
+#endif
 
-    #endif
+		// Get variable
 
-   const Vector< Statistics<double> > inputs_statistics = calculate_inputs_statistics();
+		return(data.arrange_column(i));
+	}
 
-   scale_inputs_minimum_maximum(inputs_statistics);
 
-   return(inputs_statistics);
-}
+	// Vector<double> get_variable(const size_t&, const Vector<size_t>&) const method
 
+	/// Returns a given set of instances of a single variable in the data set.
+	/// @param variable_index Index of the variable.
+	/// @param instances_indices Indices of the instances.
 
-// Vector< Vector<double> > scale_inputs(const std::string&) method
+	Vector<double> DataSet::get_variable(const size_t& variable_index, const Vector<size_t>& instances_indices) const
+	{
+		// Control sentence (if debug)
 
-/// Calculates the input and target variables statistics. 
-/// Then it scales the input variables with that values.
-/// The method to be used is that in the scaling and unscaling method variable. 
-/// Finally, it returns the statistics. 
+#ifdef __OPENNN_DEBUG__
 
-Vector< Statistics<double> > DataSet::scale_inputs(const std::string& scaling_unscaling_method)
-{
-    switch(get_scaling_unscaling_method(scaling_unscaling_method))
-   {
-      case MinimumMaximum:
-      {
-         return(scale_inputs_minimum_maximum());
-      }            
-      break;
+		const size_t variables_number = variables.get_variables_number();
 
-      case MeanStandardDeviation:
-      {
-         return(scale_inputs_mean_standard_deviation());
-      }
-      break;
+		if(variable_index >= variables_number)
+		{
+			std::ostringstream buffer;
 
-      default:
-      {
-         std::ostringstream buffer;
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "Vector<double> get_variable(const size_t&, const Vector<double>&) const method.\n"
+				<< "Index of variable must be less than number of instances.\n";
 
-         buffer << "OpenNN Exception: DataSet class\n"
-                << "Vector< Statistics<double> > scale_inputs(void) method.\n"
-                << "Unknown scaling and unscaling method.\n";
+			throw std::logic_error(buffer.str());
+		}
 
-	     throw std::logic_error(buffer.str());
-      }
-      break;
-   }
-}
+#endif
 
+		// Get variable
 
-// void scale_inputs(const std::string&, const Vector< Statistics<double> >&) method
+		return(data.arrange_column(variable_index, instances_indices));
+	}
 
-/// Calculates the input and target variables statistics.
-/// Then it scales the input variables with that values.
-/// The method to be used is that in the scaling and unscaling method variable.
 
-void DataSet::scale_inputs(const std::string& scaling_unscaling_method, const Vector< Statistics<double> >& inputs_statistics)
-{
-   switch(get_scaling_unscaling_method(scaling_unscaling_method))
-   {
-      case MinimumMaximum:
-      {
-         scale_inputs_minimum_maximum(inputs_statistics);
-      }
-      break;
+	// void set(void) method
 
-      case MeanStandardDeviation:
-      {
-         scale_inputs_mean_standard_deviation(inputs_statistics);
-      }
-      break;
+	/// Sets zero instances and zero variables in the data set. 
 
-      default:
-      {
-         std::ostringstream buffer;
+	void DataSet::set(void)
+	{
+		data_file_name = "";
 
-         buffer << "OpenNN Exception: DataSet class\n"
-                << "void scale_inputs(const std::string&, const Vector< Statistics<double> >&) method.\n"
-                << "Unknown scaling and unscaling method.\n";
+		data.set();
 
-         throw std::logic_error(buffer.str());
-      }
-      break;
-   }
-}
+		variables.set();
+		instances.set();
 
+		missing_values.set();
 
-// void scale_targets_mean_standard_deviation(const Vector< Statistics<double> >&)
+		display = true;
 
-/// Scales the target variables with given mean and standard deviation values.
-/// It updates the target variables of the data matrix.
-/// @param targets_statistics Vector of statistics structures for all the targets in the data set.
-/// The size of that vector must be equal to the number of target variables.
+		file_type = DAT;
+	}
 
-void DataSet::scale_targets_mean_standard_deviation(const Vector< Statistics<double> >& targets_statistics)
-{
-    const Vector<size_t> targets_indices = variables.arrange_targets_indices();
 
-    data.scale_columns_mean_standard_deviation(targets_statistics, targets_indices);
-}
+	// void set(const Matrix<double>&) method
 
+	/// Sets all variables from a data matrix.
+	/// @param new_data Data matrix.
 
-// Vector< Statistics<double> > scale_targets_mean_standard_deviation(void) method
+	void DataSet::set(const Matrix<double>& new_data)
+	{
+		data_file_name = "";
 
-/// Scales the target variables with the calculated mean and standard deviation values from the data matrix.
-/// It updates the target variables of the data matrix.
-/// It also returns a vector of statistics structures with the basic statistics of all the variables.
+		const size_t variables_number = new_data.get_columns_number();
+		const size_t instances_number = new_data.get_rows_number();
 
-Vector< Statistics<double> > DataSet::scale_targets_mean_standard_deviation(void)
-{    
-    // Control sentence (if debug)
+		set(instances_number, variables_number);
 
-    #ifdef __OPENNN_DEBUG__
+		data = new_data;
 
-    if(data.empty())
-    {
-       std::ostringstream buffer;
+		display = true;
 
-       buffer << "OpenNN Exception: DataSet class.\n"
-              << "Vector< Statistics<double> > scale_targets_mean_standard_deviation(void) method.\n"
-              << "Data file is not loaded.\n";
+		file_type = DAT;
+	}
 
-       throw std::logic_error(buffer.str());
-    }
 
-    #endif
+	// void set(const size_t&, const size_t&) method
 
-   const Vector< Statistics<double> > targets_statistics = calculate_targets_statistics();
+	/// Sets new numbers of instances and variables in the inputs targets data set. 
+	/// All the instances are set for training. 
+	/// All the variables are set as inputs. 
+	/// @param new_instances_number Number of instances.
+	/// @param new_variables_number Number of variables.
 
-   scale_targets_mean_standard_deviation(targets_statistics);
+	void DataSet::set(const size_t& new_instances_number, const size_t& new_variables_number)
+	{
+		// Control sentence (if debug)
 
-   return(targets_statistics);
-}
+#ifdef __OPENNN_DEBUG__
 
+		if(new_instances_number == 0)
+		{
+			std::ostringstream buffer;
 
-// void scale_targets_minimum_maximum(const Vector< Statistics<double> >&) method
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void set(const size_t&, const size_t&) method.\n"
+				<< "Number of instances must be greater than zero.\n";
 
-/// Scales the target variables with given minimum and maximum values.
-/// It updates the target variables of the data matrix.
-/// @param targets_statistics Vector of statistics structures for all the targets in the data set.
-/// The size of that vector must be equal to the number of target variables.
+			throw std::logic_error(buffer.str());
+		}
 
-void DataSet::scale_targets_minimum_maximum(const Vector< Statistics<double> >& targets_statistics)
-{
-    // Control sentence (if debug)
+		if(new_variables_number == 0)
+		{
+			std::ostringstream buffer;
 
-    #ifdef __OPENNN_DEBUG__
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void set(const size_t&, const size_t&) method.\n"
+				<< "Number of variables must be greater than zero.\n";
 
-    if(data.empty())
-    {
-       std::ostringstream buffer;
+			throw std::logic_error(buffer.str());
+		}
 
-       buffer << "OpenNN Exception: DataSet class.\n"
-              << "Vector< Statistics<double> > scale_targets_minimum_maximum(void) method.\n"
-              << "Data file is not loaded.\n";
+#endif
 
-       throw std::logic_error(buffer.str());
-    }
+		data.set(new_instances_number, new_variables_number);
 
-    #endif
+		instances.set(new_instances_number);
 
-    const Vector<size_t> targets_indices = variables.arrange_targets_indices();
+		variables.set(new_variables_number);
 
-    data.scale_columns_minimum_maximum(targets_statistics, targets_indices);
-}
+		missing_values.set(new_instances_number, new_variables_number);
 
+		display = true;
 
-// Vector< Statistics<double> > scale_targets_minimum_maximum(void) method
+		file_type = DAT;
+	}
 
-/// Scales the target variables with the calculated minimum and maximum values from the data matrix.
-/// It updates the target variables of the data matrix.
-/// It also returns a vector of vectors with the statistics of the input target variables. 
 
-Vector< Statistics<double> > DataSet::scale_targets_minimum_maximum(void)
-{
-   const Vector< Statistics<double> > targets_statistics = calculate_targets_statistics();
+	// void set(const size_t&, const size_t&, const size_t&) method
 
-   scale_targets_minimum_maximum(targets_statistics);
+	/// Sets new numbers of instances and inputs and target variables in the data set.
+	/// The variables in the data set are the number of inputs plus the number of targets. 
+	/// @param new_instances_number Number of instances.
+	/// @param new_inputs_number Number of input variables.
+	/// @param new_targets_number Number of target variables.
 
-   return(targets_statistics);
-}
+	void DataSet::set(const size_t& new_instances_number, const size_t& new_inputs_number, const size_t& new_targets_number)
+	{   
+		data_file_name = "";
 
+		const size_t new_variables_number = new_inputs_number + new_targets_number;
 
-// Vector< Statistics<double> > scale_targets(const std::string&) method
+		data.set(new_instances_number, new_variables_number);
 
-/// Calculates the input and target variables statistics. 
-/// Then it scales the target variables with that values.
-/// The method to be used is that in the scaling and unscaling method variable. 
-/// Finally, it returns the statistics. 
+		variables.set(new_inputs_number, new_targets_number);
 
-Vector< Statistics<double> > DataSet::scale_targets(const std::string& scaling_unscaling_method)
-{
-    switch(get_scaling_unscaling_method(scaling_unscaling_method))
-   {
-      case MinimumMaximum:
-      {
-         return(scale_targets_minimum_maximum());
-      }            
-      break;
+		instances.set(new_instances_number);
 
-      case MeanStandardDeviation:
-      {
-         return(scale_targets_mean_standard_deviation());
-      }
-      break;
+		missing_values.set(new_instances_number, new_variables_number);
 
-      default:
-      {
-         std::ostringstream buffer;
+		display = true;
 
-         buffer << "OpenNN Exception: DataSet class\n"
-                << "Vector< Statistics<double> > scale_targets(const std::string&) method.\n"
-                << "Unknown scaling and unscaling method.\n";
+		file_type = DAT;
+	}
 
-	     throw std::logic_error(buffer.str());
-      }
-      break;
-   }
-}
 
+	// void set(const DataSet& other_data_set)
 
-// void scale_targets(const std::string&, const Vector< Statistics<double> >&) method
+	/// Sets the members of this data set object with those from another data set object. 
+	/// @param other_data_set Data set object to be copied. 
 
-/// It scales the input variables with that values.
-/// The method to be used is that in the scaling and unscaling method variable.
+	void DataSet::set(const DataSet& other_data_set)
+	{
+		data_file_name = other_data_set.data_file_name;
 
-void DataSet::scale_targets(const std::string& scaling_unscaling_method, const Vector< Statistics<double> >& targets_statistics)
-{
-   switch(get_scaling_unscaling_method(scaling_unscaling_method))
-   {
-      case MinimumMaximum:
-      {
-         scale_targets_minimum_maximum(targets_statistics);
-      }
-      break;
+		header_line = other_data_set.header_line;
 
-      case MeanStandardDeviation:
-      {
-         scale_targets_mean_standard_deviation(targets_statistics);
-      }
-      break;
+		separator = other_data_set.separator;
 
-      default:
-      {
-         std::ostringstream buffer;
+		missing_values_label = other_data_set.missing_values_label;
 
-         buffer << "OpenNN Exception: DataSet class\n"
-                << "void scale_targets(const std::string&, const Vector< Statistics<double> >&) method.\n"
-                << "Unknown scaling and unscaling method.\n";
+		data = other_data_set.data;
 
-         throw std::logic_error(buffer.str());
-      }
-      break;
-   }
-}
+		variables = other_data_set.variables;
 
+		instances = other_data_set.instances;
 
-// void unscale_data_mean_standard_deviation(const Vector< Statistics<double> >&) method
+		missing_values = other_data_set.missing_values;
 
-/// Unscales the data matrix with given mean and standard deviation values.
-/// It updates the data matrix.
-/// @param data_statistics Vector of statistics structures for all the variables in the data set.
-/// The size of that vector must be equal to the number of variables.
+		display = other_data_set.display;
 
-void DataSet::unscale_data_mean_standard_deviation(const Vector< Statistics<double> >& data_statistics)
-{
-   data.unscale_mean_standard_deviation(data_statistics);
-}
+		file_type = other_data_set.file_type;
+	}
 
 
-// void unscale_data_minimum_maximum(const Vector< Statistics<double> >&) method
+	// void set(const tinyxml2::XMLDocument&) method
 
-/// Unscales the data matrix with given minimum and maximum values.
-/// It updates the data matrix.
-/// @param data_statistics Vector of statistics structures for all the variables in the data set.
-/// The size of that vector must be equal to the number of variables.
+	/// Sets the data set members from a XML document.
+	/// @param data_set_document TinyXML document containing the member data.
 
-void DataSet::unscale_data_minimum_maximum(const Vector< Statistics<double> >& data_statistics)
-{
-   data.unscale_minimum_maximum(data_statistics);
-}
+	void DataSet::set(const tinyxml2::XMLDocument& data_set_document)
+	{
+		set_default();
 
+		from_XML(data_set_document);
+	}
 
-// void unscale_inputs_mean_standard_deviation(const Vector< Statistics<double> >&) method
 
-/// Unscales the input variables with given mean and standard deviation values.
-/// It updates the input variables of the data matrix.
-/// @param data_statistics Vector of statistics structures for all the variables in the data set.
-/// The size of that vector must be equal to the number of variables.
+	// void set(const std::string&) method
 
-void DataSet::unscale_inputs_mean_standard_deviation(const Vector< Statistics<double> >& data_statistics)
-{
-    const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
+	/// Sets the data set members by loading them from a XML file. 
+	/// @param file_name Data set XML file_name.
 
-    data.unscale_columns_mean_standard_deviation(data_statistics, inputs_indices);
-}
+	void DataSet::set(const std::string& file_name)
+	{
+		load(file_name);
+	}
 
 
-// void unscale_inputs_minimum_maximum(const Vector< Statistics<double> >&) method
+	// void set_display(const bool&) method
 
-/// Unscales the input variables with given minimum and maximum values.
-/// It updates the input variables of the data matrix.
-/// @param data_statistics Vector of statistics structures for all the data in the data set.
-/// The size of that vector must be equal to the number of variables.
+	/// Sets a new display value. 
+	/// If it is set to true messages from this class are to be displayed on the screen;
+	/// if it is set to false messages from this class are not to be displayed on the screen.
+	/// @param new_display Display value.
 
-void DataSet::unscale_inputs_minimum_maximum(const Vector< Statistics<double> >& data_statistics)
-{
-    const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
+	void DataSet::set_display(const bool& new_display)
+	{
+		display = new_display;
+	}
 
-    data.unscale_columns_minimum_maximum(data_statistics, inputs_indices);
-}
 
+	// void set_default(void) method
 
-// void unscale_targets_mean_standard_deviation(const Vector< Statistics<double> >&) method
+	/// Sets the default member values:
+	/// <ul>
+	/// <li> Display: True.
+	/// </ul>
 
-/// Unscales the target variables with given mean and standard deviation values.
-/// It updates the target variables of the data matrix.
-/// @param data_statistics Vector of statistics structures for all the variables in the data set.
-/// The size of that vector must be equal to the number of variables.
+	void DataSet::set_default(void)
+	{
+		header_line = false;
 
-void DataSet::unscale_targets_mean_standard_deviation(const Vector< Statistics<double> >& data_statistics)
-{
-    const Vector<size_t> targets_indices = variables.arrange_targets_indices();
+		separator = Space;
 
-    data.unscale_columns_mean_standard_deviation(data_statistics, targets_indices);
-}
+		missing_values_label = "?";
 
+		lags_number = 0;
 
-// void unscale_targets_minimum_maximum(const Vector< Statistics<double> >&) method
+		steps_ahead = 0;
 
-/// Unscales the target variables with given minimum and maximum values.
-/// It updates the target variables of the data matrix.
-/// @param data_statistics Vector of statistics structures for all the variables.
-/// The size of that vector must be equal to the number of variables.
+		autoassociation = false;
 
-void DataSet::unscale_targets_minimum_maximum(const Vector< Statistics<double> >& data_statistics)
-{
-    const Vector<size_t> targets_indices = variables.arrange_targets_indices();
+		angular_units = Degrees;
 
-    data.unscale_columns_minimum_maximum(data_statistics, targets_indices);
-}
+		display = true;
 
+		file_type = DAT;
 
-// void initialize_data(const double& value) method
+		sheet_number = 1;
+	}
 
-/// Initializes the data matrix with a given value.
-/// @param new_value Initialization value. 
 
-void DataSet::initialize_data(const double& new_value)
-{
-   data.initialize(new_value);
-}
+	// void set_data(const Matrix<double>&) method
 
+	/// Sets a new data matrix. 
+	/// The number of rows must be equal to the number of instances.
+	/// The number of columns must be equal to the number of variables. 
+	/// Indices of all training, selection and testing instances and inputs and target variables do not change.
+	/// @param new_data Data matrix.
 
-// void randomize_data_uniform(const double&, const double&) method
+	void DataSet::set_data(const Matrix<double>& new_data)
+	{
+		// Control sentence (if debug)
 
-/// Initializes the data matrix with random values chosen from a uniform distribution
-/// with given minimum and maximum.
+#ifdef __OPENNN_DEBUG__
 
-void DataSet::randomize_data_uniform(const double& minimum, const double& maximum)
-{
-   data.randomize_uniform(minimum, maximum);
-}
+		const size_t rows_number = new_data.get_rows_number();
+		const size_t instances_number = instances.get_instances_number();
 
+		if(rows_number != instances_number)
+		{
+			std::ostringstream buffer;
 
-// void randomize_data_normal(const double&, const double&) method
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void set_data(const Matrix<double>&) method.\n"
+				<< "Number of rows (" << rows_number << ") must be equal to number of instances (" << instances_number << ").\n";
 
-/// Initializes the data matrix with random values chosen from a normal distribution
-/// with given mean and standard deviation.
+			throw std::logic_error(buffer.str());
+		}
 
-void DataSet::randomize_data_normal(const double& mean, const double& standard_deviation)
-{
-   data.randomize_normal(mean, standard_deviation);
-}
+		const size_t columns_number = new_data.get_columns_number();
+		const size_t variables_number = variables.get_variables_number();
 
+		if(columns_number != variables_number)
+		{
+			std::ostringstream buffer;
 
-// tinyxml2::XMLDocument* to_XML(void) const method
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void set_data(const Matrix<double>&) method.\n"
+				<< "Number of columns (" << columns_number << ") must be equal to number of variables (" << variables_number << ").\n";
 
-/// Serializes the data set object into a XML document of the TinyXML library. 
+			throw std::logic_error(buffer.str());
+		}
 
-tinyxml2::XMLDocument* DataSet::to_XML(void) const
-{
-   tinyxml2::XMLDocument* document = new tinyxml2::XMLDocument;
+#endif
 
-   std::ostringstream buffer;
+		// Set data
 
-   // Data set
+		data = new_data;   
 
-   tinyxml2::XMLElement* data_set_element = document->NewElement("DataSet");
-   document->InsertFirstChild(data_set_element);
+		instances.set_instances_number(data.get_rows_number());
+		variables.set_variables_number(data.get_columns_number());
 
-   tinyxml2::XMLElement* element = NULL;
-   tinyxml2::XMLText* text = NULL;
+	}
 
-   // Data file
 
-   tinyxml2::XMLElement* data_file_element = document->NewElement("DataFile");
+	// void set_data_file_name(const std::string&) method
 
-   data_set_element->InsertFirstChild(data_file_element);
+	/// Sets the name of the data file.
+	/// It also loads the data from that file. 
+	/// Moreover, it sets the variables and instances objects. 
+	/// @param new_data_file_name Name of the file containing the data.
 
-   // File type
-   {
-       element = document->NewElement("FileType");
-       data_file_element->LinkEndChild(element);
+	void DataSet::set_data_file_name(const std::string& new_data_file_name)
+	{   
+		data_file_name = new_data_file_name;
+	}
 
-       text = document->NewText(write_file_type().c_str());
-       element->LinkEndChild(text);
-   }
 
-   //First cell
-   {
-       element = document->NewElement("FirstCell");
-       data_file_element->LinkEndChild(element);
+	// void set_file_type(const FileType&) method
 
-       text = document->NewText(write_first_cell().c_str());
-       element->LinkEndChild(text);
-   }
+	/// Sets the file type.
 
-   //Last cell
-   {
-       element = document->NewElement("LastCell");
-       data_file_element->LinkEndChild(element);
+	void DataSet::set_file_type(const DataSet::FileType& new_file_type)
+	{
+		file_type = new_file_type;
+	}
 
-       text = document->NewText(write_last_cell().c_str());
-       element->LinkEndChild(text);
-   }
 
-   //Sheet number
-   {
-       element = document->NewElement("SheetNumber");
-       data_file_element->LinkEndChild(element);
+	// void set_file_type(const std::string&) method
 
-       buffer.str("");
-       buffer << write_sheet_number();
+	/// Sets the file type from a string
 
-       text = document->NewText(buffer.str().c_str());
-       element->LinkEndChild(text);
-   }
+	void DataSet::set_file_type(const std::string& new_file_type)
+	{
+		if(new_file_type == "txt")
+		{
+			file_type = TXT;
+		}
+		else if(new_file_type == "dat")
+		{
+			file_type = DAT;
+		}
+		else if(new_file_type == "csv")
+		{
+			file_type = CSV;
+		}
+		else if(new_file_type == "ods")
+		{
+			file_type = ODS;
+		}
+		else if(new_file_type == "xlsx")
+		{
+			file_type = XLSX;
+		}
+		else if(new_file_type == "arff")
+		{
+			file_type = ARFF;
+		}
+		else
+		{
+			std::ostringstream buffer;
 
-   // Lags Number
-   {
-       element = document->NewElement("LagsNumber");
-       data_file_element->LinkEndChild(element);
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void set_file_type(const std::string&) method.\n"
+				<< "Unknown file type.";
 
-       const size_t lags_number = get_lags_number();
+			throw std::logic_error(buffer.str());
+		}
+	}
 
-       buffer.str("");
-       buffer << lags_number;
 
-       text = document->NewText(buffer.str().c_str());
-       element->LinkEndChild(text);
-   }
+	// void set_header_line(const bool&) method
 
-   // Steps Ahead
-   {
-       element = document->NewElement("StepsAhead");
-       data_file_element->LinkEndChild(element);
+	/// Sets if the data file contains a header with the names of the variables.
 
-       const size_t steps_ahead = get_steps_ahead();
+	void DataSet::set_header_line(const bool& new_header_line)
+	{
+		header_line = new_header_line;
+	}
 
-       buffer.str("");
-       buffer << steps_ahead;
 
-       text = document->NewText(buffer.str().c_str());
-       element->LinkEndChild(text);
-   }
+	// void set_rows_label(const bool&) method
 
-   // Header line
-   {
-      element = document->NewElement("ColumnsName");
-      data_file_element->LinkEndChild(element);
+	/// Sets if the data file contains rows label.
 
-      buffer.str("");
-      buffer << header_line;
+	void DataSet::set_rows_label(const bool& new_rows_label)
+	{
+		rows_label = new_rows_label;
+	}
 
-      text = document->NewText(buffer.str().c_str());
-      element->LinkEndChild(text);
-   }
 
-   // Rows label
-   {
-      element = document->NewElement("RowsLabel");
-      data_file_element->LinkEndChild(element);
+	// void set_separator(const Separator&) method
 
-      buffer.str("");
-      buffer << rows_label;
+	/// Sets a new separator.
+	/// @param new_separator Separator value.
 
-      text = document->NewText(buffer.str().c_str());
-      element->LinkEndChild(text);
-   }
+	void DataSet::set_separator(const Separator& new_separator)
+	{
+		separator = new_separator;
+	}
 
-   // Separator
-   {
-      element = document->NewElement("Separator");
-      data_file_element->LinkEndChild(element);
 
-      text = document->NewText(write_separator().c_str());
-      element->LinkEndChild(text);
-   }
+	// void set_separator(const std::string&) method
 
-   // Missing values label
-   {
-      element = document->NewElement("MissingValuesLabel");
-      data_file_element->LinkEndChild(element);
+	/// Sets a new separator from a string.
+	/// @param new_separator String with the separator value.
 
-      text = document->NewText(missing_values_label.c_str());
-      element->LinkEndChild(text);
-   }
+	void DataSet::set_separator(const std::string& new_separator)
+	{
+		if(new_separator == "Space")
+		{
+			separator = Space;
+		}
+		else if(new_separator == "Tab")
+		{
+			separator = Tab;
+		}
+		else if(new_separator == "Comma")
+		{
+			separator = Comma;
+		}
+		else if(new_separator == "Semicolon")
+		{
+			separator = Semicolon;
+		}
+		else
+		{
+			std::ostringstream buffer;
 
-   // Data file name
-   {
-      element = document->NewElement("DataFileName");
-      data_file_element->LinkEndChild(element);
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void set_separator(const std::string&) method.\n"
+				<< "Unknown separator: " << new_separator << ".\n";
 
-      text = document->NewText(data_file_name.c_str());
-      element->LinkEndChild(text);
-   }
+			throw std::logic_error(buffer.str());
+		}
+	}
 
-   // Variables 
-   {
-      element = document->NewElement("Variables");
-      data_set_element->LinkEndChild(element);
 
-      const tinyxml2::XMLDocument* variables_document = variables.to_XML();
+	// void set_missing_values_label(const std::string&) method
 
-      const tinyxml2::XMLElement* variables_element = variables_document->FirstChildElement("Variables");
+	/// Sets a new label for the missing values.
+	/// @param new_missing_values_label Label for the missing values.
 
-      DeepClone(element, variables_element, document, NULL);
+	void DataSet::set_missing_values_label(const std::string& new_missing_values_label)
+	{
+		// Control sentence (if debug)
 
-      delete variables_document;
-   }
+#ifdef __OPENNN_DEBUG__
 
-   // Instances
-   {
-       element = document->NewElement("Instances");
-       data_set_element->LinkEndChild(element);
+		if(get_trimmed(new_missing_values_label).empty())
+		{
+			std::ostringstream buffer;
 
-       const tinyxml2::XMLDocument* instances_document = instances.to_XML();
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void set_missing_values_label(const std::string&) method.\n"
+				<< "Missing values label cannot be empty.\n";
 
-       const tinyxml2::XMLElement* instances_element = instances_document->FirstChildElement("Instances");
+			throw std::logic_error(buffer.str());
+		}
 
-       DeepClone(element, instances_element, document, NULL);
+#endif
 
-       delete instances_document;
-   }
 
-   // Missing values
-   {
-       element = document->NewElement("MissingValues");
-       data_set_element->LinkEndChild(element);
+		missing_values_label = new_missing_values_label;
+	}
 
-       const tinyxml2::XMLDocument* missing_values_document = missing_values.to_XML();
 
-       const tinyxml2::XMLElement* missing_values_element = missing_values_document->FirstChildElement("MissingValues");
+	// void set_lags_number(const size_t&)
 
-       DeepClone(element, missing_values_element, document, NULL);
+	/// Sets a new number of lags to be defined for a time series prediction application.
+	/// When loading the data file, the time series data will be modified according to this number.
+	/// @param new_lags_number Number of lags (x-1, ..., x-l) to be used.
 
-       delete missing_values_document;
-   }
+	void DataSet::set_lags_number(const size_t& new_lags_number)
+	{
+		lags_number = new_lags_number;
+	}
 
-   // Display
-//   {
-//      element = document->NewElement("Display");
-//      data_set_element->LinkEndChild(element);
 
-//      buffer.str("");
-//      buffer << display;
+	// void set_steps_ahead_number(const size_t&)
 
-//      text = document->NewText(buffer.str().c_str());
-//      element->LinkEndChild(text);
-//   }
+	/// Sets a new number of steps ahead to be defined for a time series prediction application.
+	/// When loading the data file, the time series data will be modified according to this number.
+	/// @param new_steps_ahead_number Number of steps ahead to be used.
 
-   return(document);
-}
+	void DataSet::set_steps_ahead_number(const size_t& new_steps_ahead_number)
+	{
+		steps_ahead = new_steps_ahead_number;
+	}
 
 
-// void write_XML(tinyxml2::XMLPrinter&) const method
+	// void set_autoassociation(const size_t&)
 
-/// Serializes the data set object into a XML document of the TinyXML library without keep the DOM tree in memory.
+	/// Sets a new autoasociation flag.
+	/// If the new value is true, the data will be processed for autoassociation when loading.
+	/// That is, the data file will contain the input data. The target data will be created as being equal to the input data.
+	/// If the autoassociation value is set to false, the data from the file will not be processed.
+	/// @param new_autoassociation Autoassociation value.
 
-void DataSet::write_XML(tinyxml2::XMLPrinter& file_stream) const
-{
-    std::ostringstream buffer;
+	void DataSet::set_autoassociation(const bool& new_autoassociation)
+	{
+		autoassociation = new_autoassociation;
+	}
 
-    file_stream.OpenElement("DataSet");
 
-    // Data file
+	// void set_learning_task(const LearningTask&)
 
-    file_stream.OpenElement("DataFile");
+	/// Sets a new learning task.
+	/// @param new_learning_task New learning task.
 
-    // File type
+	void DataSet::set_learning_task(const DataSet::LearningTask& new_learning_task)
+	{
+		learning_task = new_learning_task;
+	}
 
-    {
-        file_stream.OpenElement("FileType");
 
-        file_stream.PushText(write_file_type().c_str());
+	// void set_learning_task(const std::string&)
 
-        file_stream.CloseElement();
-    }
+	/// Sets a new learning task from a string.
+	/// @param new_learning_task New learning task.
 
-    // First cell
+	void DataSet::set_learning_task(const std::string& new_learning_task)
+	{
+		if(new_learning_task == "FunctionRegression")
+		{
+			learning_task = FunctionRegression;
+		}
+		else if(new_learning_task == "PatternRecognition")
+		{
+			learning_task = PatternRecognition;
+		}
+		else if(new_learning_task == "TimeSeriesPrediction")
+		{
+			learning_task = TimeSeriesPrediction;
+		}
+		else if(new_learning_task == "Autoassociation")
+		{
+			learning_task = Autoassociation;
+		}
+		else
+		{
+			std::ostringstream buffer;
 
-    {
-        file_stream.OpenElement("FirstCell");
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void set_learning_task(const std::string&) method.\n"
+				<< "Not known learning task.\n";
 
-        file_stream.PushText(write_first_cell().c_str());
+			throw std::logic_error(buffer.str());
+		}
+	}
 
-        file_stream.CloseElement();
-    }
 
-    // Last cell
+	// void set_angular_variables(const Vector<size_t>&)
 
-    {
-        file_stream.OpenElement("LastCell");
+	/// Sets the indices of those variables which represent angles.
+	/// @param new_angular_variables Indices of angular variables.
 
-        file_stream.PushText(write_last_cell().c_str());
+	void DataSet::set_angular_variables(const Vector<size_t>& new_angular_variables)
+	{
+		angular_variables = new_angular_variables;
+	}
 
-        file_stream.CloseElement();
-    }
 
-    // Sheet number
+	// void set_angular_units(AngularUnits&)
 
-    {
-        file_stream.OpenElement("SheetNumber");
+	/// Sets the units of the angular variables (Radians or Degrees).
 
-        buffer.str("");
-        buffer << write_sheet_number();
+	void DataSet::set_angular_units(AngularUnits& new_angular_units)
+	{
+		angular_units = new_angular_units;
+	}
 
-        file_stream.PushText(buffer.str().c_str());
+	// void set_conditional_probabilities(std::unordered_map< pair<int, int>, ConditionalProbability >&)
+	
+	/// Sets the conditional probabilities of this data set.
+	
+	void DataSet::set_conditional_probabilities(std::unordered_map< std::pair<int, int>, ConditionalProbability, pair_hash >& new_conditional_probabilities) //##
+	{
+		conditional_probabilities = new_conditional_probabilities;
+	}
 
-        file_stream.CloseElement();
-    }
+	// void set_instances_number(const size_t&) method
 
-    // Lags number
+	/// Sets a new number of instances in the data set. 
+	/// All instances are also set for training. 
+	/// The indices of the inputs and target variables do not change. 
+	/// @param new_instances_number Number of instances. 
 
-    {
-        file_stream.OpenElement("LagsNumber");
+	void DataSet::set_instances_number(const size_t& new_instances_number)
+	{
+		const size_t variables_number = variables.get_variables_number();
 
-        buffer.str("");
-        buffer << get_lags_number();
+		data.set(new_instances_number, variables_number);
 
-        file_stream.PushText(buffer.str().c_str());
+		instances.set(new_instances_number);
+	}
 
-        file_stream.CloseElement();
-    }
 
-    // Steps Ahead
+	// void set_variables_number(const size_t&) method
 
-    {
-        file_stream.OpenElement("StepsAhead");
+	/// Sets a new number of input variables in the data set. 
+	/// The indices of the training, selection and testing instances do not change. 
+	/// All variables are set as inputs. 
+	/// @param new_variables_number Number of variables. 
 
-        buffer.str("");
-        buffer << get_steps_ahead();
+	void DataSet::set_variables_number(const size_t& new_variables_number)
+	{
+		const size_t instances_number = instances.get_instances_number();
 
-        file_stream.PushText(buffer.str().c_str());
+		data.set(instances_number, new_variables_number);
 
-        file_stream.CloseElement();
-    }
+		variables.set(new_variables_number);
+	}
 
-    // Header line
 
-    {
-        file_stream.OpenElement("ColumnsName");
+	// void set_instance(const size_t&, const Vector<double>&)
 
-        buffer.str("");
-        buffer << header_line;
+	/// Sets new inputs and target values of a single instance in the data set. 
+	/// @param instance_index Index of the instance. 
+	/// @param instance New inputs and target values of the instance.
 
-        file_stream.PushText(buffer.str().c_str());
+	void DataSet::set_instance(const size_t& instance_index, const Vector<double>& instance)
+	{
+		// Control sentence (if debug)
 
-        file_stream.CloseElement();
-    }
+#ifdef __OPENNN_DEBUG__
 
-    // Rows label
+		const size_t instances_number = instances.get_instances_number();
 
-    {
-        file_stream.OpenElement("RowsLabel");
+		if(instance_index >= instances_number)
+		{
+			std::ostringstream buffer;
 
-        buffer.str("");
-        buffer << rows_label;
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void set_instance(const size_t&, const Vector<double>&) method.\n"
+				<< "Index of instance must be less than number of instances.\n";
 
-        file_stream.PushText(buffer.str().c_str());
+			throw std::logic_error(buffer.str());
+		}
 
-        file_stream.CloseElement();
-    }
+		const size_t size = instance.size();
+		const size_t variables_number = variables.get_variables_number();
 
-    // Separator
+		if(size != variables_number)
+		{
+			std::ostringstream buffer;
 
-    {
-        file_stream.OpenElement("Separator");
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void set_instance(const size_t&, const Vector<double>&) method.\n"
+				<< "Size (" << size << ") must be equal to number of variables (" << variables_number << ").\n";
 
-        file_stream.PushText(write_separator().c_str());
+			throw std::logic_error(buffer.str());
+		} 
 
-        file_stream.CloseElement();
-    }
+#endif
 
-    // Missing values label
+		// Set instance
 
-    {
-        file_stream.OpenElement("MissingValuesLabel");
+		data.set_row(instance_index, instance);
+	}
 
-        file_stream.PushText(missing_values_label.c_str());
 
-        file_stream.CloseElement();
-    }
+	// void add_instance(const Vector<double>&) method
 
-    // Data file name
+	/// Adds a new instance to the data matrix from a vector of real numbers.
+	/// The size of that vector must be equal to the number of variables. 
+	/// Note that resizing is here necessary and therefore computationally expensive. 
+	/// All instances are also set for training. 
+	/// @param instance Input and target values of the instance to be added. 
 
-    {
-        file_stream.OpenElement("DataFileName");
+	void DataSet::add_instance(const Vector<double>& instance)
+	{
+		// Control sentence (if debug)
 
-        file_stream.PushText(data_file_name.c_str());
+#ifdef __OPENNN_DEBUG__
 
-        file_stream.CloseElement();
-    }
+		const size_t size = instance.size();
+		const size_t variables_number = variables.get_variables_number();
 
-    file_stream.CloseElement();
+		if(size != variables_number)
+		{
+			std::ostringstream buffer;
 
-    // Variables
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void add_instance(const Vector<double>&) method.\n"
+				<< "Size of instance must be equal to number of variables.\n";
 
-    variables.write_XML(file_stream);
+			throw std::logic_error(buffer.str());
+		}
 
-    // Instances
+#endif
 
-    instances.write_XML(file_stream);
+		const size_t instances_number = instances.get_instances_number();
 
-    // Missing values
+		data.append_row(instance);
 
-    missing_values.write_XML(file_stream);
+		instances.set(instances_number+1);
+	}
 
 
-    file_stream.CloseElement();
-}
+	// void subtract_instance(size_t) method
 
+	/// Substracts the inputs-targets instance with a given index from the data set.
+	/// All instances are also set for training. 
+	/// Note that resizing is here necessary and therefore computationally expensive. 
+	/// @param instance_index Index of instance to be removed. 
 
-// void from_XML(const tinyxml2::XMLDocument&) method
+	void DataSet::subtract_instance(const size_t& instance_index)
+	{
+		const size_t instances_number = instances.get_instances_number();
 
-/// Deserializes a TinyXML document into this data set object.
-/// @param data_set_document XML document containing the member data.
+		// Control sentence (if debug)
 
-void DataSet::from_XML(const tinyxml2::XMLDocument& data_set_document)
-{
-   std::ostringstream buffer;
+#ifdef __OPENNN_DEBUG__
 
-   // Data set element
+		if(instance_index >= instances_number)
+		{
+			std::ostringstream buffer;
 
-   const tinyxml2::XMLElement* data_set_element = data_set_document.FirstChildElement("DataSet");
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void subtract_instance(size_t) method.\n"
+				<< "Index of instance must be less than number of instances.\n";
 
-   if(!data_set_element)
-   {
-       buffer << "OpenNN Exception: DataSet class.\n"
-              << "void from_XML(const tinyxml2::XMLDocument&) method.\n"
-              << "Data set element is NULL.\n";
+			throw std::logic_error(buffer.str());
+		}
 
-       throw std::logic_error(buffer.str());
-   }
+#endif
 
-    // Data file
+		data.subtract_row(instance_index);
 
-    const tinyxml2::XMLElement* data_file_element = data_set_element->FirstChildElement("DataFile");
+		instances.set_instances_number(instances_number-1);
 
-    if(!data_file_element)
-    {
-       buffer << "OpenNN Exception: DataSet class.\n"
-              << "void from_XML(const tinyxml2::XMLDocument&) method.\n"
-              << "Data file element is NULL.\n";
+	}
 
-       throw std::logic_error(buffer.str());
-    }
 
-    // Data file name
-    {
-       const tinyxml2::XMLElement* data_file_name_element = data_file_element->FirstChildElement("DataFileName");
+	// void append_variable(const Vector<double>&) method
 
-       if(!data_file_name_element)
-       {
-           buffer << "OpenNN Exception: DataSet class.\n"
-                  << "void from_XML(const tinyxml2::XMLDocument&) method.\n"
-                  << "Data file name element is NULL.\n";
+	/// Appends a variable with given values to the data matrix.
+	/// @param variable Vector of values. The size must be equal to the number of instances. 
 
-           throw std::logic_error(buffer.str());
-       }
+	void DataSet::append_variable(const Vector<double>& variable)
+	{
+		// Control sentence (if debug)
 
-       if(data_file_name_element->GetText())
-       {
-            const std::string new_data_file_name = data_file_name_element->GetText();
+#ifdef __OPENNN_DEBUG__
 
-            set_data_file_name(new_data_file_name);
-       }
-    }
+		const size_t size = variable.size();
+		const size_t instances_number = instances.get_instances_number();
 
-    // Lags number
-    {
-        const tinyxml2::XMLElement* lags_number_element = data_file_element->FirstChildElement("LagsNumber");
+		if(size != instances_number)
+		{
+			std::ostringstream buffer;
 
-        if(!lags_number_element)
-        {
-            buffer << "OpenNN Exception: DataSet class.\n"
-                   << "void from_XML(const tinyxml2::XMLDocument&) method.\n"
-                   << "Lags number element is NULL.\n";
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void append_variable(const Vector<double>&) method.\n"
+				<< "Size of variable must be equal to number of instances.\n";
 
-            throw std::logic_error(buffer.str());
-        }
+			throw std::logic_error(buffer.str());
+		}
 
-        if(lags_number_element->GetText())
-        {
-             const size_t new_lags_number = atoi(lags_number_element->GetText());
+#endif
 
-             set_lags_number(new_lags_number);
-        }
-    }
+		const size_t variables_number = variables.get_variables_number();
 
-    // Steps ahead
-    {
-        const tinyxml2::XMLElement* steps_ahead_element = data_file_element->FirstChildElement("StepsAhead");
+		data.append_column(variable);
 
-        if(!steps_ahead_element)
-        {
-            buffer << "OpenNN Exception: DataSet class.\n"
-                   << "void from_XML(const tinyxml2::XMLDocument&) method.\n"
-                   << "Steps ahead element is NULL.\n";
+		Matrix<double> new_data(data);
 
-            throw std::logic_error(buffer.str());
-        }
+		const size_t new_variables_number = variables_number + 1;
 
-        if(steps_ahead_element->GetText())
-        {
-             const size_t new_steps_ahead = atoi(steps_ahead_element->GetText());
+		set_variables_number(new_variables_number);
 
-             set_steps_ahead_number(new_steps_ahead);
-        }
-    }
+		set_data(new_data);
+	}
 
-    // File Type
-    {
-       const tinyxml2::XMLElement* file_type_element = data_file_element->FirstChildElement("FileType");
 
-       if(!file_type_element)
-       {
-           buffer << "OpenNN Exception: DataSet class.\n"
-                  << "void from_XML(const tinyxml2::XMLDocument&) method.\n"
-                  << "File type element is NULL.\n";
+	// void subtract_variable(size_t) method
 
-           throw std::logic_error(buffer.str());
-       }
+	/// Removes a variable with given index from the data matrix.
+	/// @param variable_index Index of variable to be subtracted. 
 
-       if(file_type_element->GetText())
-       {
-            const std::string new_file_type = file_type_element->GetText();
+	void DataSet::subtract_variable(const size_t& variable_index)
+	{
+		const size_t variables_number = variables.get_variables_number();
 
-            set_file_type(new_file_type);
-       }
-    }
+		// Control sentence (if debug)
 
-    // First Cell
-    {
-       const tinyxml2::XMLElement* first_cell_element = data_file_element->FirstChildElement("FirstCell");
+#ifdef __OPENNN_DEBUG__
 
-       if(!first_cell_element)
-       {
-           buffer << "OpenNN Exception: DataSet class.\n"
-                  << "void from_XML(const tinyxml2::XMLDocument&) method.\n"
-                  << "First Cell element is NULL.\n";
+		if(variable_index >= variables_number)
+		{
+			std::ostringstream buffer;
 
-           throw std::logic_error(buffer.str());
-       }
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void subtract_variable(size_t) method.\n"
+				<< "Index of variable must be less than number of variables.\n";
 
-       if(first_cell_element->GetText())
-       {
-            const std::string new_first_cell = first_cell_element->GetText();
+			throw std::logic_error(buffer.str());
+		}
 
-            first_cell = new_first_cell;
-       }
-    }
+#endif
 
-    // Last Cell
-    {
-       const tinyxml2::XMLElement* last_cell_element = data_file_element->FirstChildElement("LastCell");
+		data.subtract_column(variable_index);
 
-       if(!last_cell_element)
-       {
-           buffer << "OpenNN Exception: DataSet class.\n"
-                  << "void from_XML(const tinyxml2::XMLDocument&) method.\n"
-                  << "Last Cell element is NULL.\n";
+		Matrix<double> new_data(data);
 
-           throw std::logic_error(buffer.str());
-       }
+		const size_t new_variables_number = variables_number - 1;
 
-       if(last_cell_element->GetText())
-       {
-            const std::string new_last_cell = last_cell_element->GetText();
+		set_variables_number(new_variables_number);
 
-            last_cell = new_last_cell;
-       }
-    }
+		set_data(new_data);
+	}
 
-    // Sheet number
-    {
-       const tinyxml2::XMLElement* sheet_number_element = data_file_element->FirstChildElement("SheetNumber");
 
-       if(!sheet_number_element)
-       {
-           buffer << "OpenNN Exception: DataSet class.\n"
-                  << "void from_XML(const tinyxml2::XMLDocument&) method.\n"
-                  << "Sheet Number element is NULL.\n";
+	// Vector<size_t> unuse_constant_variables(void) method
 
-           throw std::logic_error(buffer.str());
-       }
+	/// Removes the input of target indices of that variables with zero standard deviation.
+	/// It might change the size of the vectors containing the inputs and targets indices. 
 
-       if(sheet_number_element->GetText())
-       {
-            const size_t new_sheet_number = atoi(sheet_number_element->GetText());
+	Vector<size_t> DataSet::unuse_constant_variables(void)
+	{
+		const size_t variables_number = variables.get_variables_number();
 
-            sheet_number = new_sheet_number;
-       }
-    }
+		// Control sentence (if debug)
 
-      // Header line
-      {
-         const tinyxml2::XMLElement* header_element = data_file_element->FirstChildElement("ColumnsName");
+#ifdef __OPENNN_DEBUG__
 
-         if(header_element)
-         {
-            const std::string new_header_string = header_element->GetText();
+		if(variables_number == 0)
+		{
+			std::ostringstream buffer;
 
-            try
-            {
-               set_header_line(new_header_string != "0");
-            }
-            catch(const std::logic_error& e)
-            {
-               std::cout << e.what() << std::endl;
-            }
-         }
-      }
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "Vector<size_t> unuse_constant_variables(void) method.\n"
+				<< "Number of variables is zero.\n";
 
-        // Rows label
-        {
-           const tinyxml2::XMLElement* rows_label_element = data_file_element->FirstChildElement("RowsLabel");
+			throw std::logic_error(buffer.str());
+		}
 
-           if(rows_label_element)
-           {
-              const std::string new_rows_label_string = rows_label_element->GetText();
+#endif
 
-              try
-              {
-                 set_rows_label(new_rows_label_string != "0");
-              }
-              catch(const std::logic_error& e)
-              {
-                 std::cout << e.what() << std::endl;
-              }
-           }
-        }
+		const Vector< Statistics<double> > statistics = data.calculate_statistics();
 
-      // Separator
-    {
-      const tinyxml2::XMLElement* separator_element = data_file_element->FirstChildElement("Separator");
+		Vector<size_t> constant_variables;
 
-      if(separator_element)
-     {
-          if(separator_element->GetText())
-          {              
-            const std::string new_separator = separator_element->GetText();
+		for(size_t i = 0; i < variables_number; i++)
+		{
+			if(variables.get_use(i) ==  Variables::Input && statistics[i].standard_deviation < 1.0e-6)
+			{
+				variables.set_use(i, Variables::Unused);
+				constant_variables.push_back(i);
+			}
+		}
 
-            set_separator(new_separator);
-          }
-          else
-          {
-              set_separator("Space");
-          }
-      }
-      else
-      {
-          set_separator("Space");
-      }
-    }
+		return(constant_variables);
+	}
 
-    // Missing values label
-    {
-         const tinyxml2::XMLElement* missing_values_label_element = data_file_element->FirstChildElement("MissingValuesLabel");
 
-         if(missing_values_label_element)
-         {
-             if(missing_values_label_element->GetText())
-             {
-                const std::string new_missing_values_label = missing_values_label_element->GetText();
+	// Vector<size_t> unuse_repeated_instances(void) method
 
-                set_missing_values_label(new_missing_values_label);
-             }
-         }
-    }
+	/// Removes the training, selection and testing indices of that instances which are repeated in the data matrix.
+	/// It might change the size of the vectors containing the training, selection and testing indices. 
 
-    // Variables
-    {
-       const tinyxml2::XMLElement* variables_element = data_set_element->FirstChildElement("Variables");
+	Vector<size_t> DataSet::unuse_repeated_instances(void)
+	{
+		const size_t instances_number = instances.get_instances_number();
 
-       if(variables_element)
-       {
-           tinyxml2::XMLDocument variables_document;
+		// Control sentence (if debug)
 
-           tinyxml2::XMLElement* variables_element_clone = variables_document.NewElement("Variables");
-           variables_document.InsertFirstChild(variables_element_clone);
+#ifdef __OPENNN_DEBUG__
 
-           DeepClone(variables_element_clone, variables_element, &variables_document, NULL);
+		if(instances_number == 0)
+		{
+			std::ostringstream buffer;
 
-           variables.from_XML(variables_document);
-       }
-    }
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "Vector<size_t> unuse_repeated_indices(void) method.\n"
+				<< "Number of instances is zero.\n";
 
-    // Instances
-    {
-       const tinyxml2::XMLElement* instances_element = data_set_element->FirstChildElement("Instances");
+			throw std::logic_error(buffer.str());
+		}
 
-       if(instances_element)
-       {
-           tinyxml2::XMLDocument instances_document;
+#endif
 
-           tinyxml2::XMLElement* instances_element_clone = instances_document.NewElement("Instances");
-           instances_document.InsertFirstChild(instances_element_clone);
+		Vector<size_t> repeated_instances;
 
-           DeepClone(instances_element_clone, instances_element, &instances_document, NULL);
+		Vector<double> instance_i;
+		Vector<double> instance_j;    
 
-           instances.from_XML(instances_document);
-       }
-    }
+		int i = 0;
 
-    // Missing values
-    {
-       const tinyxml2::XMLElement* missing_values_element = data_set_element->FirstChildElement("MissingValues");
+#pragma omp parallel for private(i, instance_i, instance_j)
 
-       if(missing_values_element)
-       {
-           tinyxml2::XMLDocument missing_values_document;
+		for(i = 0; i < (int)instances_number; i++)
+		{
+			instance_i = get_instance(i);
 
-           tinyxml2::XMLElement* missing_values_element_clone = missing_values_document.NewElement("MissingValues");
-           missing_values_document.InsertFirstChild(missing_values_element_clone);
+			for(size_t j = i+1; j < instances_number; j++)
+			{	      
+				instance_j = get_instance(j);
 
-           DeepClone(missing_values_element_clone, missing_values_element, &missing_values_document, NULL);
+				if(instances.get_use(j) != Instances::Unused
+						&& instance_j == instance_i)
+				{
+					instances.set_use(j, Instances::Unused);
+					repeated_instances.push_back(j);
+				}
+			}	    
+		}
 
-           missing_values.from_XML(missing_values_document);
-       }
-    }
+		return(repeated_instances);
+	}
 
-   // Display
-   {
-      const tinyxml2::XMLElement* display_element = data_set_element->FirstChildElement("Display");
 
-      if(display_element)
-      {
-         const std::string new_display_string = display_element->GetText();
+	// Vector<size_t> unuse_non_significant_inputs(void)
 
-         try
-         {
-            set_display(new_display_string != "0");
-         }
-         catch(const std::logic_error& e)
-         {
-            std::cout << e.what() << std::endl;
-         }
-      }
-   }
+	/// Unuses those binary inputs whose positives does not correspond to any positive in the target variables.
 
-}
+	Vector<size_t> DataSet::unuse_non_significant_inputs(void)
+	{
+		const Vector<size_t> inputs_indices = get_variables_pointer()->arrange_inputs_indices();
+		const size_t inputs_number = inputs_indices.size();
 
+		const size_t target_index = get_variables_pointer()->arrange_targets_indices()[0];
 
-// std::string to_string(void) const method
+		const size_t instances_number = get_instances_pointer()->count_used_instances_number();
 
-/// Returns a string representation of the current data set object. 
+		Vector<size_t> non_significant_variables;
 
-std::string DataSet::to_string(void) const
-{
-   std::ostringstream buffer;
+		if(!is_binary_classification())
+		{
+			return non_significant_variables;
+		}
 
-   buffer << "Data set object\n"
-          << "Data file name: " << data_file_name << "\n"
-          << "Header line: " << header_line << "\n"
-          << "Separator: " << separator << "\n"
-          << "Missing values label: " << missing_values_label << "\n"
-          << "Data:\n" << data << "\n"
-          << "Display: " << display << "\n"
-          << variables.to_string()
-          << instances.to_string()
-          << missing_values.to_string();
+		size_t positives = 0;
 
-   return(buffer.str());
-}
+		size_t current_input_index;
 
+		for(size_t i = 0; i < inputs_number; i++)
+		{
+			positives = 0;
 
-// void print(void) const method
+			current_input_index = inputs_indices[i];
 
-/// Prints to the screen in text format the members of the data set object.
+			if(!is_binary_variable(current_input_index))
+			{
+				continue;
+			}
 
-void DataSet::print(void) const
-{
-   if(display)
-   {
-      std::cout << to_string();
-   }
-}
+			for(size_t j = 0; j < instances_number; j++)
+			{
+				if(data(j, current_input_index) == 1.0 && data(j, target_index) == 1.0)
+				{
+					positives++;
+				}
+			}
 
+			if(positives == 0)
+			{
+				variables.set_use(current_input_index, Variables::Unused);
+				non_significant_variables.push_back(current_input_index);
+			}
+		}
 
-// void print_summary(void) const method
+		return non_significant_variables;
+	}
 
-/// Prints to the screen in text format the main numbers from the data set object.
 
-void DataSet::print_summary(void) const
-{
-    if(display)
-    {
-        const size_t variables_number = variables.get_variables_number();
-        const size_t instances_number = instances.get_instances_number();
-        const size_t missing_values_number = missing_values.get_missing_values_number();
 
-       std::cout << "Data set object summary:\n"
-                 << "Number of variables: " << variables_number << "\n"
-                 << "Number of instances: " << instances_number << "\n"
-                 << "Number of missing values: " << missing_values_number << std::endl;
-    }
-}
+	// Vector<Histogram> calculate_data_histograms(const size_t&) const method
 
+	/// Returns a histogram for each variable with a given number of bins. 
+	/// The default number of bins is 10.
+	/// The format is a vector of subvectors of subsubvectors.
+	/// The size of the vector is the number of variables. 
+	/// The size of the subvectors is 2 (centers and frequencies).
+	/// The size of the subsubvectors is the number of bins.
+	/// @param bins_number Number of bins.
 
-// void save(const std::string&) const method
+	Vector< Histogram<double> > DataSet::calculate_data_histograms(const size_t& bins_number) const
+	{
+		const size_t used_variables_number = variables.count_used_variables_number();
+		const Vector<size_t> used_variables_indices = variables.arrange_used_indices();
+		const size_t used_instances_number = instances.count_used_instances_number();
+		const Vector<size_t> used_instances_indices = instances.arrange_used_indices();
 
-/// Saves the members of a data set object to a XML-type file in an XML-type format.
-/// @param file_name Name of data set XML-type file.
+		//   const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-void DataSet::save(const std::string& file_name) const
-{
-   tinyxml2::XMLDocument* document = to_XML();
+		Vector< Histogram<double> > histograms(used_variables_number);
 
-   document->SaveFile(file_name.c_str());
+		Vector<double> column(used_instances_number);
 
-   delete document;
-}
+		int i = 0;
 
+#pragma omp parallel for private(i, column) shared(histograms)
 
-// void load(const std::string&) method
+		for(i = 0; i < (int)used_variables_number; i++)
+		{
+			column = data.arrange_column(used_variables_indices[i], used_instances_indices);
 
-/// Loads the members of a data set object from a XML-type file:
-/// <ul>
-/// <li> Instances number.
-/// <li> Training instances number.
-/// <li> Training instances indices.
-/// <li> Selection instances number.
-/// <li> Selection instances indices.
-/// <li> Testing instances number.
-/// <li> Testing instances indices.
-/// <li> Input variables number.
-/// <li> Input variables indices.
-/// <li> Target variables number.
-/// <li> Target variables indices.
-/// <li> Input variables name. 
-/// <li> Target variables name.
-/// <li> Input variables description. 
-/// <li> Target variables description.
-/// <li> Display.
-/// <li> Data.
-/// </ul> 
-/// Please mind about the file format. This is specified in the User's Guide.
-/// @param file_name Name of data set XML-type file.
+			histograms[i] = column.calculate_histogram(bins_number);
+		}
 
-void DataSet::load(const std::string& file_name)
-{
-   tinyxml2::XMLDocument document;
+		return(histograms);
+	}
 
-   if(document.LoadFile(file_name.c_str()))
-   {
-      std::ostringstream buffer;
 
-      buffer << "OpenNN Exception: DataSet class.\n"
-             << "void load(const std::string&) method.\n"
-             << "Cannot load XML file " << file_name << ".\n";
+	// Vector<Histogram> calculate_targets_histograms(const size_t&) const method
 
-      throw std::logic_error(buffer.str());
-   }
+	/// Returns a histogram for each target variable with a given number of bins.
+	/// The default number of bins is 10.
+	/// The format is a vector of subvectors of subsubvectors.
+	/// The size of the vector is the number of variables.
+	/// The size of the subvectors is 2 (centers and frequencies).
+	/// The size of the subsubvectors is the number of bins.
+	/// @param bins_number Number of bins.
 
-   from_XML(document);
-}
+	Vector< Histogram<double> > DataSet::calculate_targets_histograms(const size_t& bins_number) const
+	{
+		const size_t targets_number = variables.count_targets_number();
 
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
 
-// void print_data(void) const method
+		const size_t used_instances_number = instances.count_used_instances_number();
+		const Vector<size_t> used_instances_indices = instances.arrange_used_indices();
 
-/// Prints to the sceen the values of the data matrix.
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-void DataSet::print_data(void) const
-{
-   if(display)
-   {
-      std::cout << data << std::endl;
-   }
-}
+		Vector< Histogram<double> > histograms(targets_number);
 
+		Vector<double> column(used_instances_number);
 
-// void print_data_preview(void) const method
+		for(size_t i = 0; i < targets_number; i++)
+		{
+			column = data.arrange_column(targets_indices[i], used_instances_indices);
 
-/// Prints to the sceen a preview of the data matrix,
-/// i.e., the first, second and last instances
+			histograms[i] = column.calculate_histogram_missing_values(missing_indices[i], bins_number);
+		}
 
-void DataSet::print_data_preview(void) const
-{
-   if(display)
-   {
-       const size_t instances_number = instances.get_instances_number();
+		return(histograms);
+	}
 
-       if(instances_number > 0)
-       {
-          const Vector<double> first_instance = data.arrange_row(0);
 
-          std::cout << "First instance:\n"
-                    << first_instance << std::endl;
-       }
+	// Vector<double> calculate_box_and_whiskers(void) const
 
-       if(instances_number > 1)
-       {
-          const Vector<double> second_instance = data.arrange_row(1);
+	/// Returns a vector of subvectors with the values of a box and whiskers plot.
+	/// The size of the vector is equal to the number of used variables.
+	/// The size of the subvectors is 5 and they consist on:
+	/// <ul>
+	/// <li> Minimum
+	/// <li> First quartile
+	/// <li> Second quartile
+	/// <li> Third quartile
+	/// <li> Maximum
+	/// </ul>
 
-          std::cout << "Second instance:\n"
-                    << second_instance << std::endl;
-       }
+	Vector< Vector<double> > DataSet::calculate_box_plots(void) const
+	{
+		const size_t variables_number = variables.count_used_variables_number();
+		const Vector<size_t> variables_indices = variables.arrange_used_indices();
 
-       if(instances_number > 2)
-       {
-          const Vector<double> last_instance = data.arrange_row(instances_number-1);
+		const size_t instances_number = instances.count_used_instances_number();
+		const Vector<size_t> instances_indices = instances.arrange_used_indices();
 
-          std::cout << "Instance " << instances_number << ":\n"
-                    << last_instance << std::endl;
-       }
-    }
-}
+		Vector< Vector<double> > box_plots;
+		box_plots.set(variables_number);
 
+		Vector<double> column(instances_number);
 
-// void save_data(void) const method
+		for(size_t i = 0; i < variables_number; i++)
+		{
+			column = data.arrange_column(variables_indices[i], instances_indices);
 
-/// Saves to the data file the values of the data matrix.
+			box_plots[i] = column.calculate_box_plots();
+		}
 
-void DataSet::save_data(void) const
-{
-   std::ofstream file(data_file_name.c_str());
+		return(box_plots);
+	}
 
-   if(!file.is_open())
-   {
-      std::ostringstream buffer;
 
-      buffer << "OpenNN Exception: DataSet class.\n" 
-             << "void save_data(void) const method.\n"
-             << "Cannot open data file.\n";
+	// size_t calculate_training_negatives(const size_t&) const method
 
-      throw std::logic_error(buffer.str());	  
-   }
-  
-   if(header_line)
-   {
-       const Vector<std::string> variables_name = variables.arrange_names();
+	size_t DataSet::calculate_training_negatives(const size_t& target_index) const
+	{
+		size_t negatives = 0;
 
-       file << variables_name << std::endl;
-   }
+		const size_t training_instances_number = instances.count_training_instances_number();
 
-   // Write data
+		Vector<size_t> training_indices = instances.arrange_training_indices();
 
-   const size_t rows_number = data.get_rows_number();
-   const size_t columns_number = data.get_columns_number();
+		size_t training_index;
 
-   const std::string separator_string = get_separator_string();
+		for(size_t i = 0; i < training_instances_number; i++)
+		{
+			training_index = training_indices[i];
 
-   for(size_t i = 0; i < rows_number; i++)
-   {
-       for(size_t j = 0; j < columns_number; j++)
-       {
-           file << data(i,j);
+			if(data(training_index, target_index) == 0.0)
+			{
+				negatives++;
+			}
+			else if(data(training_index, target_index) != 1.0)
+			{
+				std::ostringstream buffer;
 
-           if(j != columns_number-1)
-           {
-               file << separator_string;
-           }
-       }
+				buffer << "OpenNN Exception: DataSet class.\n"
+					<< "size_t calculate_training_negatives(const size_t&) const method.\n"
+					<< "Training instance is neither a positive nor a negative: " << data(training_index, target_index) << std::endl;
 
-      file << std::endl;
-   }
+				throw std::logic_error(buffer.str());
+			}
+		}
 
-   // Close file
+		return(negatives);
+	}
 
-   file.close();
-}
 
+	// size_t calculate_selection_negatives(const size_t&) const method
 
-// size_t get_column_index(const Vector< Vector<std::string> >&, const size_t) const method
+	size_t DataSet::calculate_selection_negatives(const size_t& target_index) const
+	{
+		size_t negatives = 0;
 
-/// Returns the index of a variable when reading the data file.
-/// @param nominal_labels Values of all nominal variables in the data file.
-/// @param column_index Index of column.
+		const size_t selection_instances_number = instances.count_selection_instances_number();
 
-size_t DataSet::get_column_index(const Vector< Vector<std::string> >& nominal_labels, const size_t column_index) const
-{
-    size_t variable_index = 0;
+		Vector<size_t> selection_indices = instances.arrange_selection_indices();
 
-    for(size_t i = 0; i < column_index; i++)
-    {
-        if(nominal_labels[i].size() <= 2)
-        {
-            variable_index++;
-        }
-        else
-        {
-            variable_index += nominal_labels[i].size();
-        }
-    }
+		size_t selection_index;
 
-    return variable_index;
-}
+		for(size_t i = 0; i < selection_instances_number; i++)
+		{
+			selection_index = selection_indices[i];
 
+			if(data(selection_index, target_index) == 0.0)
+			{
+				negatives++;
+			}
+			else if(data(selection_index, target_index) != 1.0)
+			{
+				std::ostringstream buffer;
 
-// void check_separator(const std::string&) method
+				buffer << "OpenNN Exception: DataSet class.\n"
+					<< "size_t calculate_selection_negatives(const size_t&) const method.\n"
+					<< "Selection instance is neither a positive nor a negative: " << data(selection_index, target_index) << std::endl;
 
-/// Verifies that a given line in the data file contains the separator characer.
-/// If the line does not contain the separator, this method throws an exception.
-/// @param line Data file line.
+				throw std::logic_error(buffer.str());
+			}
+		}
 
-void DataSet::check_separator(const std::string& line) const
-{
-    if(line.empty())
-    {
-        return;
-    }
+		return(negatives);
+	}
 
-    const std::string separator_string = get_separator_string();
 
-    if(line.find(separator_string) == std::string::npos)
-    {
-        std::ostringstream buffer;
+	// size_t calculate_testing_negatives(const size_t&) const method
 
-        buffer << "OpenNN Exception: DataSet class.\n"
-               << "void check_separator(const std::string&) method.\n"
-               << "Separator '" << write_separator() << "' not found in data file " << data_file_name << ".\n";
+	size_t DataSet::calculate_testing_negatives(const size_t& target_index) const
+	{
+		size_t negatives = 0;
 
-        throw std::logic_error(buffer.str());
-    }
-}
+		const size_t testing_instances_number = instances.count_testing_instances_number();
 
+		Vector<size_t> testing_indices = instances.arrange_testing_indices();
 
-// size_t count_data_file_columns_number(void) const method
+		size_t testing_index;
 
-/// Returns the number of tokens in the first line of the data file.
-/// That will be interpreted as the number of columns in the data file.
+		for(size_t i = 0; i < testing_instances_number; i++)
+		{
+			testing_index = testing_indices[i];
 
-size_t DataSet::count_data_file_columns_number(void) const
-{
-    std::ifstream file(data_file_name.c_str());
+			if(data(testing_index, target_index) == 0.0)
+			{
+				negatives++;
+			}
+			else if(data(testing_index, target_index) != 1.0)
+			{
+				std::ostringstream buffer;
 
-    std::string line;
+				buffer << "OpenNN Exception: DataSet class.\n"
+					<< "size_t calculate_selection_negatives(const size_t&) const method.\n"
+					<< "Testing instance is neither a positive nor a negative: " << data(testing_index, target_index) << std::endl;
 
-    size_t columns_number = 0;
+				throw std::logic_error(buffer.str());
+			}
+		}
 
-    while(file.good())
-    {
-        getline(file, line);
+		return(negatives);
+	}
 
-        if(separator != Tab)
-        {
-            std::replace(line.begin(), line.end(), '\t', ' ');
-        }
 
-        trim(line);
+	// Vector< Vector<double> > calculate_data_statistics(void) const method
 
-        if(line.empty())
-        {
-            continue;
-        }
+	/// Returns a vector of vectors containing some basic statistics of all the variables in the data set.
+	/// The size of this vector is four. The subvectors are:
+	/// <ul>
+	/// <li> Minimum.
+	/// <li> Maximum.
+	/// <li> Mean.
+	/// <li> Standard deviation.
+	/// </ul> 
 
-        check_separator(line);
+	Vector< Statistics<double> > DataSet::calculate_data_statistics(void) const
+	{
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-        columns_number = count_tokens(line);
+		return(data.calculate_statistics_missing_values(missing_indices));
+	}
 
-        break;
-    }
 
-    file.close();
+	// Vector < Vector<double> > calculate_data_shape_parameters(void) const method
 
-    return columns_number;
+	/// Returns a vector fo subvectors containing the shape parameters for all the variables in the data set.
+	/// The size of this vector is 2. The subvectors are:
+	/// <ul>
+	/// <li> Asymmetry.
+	/// <li> Kurtosis.
+	/// </ul>
 
-}
+	Vector< Vector<double> > DataSet::calculate_data_shape_parameters(void) const
+	{
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
+		return(data.calculate_shape_parameters_missing_values(missing_indices));
+	}
 
-// void check_header_line(void) method
 
-/// Verifies that the data file has a header line.
-/// All elements in a header line must be strings.
-/// This method can change the value of the header line member.
-/// It throws an exception if some inconsistencies are found.
+	// Matrix<double> calculate_data_statistics_matrix(void) const method
 
-void DataSet::check_header_line(void)
-{
-    std::ifstream file(data_file_name.c_str());
+	/// Returns all the variables statistics from a single matrix.
+	/// The number of rows is the number of used variables.
+	/// The number of columns is five (minimum, maximum, mean and standard deviation).
 
-    std::string line;
-    Vector<std::string> tokens;
+	Matrix<double> DataSet::calculate_data_statistics_matrix(void) const
+	{
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-    while(file.good())
-    {
-        getline(file, line);
+		const Vector<size_t> used_variables_indices = variables.arrange_used_indices();
+		const Vector<size_t> used_instances_indices = instances.arrange_used_indices();
 
-        if(separator != Tab)
-        {
-            std::replace(line.begin(), line.end(), '\t', ' ');
-        }
+		const Vector< Vector<size_t> > used_missing_indices = missing_indices.arrange_subvector(used_variables_indices);
 
-        trim(line);
+		const Matrix<double> used_data = data.arrange_submatrix(used_instances_indices, used_variables_indices);
 
-        if(line.empty())
-        {
-            continue;
-        }
+		const Vector< Statistics<double> > data_statistics = used_data.calculate_statistics_missing_values(used_missing_indices);
 
-        break;
-    }
+		const size_t variables_number = used_variables_indices.size();//variables.count_used_variables_number();
 
-    file.close();
+		Matrix<double> data_statistics_matrix(variables_number, 4);
 
-    check_separator(line);
+		for(size_t i = 0; i < variables_number; i++)
+		{
+			data_statistics_matrix.set_row(i, data_statistics[i].to_vector());
+		}
 
-    tokens = get_tokens(line);
+		return(data_statistics_matrix);
+	}
 
-    if(header_line && is_not_numeric(tokens))
-    {
-        return;
-    }
-    if(header_line && is_numeric(tokens))
-    {
-        if(display)
-        {
-            std::cout << "OpenNN Warning: DataSet class.\n"
-                      << "void check_header_line(void) method.\n"
-                      << "First line of data file interpreted as not header.\n";
-        }
 
-        header_line = false;
-    }
-    else if(header_line && is_mixed(tokens))
-    {
-        std::ostringstream buffer;
+	// Matrix<double> calculate_data_shape_parameters_matrix(void) const method
 
-        buffer << "OpenNN Exception: DataSet class.\n"
-               << "void check_header_line(void) method.\n"
-               << "Header line contains numeric values: \n"
-               << line << "\n";
+	/// Returns all the variables shape parameters from a single matrix.
+	/// The number of rows is the number of used variables.
+	/// The number of columns is two (asymmetry, kurtosis).
 
-        throw std::logic_error(buffer.str());
-    }
-    else if(!header_line && is_not_numeric(tokens))
-    {
-        if(display)
-        {
-            std::cout << "OpenNN Warning: DataSet class.\n"
-                      << "void check_header_line(void) method.\n"
-                      << "First line of data file interpreted as header.\n";
-        }
+	Matrix<double> DataSet::calculate_data_shape_parameters_matrix(void) const
+	{
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-        header_line = true;
-    }
-}
+		const Vector<size_t> used_variables_indices = variables.arrange_used_indices();
+		const Vector<size_t> used_instances_indices = instances.arrange_used_indices();
 
+		const Vector< Vector<size_t> > used_missing_indices = missing_indices.arrange_subvector(used_variables_indices);
 
-// Vector<std::string> read_header_line(void) const method
+		const Matrix<double> used_data = data.arrange_submatrix(used_instances_indices, used_variables_indices);
 
-/// Returns the name of the columns in the data set as a list of strings.
+		const Vector< Vector<double> > shape_parameters = used_data.calculate_shape_parameters_missing_values(used_missing_indices);
 
-Vector<std::string> DataSet::read_header_line(void) const
-{
-    Vector<std::string> header_line;
+		const size_t variables_number = variables.count_used_variables_number();
 
-    std::string line;
+		Matrix<double> data_shape_parameters_matrix(variables_number, 2);
 
-    std::ifstream file(data_file_name.c_str());
+		for(size_t i = 0; i < variables_number; i++)
+		{
+			data_shape_parameters_matrix.set_row(i, shape_parameters[i]);
+		}
 
-    // First line
+		return(data_shape_parameters_matrix);
+	}
 
-    while(file.good())
-    {
-        getline(file, line);
 
-        if(separator != Tab)
-        {
-            std::replace(line.begin(), line.end(), '\t', ' ');
-        }
+	// Vector< Vector<double> > calculate_training_instances_statistics(void) const method
 
-        trim(line);
+	/// Returns a vector of vectors containing some basic statistics of all variables on the training instances.
+	/// The size of this vector is two. The subvectors are:
+	/// <ul>
+	/// <li> Training data minimum.
+	/// <li> Training data maximum.
+	/// <li> Training data mean.
+	/// <li> Training data standard deviation.
+	/// </ul> 
 
-        if(line.empty())
-        {
-            continue;
-        }
+	Vector< Statistics<double> > DataSet::calculate_training_instances_statistics(void) const
+	{
+		const Vector<size_t> training_indices = instances.arrange_training_indices();
 
-        check_separator(line);
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-        header_line = get_tokens(line);
+		return(data.calculate_rows_statistics_missing_values(training_indices, missing_indices));
+	}
 
-        break;
-    }
 
-    file.close();
+	// Vector< Vector<double> > calculate_selection_instances_statistics(void) const method
 
-    return header_line;
-}
+	/// Returns a vector of vectors containing some basic statistics of all variables on the selection instances.
+	/// The size of this vector is two. The subvectors are:
+	/// <ul>
+	/// <li> Selection data minimum.
+	/// <li> Selection data maximum.
+	/// <li> Selection data mean.
+	/// <li> Selection data standard deviation.
+	/// </ul>
 
+	Vector< Statistics<double> > DataSet::calculate_selection_instances_statistics(void) const
+	{
+		const Vector<size_t> selection_indices = instances.arrange_selection_indices();
 
-// void read_instance(const std::string&, const Vector< Vector<std::string> >&, const size_t&) method
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-/// Sets the values of a single instance in the data matrix from a line in the data file.
-/// @param line Data file line.
-/// @param nominal_labels Values of all nominal variables in the data file.
-/// @param instance_index Index of instance.
+		return(data.calculate_rows_statistics_missing_values(selection_indices, missing_indices));
+	}
 
-void DataSet::read_instance(const std::string& line, const Vector< Vector<std::string> >& nominal_labels, const size_t& instance_index)
-{
-    // Control sentence (if debug)
 
-    #ifdef __OPENNN_DEBUG__
+	// Vector< Vector<double> > calculate_testing_instances_statistics(void) const method
 
-    const size_t instances_number = instances.get_instances_number();
+	/// Returns a vector of vectors containing some basic statistics of all variables on the testing instances.
+	/// The size of this vector is five. The subvectors are:
+	/// <ul>
+	/// <li> Testing data minimum.
+	/// <li> Testing data maximum.
+	/// <li> Testing data mean.
+	/// <li> Testing data standard deviation.
+	/// </ul>
 
-    if(instance_index >= instances_number)
-    {
-       std::ostringstream buffer;
+	Vector< Statistics<double> > DataSet::calculate_testing_instances_statistics(void) const
+	{
+		const Vector<size_t> testing_indices = instances.arrange_testing_indices();
 
-       buffer << "OpenNN Exception: DataSet class.\n"
-              << "void read_instance(const std::string&, const Vector< Vector<std::string> >&, const size_t&) method.\n"
-              << "Index of instance (" << instance_index << ") must be less than number of instances (" << instances_number << ").\n";
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-       throw std::logic_error(buffer.str());
-    }
+		return(data.calculate_rows_statistics_missing_values(testing_indices, missing_indices));
+	}
 
-    #endif
 
-    const Vector<std::string> tokens = get_tokens(line);
+	// Vector< Vector<double> > calculate_training_instances_shape_parameters(void) const method
 
-    #ifdef __OPENNN_DEBUG__
+	/// Returns a vector of vectors containing some shape parameters of all variables on the training instances.
+	/// The size of this vector is two. The subvectors are:
+	/// <ul>
+	/// <li> Training data asymmetry.
+	/// <li> Training data kurtosis.
+	/// </ul>
 
-    if(tokens.size() != nominal_labels.size())
-    {
-       std::ostringstream buffer;
+	Vector< Vector<double> > DataSet::calculate_training_instances_shape_parameters(void) const
+	{
+		const Vector<size_t> training_indices = instances.arrange_training_indices();
 
-       buffer << "OpenNN Exception: DataSet class.\n"
-              << "void read_instance(const std::string&, const Vector< Vector<std::string> >&, const size_t&) method.\n"
-              << "Size of tokens (" << tokens.size() << ") must be equal to size of names (" << nominal_labels.size() << ").\n";
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-       throw std::logic_error(buffer.str());
-    }
+		return(data.calculate_rows_shape_parameters_missing_values(training_indices, missing_indices));
+	}
 
-    #endif
 
-    size_t column_index;
+	// Vector< Vector<double> > calculate_selection_instances_shape_parameters(void) const method
 
-    for(size_t j = 0; j < tokens.size(); j++)
-    {
-        column_index = get_column_index(nominal_labels, j);
+	/// Returns a vector of vectors containing some shape parameters of all variables on the selection instances.
+	/// The size of this vector is five. The subvectors are:
+	/// <ul>
+	/// <li> Selection data asymmetry.
+	/// <li> Selection data kurtosis.
+	/// </ul>
 
-        if(nominal_labels[j].size() == 0) // Numeric variable
-        {
-            if(tokens[j] != missing_values_label) // No missing values
-            {
-                data(instance_index, column_index) = atof(tokens[j].c_str());
-            }
-            else // Missing values
-            {
-                data(instance_index, column_index) = -99.9;
+	Vector< Vector<double> > DataSet::calculate_selection_instances_shape_parameters(void) const
+	{
+		const Vector<size_t> selection_indices = instances.arrange_selection_indices();
 
-                missing_values.append(instance_index, column_index);
-            }
-        }
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-        else if(nominal_labels[j].size() == 2) // Binary variable
-        {
-            if(tokens[j] != missing_values_label) // No missing values
-            {
-                if(tokens[j] == "false" || tokens[j] == "False"||  tokens[j] == "FALSE" || tokens[j] == "F"
-                || tokens[j] == "negative"|| tokens[j] == "Negative"|| tokens[j] == "NEGATIVE")
-                {
-                    data(instance_index, column_index) = 0.0;
-                }
-                else if(tokens[j] == "true" || tokens[j] == "True"||  tokens[j] == "TRUE" || tokens[j] == "T"
-                || tokens[j] == "positive"|| tokens[j] == "Positive"|| tokens[j] == "POSITIVE")
-                {
-                    data(instance_index, column_index) = 1.0;
-                }
-                else if(tokens[j] == nominal_labels[j][0])
-                {
-                    data(instance_index, column_index) = 0.0;
-                }
-                else if(tokens[j] == nominal_labels[j][1])
-                {
-                    data(instance_index, column_index) = 1.0;
-                }
-                else
-                {
-                    std::ostringstream buffer;
+		return(data.calculate_rows_shape_parameters_missing_values(selection_indices, missing_indices));
+	}
 
-                    buffer << "OpenNN Exception: DataSet class.\n"
-                           << "void read_instance(const std::string&, const Vector< Vector<std::string> >&, const size_t&) method.\n"
-                           << "Unknown token binary value.\n";
 
-                    throw std::logic_error(buffer.str());
-                }
-            }
-            else // Missing values
-            {
-                data(instance_index, column_index) = -99.9;
+	// Vector< Vector<double> > calculate_testing_instances_shape_parameters(void) const method
 
-                missing_values.append(instance_index, column_index);
-            }
-        }
+	/// Returns a vector of vectors containing some shape parameters of all variables on the testing instances.
+	/// The size of this vector is five. The subvectors are:
+	/// <ul>
+	/// <li> Testing data asymmetry.
+	/// <li> Testing data kurtosis.
+	/// </ul>
 
-        else // Nominal variable
-        {
-            if(tokens[j] != missing_values_label)
-            {
-                for(size_t k = 0; k < nominal_labels[j].size(); k++)
-                {
-                    if(tokens[j] == nominal_labels[j][k])
-                    {
-                        data(instance_index, column_index+k) = 1.0;
-                    }
-                    else
-                    {
-                        data(instance_index, column_index+k) = 0.0;
-                    }
-                }
-            }
-            else // Missing values
-            {
-                for(size_t k = 0; k < nominal_labels[j].size(); k++)
-                {
-                    data(instance_index, column_index+k) = -99.9;
+	Vector< Vector<double> > DataSet::calculate_testing_instances_shape_parameters(void) const
+	{
+		const Vector<size_t> testing_indices = instances.arrange_testing_indices();
 
-                    missing_values.append(instance_index, column_index+k);
-                }
-            }
-        }
-    }       
-}
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
+		return(data.calculate_rows_shape_parameters_missing_values(testing_indices, missing_indices));
+	}
 
-// Vector< Vector<std::string> > set_from_data_file(void) method
 
-/// Performs a first data file read in which the format is checked,
-/// and the numbers of variables, instances and missing values are set.
 
-Vector< Vector<std::string> > DataSet::set_from_data_file(void)
-{
-    const size_t columns_number = count_data_file_columns_number();
+	// Vector< Statistics<double> > calculate_inputs_statistics(void) const method
 
-    Vector< Vector<std::string> > nominal_labels(columns_number);
+	/// Returns a vector of vectors with some basic statistics of the input variables on all instances. 
+	/// The size of this vector is five. The subvectors are:
+	/// <ul>
+	/// <li> Input variables minimum.
+	/// <li> Input variables maximum.
+	/// <li> Input variables mean.
+	/// <li> Input variables standard deviation.
+	/// </ul> 
 
-    std::string line;
-    Vector<std::string> tokens;
+	Vector< Statistics<double> > DataSet::calculate_inputs_statistics(void) const
+	{
+		const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
 
-//    bool numeric;
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-    check_header_line();
+		return(data.calculate_columns_statistics_missing_values(inputs_indices, missing_indices));
+	}
 
-    int instances_count;
+	// std::unordered_map< int, Vector<double> >  calculate_training_target_prior_probabilities(void) const method
 
-    if(header_line)
-    {
-        instances_count = -1;
-    }
-    else
-    {
-        instances_count = 0;
-    }
+	/// Returns a hash map of
+	/// int: indices of targets
+	/// Vector<double>: it contains the prior probability of each possible target value.
 
-    std::ifstream file(data_file_name.c_str());   
+	PriorProbability DataSet::calculate_prior_probs(const Vector<double>& range, int target_index, const Vector<size_t>& training_indices) const //##
+	{
+		std::unordered_map<double, double> prior_probs;
+		Vector<double> probs(range.size());
+		std::cout << "probs size = " << probs.size() << "\n";
+		int pos;
+		double total = 0;
+		for(int i = 0; i < training_indices.size(); ++i) {
+			pos = find(range.begin(), range.end(), data(i,target_index)) - range.begin();
+			std::cout << "pos = " << pos << "\n";
+			probs[pos]++;
+			total++;
+		}
+		std::cout << "probs = " << probs[0] << " " << probs[1] << "\n";
+		for(int i = 0; i < probs.size(); ++i) {
+			probs[i] = probs[i]/total;
+			prior_probs.insert({range[i],probs[i]});
+		}
+		PriorProbability ret_prior_prob;
+		ret_prior_prob.set_index(target_index);
+		ret_prior_prob.set_name(variables.get_name(target_index));
+		ret_prior_prob.set_prior_probs(prior_probs);
+		return ret_prior_prob;
 
-    // Rest of lines
+	}
 
-    while(file.good())
-    {
-        getline(file, line);
+	std::unordered_map< int, PriorProbability > DataSet::calculate_training_target_prior_probabilities(void) const //##
+	{
+		std::unordered_map< int, PriorProbability > prob_map;
 
-        if(separator != Tab)
-        {
-            std::replace(line.begin(), line.end(), '\t', ' ');
-        }
+		const Vector<size_t> training_indices = instances.arrange_training_indices();
+		std::cout << "training_indices = " << training_indices.size() << std::endl;
 
-        trim(line);
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
+		std::cout << "targets_indices = " << targets_indices.size() << std::endl;
 
-        if(line.empty())
-        {
-            continue;
-        }
+		int targets_number = targets_indices.size();
+		Vector<PriorProbability> vec_prior_probs(targets_number);
+		std::cout << "vec_prior_probs = " << vec_prior_probs.size() << std::endl;
+		Vector<double> range;
+		PriorProbability prior_prob;
+		for(int i = 0; i < targets_number; ++i) {
+			std::cout << "targets_indices[i] = " << targets_indices[i] << std::endl;
+			range = variables.get_range(targets_indices[i]);
+			std::cout << "range size = " << range.size() << std::endl;
+			std::cout << range[0] << " " << range[1] << "\n";
+			prior_prob = calculate_prior_probs(range, targets_indices[i], training_indices);
+			prob_map.insert({targets_indices[i], prior_prob});
+		}
 
-        if(header_line && instances_count == -1)
-        {
-            instances_count = 0;
+		//	const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-            continue;
-        }
+		return(prob_map);
+	}
 
-        check_separator(line);
+	/// Returns a hash map of 
+	/// Vector<int>: a pair of indices containing selected input index and target index;
+	/// unordered_map< Vector<double>, double > are conditional probabilities and 
+	///     Vector<double>: it is a pair of an input value and an target value;
+	///     double: the conditional probabilities of the selected input value based on selected target value.
 
-        tokens = get_tokens(line);
-// caixa
-  /*      if(tokens.size() != columns_number)
-        {
-            std::ostringstream buffer;
+	ConditionalProbability DataSet::calculate_conditional_probs(const Vector<double>& range_input, const Vector<double>& range_target, int input_index, int target_index, const Vector<size_t>& training_indices) const //##
+	{
+		std::unordered_map< std::pair<double, double>, double, pair_hash > conditional_probs;
+		int size_range_input = range_input.size();
+		int size_range_target = range_target.size();
+		Vector<double> probs(size_range_input * size_range_target);
+		Vector<double> target_probs(size_range_target);
+		std::cout << "probs size = " << probs.size() << "\n";
+		int pos; // probabilities are stored as the sequence of permutation. ex. [range_input, range_target] : pos = (index of range_input)*(range_input.size())+(index of range_target)
+		int index_range_input;
+		int index_range_target;
+		double total = 0;
+		for(int i = 0; i < training_indices.size(); ++i) {
+			index_range_input = find(range_input.begin(), range_input.end(), data(i,input_index)) - range_input.begin();
+			index_range_target = find(range_target.begin(), range_target.end(), data(i,target_index)) - range_target.begin();
+			pos = index_range_input * size_range_input + index_range_target;
+			std::cout << "pos = " << pos << "\n";
+			probs[pos]++;
+			target_probs[index_range_target]++;
+		}
+		std::cout << "probs = " << probs[0] << " " << probs[1] << "\n";
+		for(int i = 0; i < size_range_input; ++i) {
+			for(int j = 0; j < size_range_target; ++j) {
+				int index_probs = range_input[i]*size_range_input+range_target[j];
+				conditional_probs.insert({std::make_pair(range_input[i],range_target[j]), probs[index_probs]/target_probs[j]});
+			}
+		}
+		ConditionalProbability ret_conditional_prob;
+		ret_conditional_prob.set_indices(input_index, target_index);
+		ret_conditional_prob.set_names(variables.get_name(input_index), variables.get_name(target_index));
+		ret_conditional_prob.set_conditional_probs(conditional_probs);
+		return ret_conditional_prob;
 
-            buffer << "OpenNN Exception: DataSet class.\n"
-                   << "Vector< Vector<std::string> > DataSet::set_from_data_file(void).\n"
-                   << "Row " << instances_count << ": Size of tokens (" << tokens.size() << ") is not equal to "
-                   << "number of columns (" << columns_number << ").\n";
+	}
 
-            throw std::logic_error(buffer.str());
-        }
-*/
-        instances_count++;
+	std::unordered_map< std::pair<int, int>, ConditionalProbability, pair_hash > DataSet::calculate_training_conditional_probabilities(void) const //##
+	{
+		std::cout << "\nIn calculate_training_conditional_probabilities 1\n";
+		std::unordered_map< std::pair<int, int>, ConditionalProbability, pair_hash > prob_map;
 
-        /*
-        if(tokens.size() == columns_number)
-        {
-            instances_count++;
-            for(size_t j = 0; j < columns_number; j++)
-            {
-                numeric = is_numeric(tokens[j]);
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
+		const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
+		const Vector<size_t> training_indices = instances.arrange_training_indices();
 
-                if(!numeric
-                && tokens[j] != missing_values_label
-                && !nominal_labels[j].contains(tokens[j]))
-                {
-                    nominal_labels[j].push_back(tokens[j]);
-                }
-            }
-        }*/
+		Vector<double> range_input;
+		Vector<double> range_target;
 
+		int targets_number = targets_indices.size();
+		int inputs_number = inputs_indices.size();
+		ConditionalProbability conditional_prob;
+		std::cout << "\nIn calculate_training_conditional_probabilities\n";
+		for(int i = 0; i < targets_number; ++i) {
+			range_target = variables.get_range(targets_indices[i]);
+			for(int j = 0; j < inputs_number; ++j) {
+				range_input = variables.get_range(inputs_indices[j]);
+				conditional_prob = calculate_conditional_probs(range_input, range_target, inputs_indices[j], targets_indices[i], training_indices);
+				prob_map.insert({std::make_pair(inputs_indices[j], targets_indices[i]), conditional_prob});
+			}
+		}
 
-    }
+		//const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-    file.close();
+		return(prob_map);
+	}
 
-    size_t variables_count = 0;
 
-    for(size_t i = 0; i < columns_number; i++)
-    {
-        if(nominal_labels[i].size() == 0 || nominal_labels[i].size() == 2)
-        {
-            variables_count++;
-        }
-        else
-        {
-            variables_count += nominal_labels[i].size();
-        }
-    }
+	// Vector< Statistics<double> > calculate_targets_statistics(void) const method
 
-    // Fix label case
+	/// Returns a vector of vectors with some basic statistics of the target variables on all instances. 
+	/// The size of this vector is five. The subvectors are:
+	/// <ul>
+	/// <li> Target variables minimum.
+	/// <li> Target variables maximum.
+	/// <li> Target variables mean.
+	/// <li> Target variables standard deviation.
+	/// </ul> 
 
-    for(size_t i = 0; i < columns_number; i++)
-    {
-        if(nominal_labels[i].size() == (size_t)instances_count)
-        {
-            std::ostringstream buffer;
+	Vector< Statistics<double> > DataSet::calculate_targets_statistics(void) const
+	{
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
 
-            buffer << "OpenNN Exception: DataSet class.\n"
-                   << "Vector< Vector<std::string> > DataSet::set_from_data_file(void).\n"
-                   << "Column " << i << ": All elements are nominal and different. It contains meaningless data.\n";
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-            throw std::logic_error(buffer.str());
-        }
-    }
+		return(data.calculate_columns_statistics_missing_values(targets_indices, missing_indices));
+	}
 
-    // Set instances and variables number
 
-    if(instances_count == 0 || variables_count == 0)
-    {
-        set();
+	// Vector<double> calculate_training_target_data_mean(void) const method
 
-        return(nominal_labels);
-    }
+	/// Returns the mean values of the target variables on the training instances. 
 
-    data.set(instances_count, variables_count);
+	Vector<double> DataSet::calculate_training_target_data_mean(void) const
+	{
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
 
-    if(variables.get_variables_number() != variables_count)
-    {
-        variables.set(variables_count);
+		const Vector<size_t> training_indices = instances.arrange_training_indices();
 
-        if(nominal_labels[columns_number-1].size() > 2)
-        {
-            for(size_t i = variables_count-1; i >= variables_count - nominal_labels[columns_number-1].size(); i--)
-            {
-                variables.set_use(i, Variables::Target);
-            }
-        }
-    }
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-    if(instances.get_instances_number() != (size_t)instances_count)
-    {
-        instances.set(instances_count);
-    }
+		return(data.calculate_mean_missing_values(training_indices, targets_indices, missing_indices));
+	}
 
-    missing_values.set(instances.get_instances_number(), variables.get_variables_number());
 
-    return(nominal_labels);
-}
+	// Vector<double> calculate_selection_target_data_mean(void) const method
 
+	/// Returns the mean values of the target variables on the selection instances. 
 
-// void read_from_data_file(Vector< Vector<std::string> >&) method
+	Vector<double> DataSet::calculate_selection_target_data_mean(void) const
+	{
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
 
-/// Performs a second data file read in which the data is set.
+		const Vector<size_t> selection_indices = instances.arrange_selection_indices();
 
-void DataSet::read_from_data_file(const Vector< Vector<std::string> >& nominal_labels)
-{
-    std::ifstream file(data_file_name.c_str());
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-    file.clear();
-    file.seekg(0, std::ios::beg);
+		return(data.calculate_mean_missing_values(selection_indices, targets_indices, missing_indices));
+	}
 
-    std::string line;
 
-    if(header_line)
-    {
-        while(file.good())
-        {
-            getline(file, line);
+	// Vector<double> calculate_testing_target_data_mean(void) const method
 
-            if(separator != Tab)
-            {
-                std::replace(line.begin(), line.end(), '\t', ' ');
-            }
+	/// Returns the mean values of the target variables on the testing instances. 
 
-            trim(line);
+	Vector<double> DataSet::calculate_testing_target_data_mean(void) const
+	{
+		const Vector<size_t> testing_indices = instances.arrange_testing_indices();
 
-            if(line.empty())
-            {
-                continue;
-            }
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
 
-            break;
-        }                
-    }
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-    size_t i = 0;
+		return(data.calculate_mean_missing_values(testing_indices, targets_indices, missing_indices));
+	}
 
-//    #pragma omp parallel for private(i, line)
 
-    while(file.good())
-    {
-        getline(file, line);
+	// Matrix<double> calculate_linear_correlations(void) const method
 
-        if(separator != Tab)
-        {
-            std::replace(line.begin(), line.end(), '\t', ' ');
-        }
+	/// Calculates the linear correlations between all outputs and all inputs.
+	/// It returns a matrix with number of rows the targets number and number of columns the inputs number.
+	/// Each element contains the linear correlation between a single target and a single output.
 
-        const Vector<std::string> tokens = get_tokens(line);
+	Matrix<double> DataSet::calculate_linear_correlations(void) const
+	{
+		const size_t inputs_number = variables.count_inputs_number();
+		const size_t targets_number = variables.count_targets_number();
 
-        trim(line);
+		const Vector<size_t> input_indices = variables.arrange_inputs_indices();
+		const Vector<size_t> target_indices = variables.arrange_targets_indices();
 
-        if(line.empty())
-        {
-            continue;
-        }
+		size_t input_index;
+		size_t target_index;
 
-        // #pragma omp task
-/*
-        if(tokens.size() == nominal_labels.size())
-        {
-            read_instance(line, nominal_labels, i);
-            i++;
-        }*/
-// caixa
-        read_instance(line, nominal_labels, i);
-        i++;
+		const size_t instances_number = instances.get_instances_number();
 
-    }
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-    file.close();
-}
+		Vector<double> input_variable(instances_number);
+		Vector<double> target_variable(instances_number);
 
+		Matrix<double> linear_correlations(inputs_number, targets_number);
 
-// Vector<std::string> arrange_time_series_prediction_names(const Vector<std::string>&) const method
+		for(size_t i = 0; i < inputs_number; i++)
+		{
+			input_index = input_indices[i];
 
-/// Returns a vector with the names arranged for time series prediction, according to the number of lags.
-/// @todo
+			input_variable = data.arrange_column(input_index);
 
-Vector<std::string> DataSet::arrange_time_series_names(const Vector<std::string>&) const
-{        
-    Vector<std::string> time_series_prediction_names;
-/*
-    Vector< Vector<std::string> > new_names((1+columns_number)*lags_number);
+			for(size_t j = 0; j < targets_number; j++)
+			{
+				target_index = target_indices[j];
 
-    for(size_t i = 0; i < 1+lags_number; i++)
-    {
-        for(size_t j = 0; j < names.size(); j++)
-        {
-            new_names[i+j] = names[j];
+				target_variable = data.arrange_column(target_index);
 
-            if(i != lags_number)
-            {
-                for(size_t k = 0; k < names[j].size();k++)
-                {
-                    new_names[i+j][k].append("_lag_").append(std::string::from_size_t(lags_number-i).c_str());
-                }
-            }
-        }
-    }
-*/
-    return(time_series_prediction_names);
-}
+				//           linear_correlations(i,j) = input_variable.calculate_linear_correlation_missing_values(target_variable, missing_indices[target_index]);
+				linear_correlations(i,j) = input_variable.calculate_linear_correlation(target_variable);
+			}
+		}
 
+		return(linear_correlations);
+	}
 
-// Vector<std::string> DataSet::arrange_autoassociation_names(const Vector<std::string>& names) const method
 
-/// Returns a vector with the names arranged for autoassociation.
-/// @todo
+	// Matrix<double> calculate_covariance_matrix(void) const method
 
-Vector<std::string> DataSet::arrange_autoassociation_names(const Vector<std::string>&) const
-{
-    Vector<std::string> autoassociation_names;
+	/// Returns the covariance matrix for the data set.
+	/// The number of rows of the matrix is the number of variables.
+	/// The number of columns of the matrix is the number of variables.
 
-    return(autoassociation_names);
-}
+	Matrix<double> DataSet::calculate_covariance_matrix(void) const
+	{
+		const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
+		const Vector<size_t> used_instances_indices = instances.arrange_used_indices();
 
+		return (data.arrange_submatrix(used_instances_indices, inputs_indices).calculate_covariance_matrix());
+	}
 
-// void convert_time_series(void) method
 
-/// Arranges an input-target matrix from a time series matrix, according to the number of lags.
-/// @todo
+	// Matrix<double> perform_principal_components_analysis(const double& = 0.0) const mehtod
 
-void DataSet::convert_time_series(void)
-{
-    if(lags_number == 0)
-    {
-        return;
-    }
+	/// Performs the principal components analysis of the inputs.
+	/// It returns a matrix containing the principal components arranged in rows.
+	/// @param minimum_explained_variance Minimum percentage of variance used to selec a principal component.
 
-    data.convert_time_series(lags_number);
+	Matrix<double> DataSet::perform_principal_components_analysis(const double& minimum_explained_variance)
+	{
+		// Scale data
 
-    variables.convert_time_series(lags_number);
+		data.scale_mean_standard_deviation();
 
-    instances.convert_time_series(lags_number);
+		// Calculate covariance matrix
 
-    missing_values.convert_time_series(lags_number);
-}
+		const Matrix<double> covariance_matrix = calculate_covariance_matrix();
 
+		// Calculate mean
 
-// void convert_autoassociation(void) method
+		const Vector< Statistics<double> > input_data_statistics = calculate_inputs_statistics();
 
-/// Arranges the data set for autoassociation.
-/// @todo
+		const size_t inputs_number = covariance_matrix.get_columns_number();
 
-void DataSet::convert_autoassociation(void)
-{
-    data.convert_autoassociation();
+		Vector<double> inputs_mean(inputs_number);
 
-    variables.convert_autoassociation();
+		for(size_t i = 0; i < inputs_number; i++)
+		{
+			inputs_mean[i] = input_data_statistics[i].mean;
+		}
 
-    missing_values.convert_autoassociation();
-}
+		// Calculate eigenvectors
 
+		const Matrix<double> eigenvectors = covariance_matrix.calculate_eigenvectors();
 
-// void load_data(void) method
+		// Calculate eigenvalues
 
-/// This method loads the data file.
+		const Matrix<double> eigenvalues = covariance_matrix.calculate_eigenvalues();
 
-void DataSet::load_data(void)
-{
-    if(data_file_name.empty())
-    {
-       std::ostringstream buffer;
+		// Calculate explained variance
 
-       buffer << "OpenNN Exception: DataSet class.\n"
-              << "void load_data(void) method.\n"
-              << "Data file name has not been set.\n";
+		const Vector<double> explained_variance = eigenvalues.arrange_column(0).calculate_explained_variance();
 
-       throw std::logic_error(buffer.str());
-    }
+		// Choose eigenvectors
 
-    std::ifstream file(data_file_name.c_str());
+		Vector<size_t> principal_components_indices;
 
-    if(!file.is_open())
-    {
-       std::ostringstream buffer;
+		for(size_t i = 0; i < inputs_number; i++)
+		{
+			if(explained_variance[i] > minimum_explained_variance)
+			{
+				principal_components_indices.push_back(i);
+			}
+			else
+			{
+				continue;
+			}
+		}
 
-       buffer << "OpenNN Exception: DataSet class.\n"
-              << "void load_data(void) method.\n"
-              << "Cannot open data file: " << data_file_name << "\n";
+		const size_t principal_components_number = principal_components_indices.size();
 
-       throw std::logic_error(buffer.str());
-    }
+		Matrix<double> feature_matrix(principal_components_number, inputs_number);
 
-    file.close();
+		for(size_t i = 0; i < principal_components_number; i++)
+		{
+			feature_matrix.set_row(i, eigenvectors.arrange_column(principal_components_indices[i]));
+		}
 
-    const Vector< Vector<std::string> > nominal_labels = set_from_data_file();
+		// Return feature matrix
 
-    read_from_data_file(nominal_labels);
+		return feature_matrix;
+	}
 
-    // Variables name
 
-    Vector<std::string> columns_name;
+	// void scale_data_mean_standard_deviation(const Vector< Statistics<double> >&) const method
 
-    if(header_line)
-    {
-        columns_name = read_header_line();
-    }
-    else
-    {
-        for(unsigned i = 0; i < nominal_labels.size(); i++)
-        {
-            std::ostringstream buffer;
+	/// Scales the data matrix with given mean and standard deviation values.
+	/// It updates the data matrix.
+	/// @param data_statistics Vector of statistics structures for all the variables in the data set.
+	/// The size of that vector must be equal to the number of variables.
 
-            buffer << "variable_" << i;
+	void DataSet::scale_data_mean_standard_deviation(const Vector< Statistics<double> >& data_statistics)
+	{
+		// Control sentence (if debug)
 
-            columns_name.push_back(buffer.str());
-        }
-    }
+#ifdef __OPENNN_DEBUG__
 
-    variables.set_names(columns_name, nominal_labels);
+		std::ostringstream buffer;
 
-    // Angular variables
+		const size_t columns_number = data.get_columns_number();
 
-    if(!angular_variables.empty())
-    {
-        convert_angular_variables();
-    }
+		const size_t statistics_size = data_statistics.size();
 
-    // Time series
+		if(statistics_size != columns_number)
+		{
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void scale_data_mean_standard_deviation(const Vector< Statistics<double> >&) method.\n"
+				<< "Size of statistics must be equal to number of columns.\n";
 
-    if(lags_number != 0)
-    {
-        convert_time_series();
-    }
+			throw std::logic_error(buffer.str());
+		}
 
-    // Autoassociation
+#endif
 
-    if(autoassociation)
-    {
-        convert_autoassociation();
-    }
-}
+		const size_t variables_number = variables.get_variables_number();
 
+		for(size_t i = 0; i < variables_number; i++)
+		{
+			if(display && data_statistics[i].standard_deviation < 1.0e-99)
+			{
+				std::cout << "OpenNN Warning: DataSet class.\n"
+					<< "void scale_data_mean_standard_deviation(const Vector< Statistics<Type> >&) method.\n"
+					<< "Standard deviation of variable " <<  i << " is zero.\n"
+					<< "That variable won't be scaled.\n";
+			}
+		}
 
-/// This method loads the data from a binary data file.
+		data.scale_mean_standard_deviation(data_statistics);
+	}
 
-void DataSet::load_data_binary(void)
-{
-    std::ifstream file;
 
-    file.open(data_file_name.c_str(), std::ios::binary);
+	// Vector< Statistics<double> > scale_data_minimum_maximum(void) method
 
-    if(!file.is_open())
-    {
-        std::ostringstream buffer;
+	/// Scales the data using the minimum and maximum method,
+	/// and the minimum and maximum values calculated from the data matrix.
+	/// It also returns the statistics from all columns.
 
-        buffer << "OpenNN Exception: DataSet class.\n"
-               << "void load_data_binary(void) method.\n"
-               << "Cannot open data file: " << data_file_name << "\n";
+	Vector< Statistics<double> > DataSet::scale_data_minimum_maximum(void)
+	{
+		const Vector< Statistics<double> > data_statistics = calculate_data_statistics();
 
-        throw std::logic_error(buffer.str());
-    }
+		scale_data_minimum_maximum(data_statistics);
 
-    std::streamsize size = sizeof(size_t);
+		return(data_statistics);
+	}
 
-    size_t variables_number;
-    size_t instances_number;
 
-    file.read(reinterpret_cast<char*>(&variables_number), size);
-    file.read(reinterpret_cast<char*>(&instances_number), size);
+	// Vector< Statistics<double> > scale_data_mean_standard_deviation(void) method
 
-    size = sizeof(double);
+	/// Scales the data using the mean and standard deviation method,
+	/// and the mean and standard deviation values calculated from the data matrix.
+	/// It also returns the statistics from all columns.
 
-    double value;
+	Vector< Statistics<double> > DataSet::scale_data_mean_standard_deviation(void)
+	{
+		const Vector< Statistics<double> > data_statistics = calculate_data_statistics();
 
-    data.set(instances_number, variables_number);
+		scale_data_mean_standard_deviation(data_statistics);
 
-    for(size_t i = 0; i < variables_number*instances_number; i++)
-    {
-        file.read(reinterpret_cast<char*>(&value), size);
+		return(data_statistics);
+	}
 
-        data[i] = value;
-    }
 
-    file.close();
-}
+	// void scale_data_minimum_maximum(const Vector< Statistics<double> >&) method
 
+	/// Scales the data matrix with given minimum and maximum values.
+	/// It updates the data matrix.
+	/// @param data_statistics Vector of statistics structures for all the variables in the data set.
+	/// The size of that vector must be equal to the number of variables.
 
-/// This method loads data from a binary data file for time series prediction methods.
+	void DataSet::scale_data_minimum_maximum(const Vector< Statistics<double> >& data_statistics)
+	{
+		const size_t variables_number = variables.get_variables_number();
 
-void DataSet::load_time_series_data_binary(void)
-{
-    std::ifstream file;
+		// Control sentence (if debug)
 
-    file.open(data_file_name.c_str(), std::ios::binary);
+#ifdef __OPENNN_DEBUG__
 
-    if(!file.is_open())
-    {
-        std::ostringstream buffer;
+		std::ostringstream buffer;
 
-        buffer << "OpenNN Exception: DataSet class.\n"
-               << "void load_data_binary(void) method.\n"
-               << "Cannot open data file: " << data_file_name << "\n";
+		const size_t statistics_size = data_statistics.size();
 
-        throw std::logic_error(buffer.str());
-    }
+		if(statistics_size != variables_number)
+		{
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void scale_data_minimum_maximum(const Vector< Statistics<double> >&) method.\n"
+				<< "Size of data statistics must be equal to number of variables.\n";
 
-    std::streamsize size = sizeof(size_t);
+			throw std::logic_error(buffer.str());
+		}
 
-    size_t variables_number;
-    size_t instances_number;
+#endif
 
-    file.read(reinterpret_cast<char*>(&variables_number), size);
-    file.read(reinterpret_cast<char*>(&instances_number), size);
+		for(size_t i = 0; i < variables_number; i++)
+		{
+			if(display && data_statistics[i].maximum-data_statistics[i].minimum < 1.0e-99)
+			{
+				std::cout << "OpenNN Warning: DataSet class.\n"
+					<< "void scale_data_minimum_maximum(const Vector< Statistics<Type> >&) method.\n"
+					<< "Range of variable " <<  i << " is zero.\n"
+					<< "That variable won't be scaled.\n";
+			}
+		}
 
-    size = sizeof(double);
 
-    double value;
+		data.scale_minimum_maximum(data_statistics);
+	}
 
-    data.set(instances_number, variables_number);
 
-    for(size_t i = 0; i < variables_number*instances_number; i++)
-    {
-        file.read(reinterpret_cast<char*>(&value), size);
+	// void scale_data(const std::string&, const Vector< Statistics<double> >&) method
 
-        data[i] = value;
-    }
+	/// Scales the data matrix.
+	/// The method to be used is that in the scaling and unscaling method variable. 
+	/// @param scaling_unscaling_method_string String with the name of the scaling-unscaling method
+	/// (MinimumMaximum or MeanStandardDeviation).
+	/// @param data_statistics Vector of statistics structures for all the variables in the data set.
+	/// The size of that vector must be equal to the number of variables.
+	/*
+	   void DataSet::scale_data(const std::string& scaling_unscaling_method_string, const Vector< Statistics<double> >& data_statistics)
+	   {
+	   switch(get_scaling_unscaling_method(scaling_unscaling_method_string))
+	   {
+	   case MinimumMaximum:
+	   {
+	   scale_data_minimum_maximum(data_statistics);
+	   }            
+	   break;
 
-//    if(get_missing_values().has_missing_values())
-//    {
-//        scrub_missing_values();
-//    }
+	   case MeanStandardDeviation:
+	   {
+	   scale_data_mean_standard_deviation(data_statistics);
+	   }
+	   break;
 
-    size = sizeof(size_t);
+	   default:
+	   {
+	   std::ostringstream buffer;
 
-    size_t time_series_instances_number;
-    size_t time_series_variables_number;
+	   buffer << "OpenNN Exception: DataSet class\n"
+	   << "void scale_data(const std::string&, const Vector< Vector<double> >&) method.\n"
+	   << "Unknown data scaling and unscaling method.\n";
 
-    file.read(reinterpret_cast<char*>(&time_series_instances_number), size);
-    file.read(reinterpret_cast<char*>(&time_series_variables_number), size);
+	   throw std::logic_error(buffer.str());
+	   }
+	   break;
+	   }
+	   }
 
-    time_series_data.set(time_series_instances_number, time_series_variables_number);
 
-    size = sizeof(double);
+	// Vector< Statistics<double> > scale_data(void) method
 
-    for(size_t i = 0; i < time_series_instances_number*time_series_variables_number; i++)
-    {
-        file.read(reinterpret_cast<char*>(&value), size);
+	/// Calculates the data statistics, scales the data with that values and returns the statistics. 
+	/// The method to be used is that in the scaling and unscaling method variable. 
 
-        time_series_data[i] = value;
-    }    
+	Vector< Statistics<double> > DataSet::scale_data(const std::string& scaling_unscaling_method)
+	{
+	const Vector< Statistics<double> > statistics = data.calculate_statistics();
 
-    file.close();
-}
+	switch(get_scaling_unscaling_method(scaling_unscaling_method))
+	{
+	case MinimumMaximum:
+	{
+	scale_data_minimum_maximum(statistics);
+	}            
+	break;
 
+	case MeanStandardDeviation:
+	{
+	scale_data_mean_standard_deviation(statistics);
+	}
+	break;
 
-// void load_time_series_data(void) method
+	default:
+	{
+	std::ostringstream buffer;
 
-/// @todo This method is not implemented.
-/*
-void DataSet::load_time_series_data(void)
-{
-    if(lags_number <= 0)
-    {
-       std::ostringstream buffer;
+	buffer << "OpenNN Exception: DataSet class\n"
+	<< "Vector< Statistics<double> > scale_data(const std::string&) method.\n"
+	<< "Unknown scaling and unscaling method.\n";
 
-       buffer << "OpenNN Exception: DataSet class.\n"
-              << "void load_time_series_data(void) const method.\n"
-              << "Number of lags (" << lags_number << ") must be greater than zero.\n";
+	throw std::logic_error(buffer.str());
+	}
+	break;
+	}
 
-       throw std::logic_error(buffer.str());
-    }
+	return(statistics);
+	}
+	*/
 
+	// void scale_inputs_mean_standard_deviation(const Vector< Statistics<double> >&) method
 
-    if(header)
-    {
-//        Vector<std::string> columns_name;
+	/// Scales the input variables with given mean and standard deviation values.
+	/// It updates the input variables of the data matrix.
+	/// @param inputs_statistics Vector of statistics structures for the input variables.
+	/// The size of that vector must be equal to the number of inputs.
 
-//        variables.set_names(names);
-    }
+	void DataSet::scale_inputs_mean_standard_deviation(const Vector< Statistics<double> >& inputs_statistics)
+	{
+		const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
 
+		data.scale_columns_mean_standard_deviation(inputs_statistics, inputs_indices);
+	}
 
-    const Matrix<double> time_series_data(data_file_name);
 
-    const size_t rows_number = time_series_data.get_rows_number();
-    const size_t columns_number = time_series_data.get_columns_number();
+	// Vector< Statistics<double> > scale_inputs_mean_standard_deviation(void) method
 
-    const size_t instances_number = rows_number - lags_number;
-    const size_t variables_number = columns_number*(1 + lags_number);
+	/// Scales the input variables with the calculated mean and standard deviation values from the data matrix.
+	/// It updates the input variables of the data matrix.
+	/// It also returns a vector of vectors with the variables statistics. 
 
-    set(variables_number, instances_number);
+	Vector< Statistics<double> > DataSet::scale_inputs_mean_standard_deviation(void)
+	{
+		// Control sentence (if debug)
 
-    Vector<double> row(rows_number);
+#ifdef __OPENNN_DEBUG__
 
-    for(size_t i = 0; i < instances_number; i++)
-    {
-        row = time_series_data.arrange_row(i);
+		if(data.empty())
+		{
+			std::ostringstream buffer;
 
-        for(size_t j = 1; j <= lags_number; j++)
-        {
-            row = row.assemble(time_series_data.arrange_row(i+j));
-        }
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "Vector< Statistics<double> > scale_inputs_mean_standard_deviation(void) method.\n"
+				<< "Data file is not loaded.\n";
 
-        data.set_row(i, row);
-    }
+			throw std::logic_error(buffer.str());
+		}
 
-    // Variables
+#endif
 
-    Vector<Variables::Use> uses(variables_number);
+		const Vector< Statistics<double> > inputs_statistics = calculate_inputs_statistics();
 
-    std::fill(uses.begin(), uses.begin()+lags_number*variables_number/(lags_number+1)-1, Variables::Use::Input);
-    std::fill(uses.begin()+lags_number*variables_number/(lags_number+1), uses.end(), Variables::Use::Target);
+		scale_inputs_mean_standard_deviation(inputs_statistics);
 
-    variables.set_uses(uses);
+		return(inputs_statistics);
+	}
 
-}
-*/
 
-// Vector<size_t> calculate_target_distribution(void) const method
+	// void scale_inputs_minimum_maximum(const Vector< Statistics<double> >&) method
 
-/// Returns a vector containing the number of instances of each class in the data set.
-/// If the number of target variables is one then the number of classes is two.
-/// If the number of target variables is greater than one then the number of classes is equal to the number 
-/// of target variables.
+	/// Scales the input variables with given minimum and maximum values.
+	/// It updates the input variables of the data matrix.
+	/// @param inputs_statistics Vector of statistics structures for all the inputs in the data set.
+	/// The size of that vector must be equal to the number of input variables.
 
-Vector<size_t> DataSet::calculate_target_distribution(void) const
-{ 
-   // Control sentence (if debug)
+	void DataSet::scale_inputs_minimum_maximum(const Vector< Statistics<double> >& inputs_statistics)
+	{
+		const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
 
-   const size_t instances_number = instances.get_instances_number();
-   const size_t targets_number = variables.count_targets_number();
-   const Vector<size_t> targets_indices = variables.arrange_targets_indices();
+		data.scale_columns_minimum_maximum(inputs_statistics, inputs_indices);
+	}
 
-   Vector<size_t> class_distribution;
 
-   if(targets_number == 1) // Two classes
-   {
-      class_distribution.set(2, 0);
+	// Vector< Statistics<double> > scale_inputs_minimum_maximum(void) method
 
-      size_t target_index = targets_indices[0];
+	/// Scales the input variables with the calculated minimum and maximum values from the data matrix.
+	/// It updates the input variables of the data matrix.
+	/// It also returns a vector of vectors with the minimum and maximum values of the input variables. 
 
-      for(size_t instance_index = 0; instance_index < instances_number; instance_index++)
-      {
-          if(missing_values.arrange_missing_indices()[target_index].contains(instance_index))
-          {
-              continue;
-          }
-          if(instances.get_use(instance_index) != Instances::Unused)
-          {
-             if(data(instance_index,target_index) < 0.5)
-             {
-                class_distribution[0]++;
-             }
-             else
-             {
-                class_distribution[1]++;
-             }
-          }
-      }
-   }
-   else // More than two classes
-   {
-      class_distribution.set(targets_number, 0);
-   
-      for(size_t i = 0; i < instances_number; i++)
-      {          
-          if(instances.get_use(i) != Instances::Unused)
-          {
-             for(size_t j = 0; j < targets_number; j++)
-             {
-                 if(data(i,targets_indices[j]) == -123.456)
-                 {
-                    continue;
-                 }
+	Vector< Statistics<double> > DataSet::scale_inputs_minimum_maximum(void)
+	{
+		// Control sentence (if debug)
 
-                if(data(i,targets_indices[j]) > 0.5)
-                {
-                   class_distribution[j]++;
-                }
-             }
-          }
-      }
-   }
+#ifdef __OPENNN_DEBUG__
 
-   // Check data consistency
+		if(data.empty())
+		{
+			std::ostringstream buffer;
 
-//   const size_t used_instances_number = instances.count_used_instances_number();
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "Vector< Statistics<double> > scale_inputs_minimum_maximum(void) method.\n"
+				<< "Data file is not loaded.\n";
 
-//   if(class_distribution.calculate_sum() != used_instances_number)
-//   {
-//      std::ostringstream buffer;
+			throw std::logic_error(buffer.str());
+		}
 
-//      buffer << "OpenNN Exception: DataSet class.\n"
-//             << "Vector<size_t> calculate_target_distribution(void) const method.\n"
-//             << "Sum of class distributions (" << class_distribution << ") is not equal to "
-//             << "number of used instances (" << used_instances_number << ")." << std::endl;
+#endif
 
-//      throw std::logic_error(buffer.str());
-//   }
+		const Vector< Statistics<double> > inputs_statistics = calculate_inputs_statistics();
 
-   return(class_distribution);
-}
+		scale_inputs_minimum_maximum(inputs_statistics);
 
+		return(inputs_statistics);
+	}
 
-// Vector<double> calculate_distances(void) const method
 
-/// Returns a normalized distance between each instance and the mean instance.
-/// The size of this vector is the number of instances.
+	// Vector< Vector<double> > scale_inputs(const std::string&) method
 
-Vector<double> DataSet::calculate_distances(void) const
-{
-    const Matrix<double> data_statistics_matrix = calculate_data_statistics_matrix();
+	/// Calculates the input and target variables statistics. 
+	/// Then it scales the input variables with that values.
+	/// The method to be used is that in the scaling and unscaling method variable. 
+	/// Finally, it returns the statistics. 
 
-    const Vector<double> means = data_statistics_matrix.arrange_column(2);
-    const Vector<double> standard_deviations = data_statistics_matrix.arrange_column(3);
+	Vector< Statistics<double> > DataSet::scale_inputs(const std::string& scaling_unscaling_method)
+	{
+		switch(get_scaling_unscaling_method(scaling_unscaling_method))
+		{
+			case MinimumMaximum:
+				{
+					return(scale_inputs_minimum_maximum());
+				}            
+				break;
 
-    const size_t instances_number = instances.get_instances_number();
-    Vector<double> distances(instances_number);
+			case MeanStandardDeviation:
+				{
+					return(scale_inputs_mean_standard_deviation());
+				}
+				break;
 
-    const size_t variables_number = variables.get_variables_number();
-    Vector<double> instance(variables_number);
+			default:
+				{
+					std::ostringstream buffer;
 
-    int i = 0;
+					buffer << "OpenNN Exception: DataSet class\n"
+						<< "Vector< Statistics<double> > scale_inputs(void) method.\n"
+						<< "Unknown scaling and unscaling method.\n";
 
-    #pragma omp parallel for private(i, instance)
+					throw std::logic_error(buffer.str());
+				}
+				break;
+		}
+	}
 
-    for(i = 0; i < (int)instances_number; i++)
-    {
-        instance = data.arrange_row(i);
 
-        distances[i] = (instance-means/standard_deviations).calculate_norm();
-    }
+	// void scale_inputs(const std::string&, const Vector< Statistics<double> >&) method
 
-    return(distances);
-}
+	/// Calculates the input and target variables statistics.
+	/// Then it scales the input variables with that values.
+	/// The method to be used is that in the scaling and unscaling method variable.
 
+	void DataSet::scale_inputs(const std::string& scaling_unscaling_method, const Vector< Statistics<double> >& inputs_statistics)
+	{
+		switch(get_scaling_unscaling_method(scaling_unscaling_method))
+		{
+			case MinimumMaximum:
+				{
+					scale_inputs_minimum_maximum(inputs_statistics);
+				}
+				break;
 
-// Vector<size_t> balance_binary_targets_class_distribution(void) method
+			case MeanStandardDeviation:
+				{
+					scale_inputs_mean_standard_deviation(inputs_statistics);
+				}
+				break;
 
-/// This method balances the targets ditribution of a data set with only one target variable by unusing
-/// instances whose target variable belongs to the most populated target class.
-/// It returns a vector with the indices of the instances set unused.
-/// @param percentage Percentage of instances to be unused.
+			default:
+				{
+					std::ostringstream buffer;
 
-Vector<size_t> DataSet::balance_binary_targets_distribution(const double& percentage)
-{
-    Vector<size_t> unused_instances;
+					buffer << "OpenNN Exception: DataSet class\n"
+						<< "void scale_inputs(const std::string&, const Vector< Statistics<double> >&) method.\n"
+						<< "Unknown scaling and unscaling method.\n";
 
-    const size_t instances_number = instances.count_used_instances_number();
+					throw std::logic_error(buffer.str());
+				}
+				break;
+		}
+	}
 
-    const Vector<size_t> target_class_distribution = calculate_target_distribution();
 
-    const Vector<size_t> maximal_indices = target_class_distribution.calculate_maximal_indices(2);
+	// void scale_targets_mean_standard_deviation(const Vector< Statistics<double> >&)
 
-    const size_t maximal_target_class_index = maximal_indices[0];
-    const size_t minimal_target_class_index = maximal_indices[1];
+	/// Scales the target variables with given mean and standard deviation values.
+	/// It updates the target variables of the data matrix.
+	/// @param targets_statistics Vector of statistics structures for all the targets in the data set.
+	/// The size of that vector must be equal to the number of target variables.
 
-    size_t total_unbalanced_instances_number = (size_t)((percentage/100.0)*(target_class_distribution[maximal_target_class_index] - target_class_distribution[minimal_target_class_index]));
+	void DataSet::scale_targets_mean_standard_deviation(const Vector< Statistics<double> >& targets_statistics)
+	{
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
 
-    size_t actual_unused_instances_number;
+		data.scale_columns_mean_standard_deviation(targets_statistics, targets_indices);
+	}
 
-    size_t unbalanced_instances_number = total_unbalanced_instances_number/10;
 
-    Vector<size_t> actual_unused_instances;
+	// Vector< Statistics<double> > scale_targets_mean_standard_deviation(void) method
 
-//    std::cout << "Instances to unuse: " << total_unbalanced_instances_number << std::endl;
+	/// Scales the target variables with the calculated mean and standard deviation values from the data matrix.
+	/// It updates the target variables of the data matrix.
+	/// It also returns a vector of statistics structures with the basic statistics of all the variables.
 
-    while(total_unbalanced_instances_number != 0)
-    {
-        if(total_unbalanced_instances_number < instances_number/10)
-        {
-           unbalanced_instances_number = total_unbalanced_instances_number;
-        }
-        else if(total_unbalanced_instances_number > 0 && unbalanced_instances_number < 1)
-        {
-            unbalanced_instances_number = total_unbalanced_instances_number;
-        }
+	Vector< Statistics<double> > DataSet::scale_targets_mean_standard_deviation(void)
+	{    
+		// Control sentence (if debug)
 
-        actual_unused_instances = unuse_most_populated_target(unbalanced_instances_number);
+#ifdef __OPENNN_DEBUG__
 
-        actual_unused_instances_number = actual_unused_instances.size();
+		if(data.empty())
+		{
+			std::ostringstream buffer;
 
-        unused_instances = unused_instances.assemble(actual_unused_instances);
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "Vector< Statistics<double> > scale_targets_mean_standard_deviation(void) method.\n"
+				<< "Data file is not loaded.\n";
 
-        total_unbalanced_instances_number = total_unbalanced_instances_number - actual_unused_instances_number;
+			throw std::logic_error(buffer.str());
+		}
 
-        actual_unused_instances.clear();
-    }
+#endif
 
-    return (unused_instances);
-}
+		const Vector< Statistics<double> > targets_statistics = calculate_targets_statistics();
 
+		scale_targets_mean_standard_deviation(targets_statistics);
 
-// Vector<size_t> balance_multiple_targets_distribution(void) method
+		return(targets_statistics);
+	}
 
-/// This method balances the targets ditribution of a data set with more than one target variable by unusing
-/// instances whose target variable belongs to the most populated target class.
-/// It returns a vector with the indices of the instances set unused.
 
-Vector<size_t> DataSet::balance_multiple_targets_distribution(void)
-{
-    Vector<size_t> unused_instances;
+	// void scale_targets_minimum_maximum(const Vector< Statistics<double> >&) method
 
-    const size_t bins_number = 10;
+	/// Scales the target variables with given minimum and maximum values.
+	/// It updates the target variables of the data matrix.
+	/// @param targets_statistics Vector of statistics structures for all the targets in the data set.
+	/// The size of that vector must be equal to the number of target variables.
 
-    const Vector<size_t> target_class_distribution = calculate_target_distribution();
+	void DataSet::scale_targets_minimum_maximum(const Vector< Statistics<double> >& targets_statistics)
+	{
+		// Control sentence (if debug)
 
-    const size_t targets_number = variables.count_targets_number();
+#ifdef __OPENNN_DEBUG__
 
-    const Vector<size_t> inputs_variables_indices = variables.arrange_inputs_indices();
-    const Vector<size_t> targets_variables_indices = variables.arrange_targets_indices();
+		if(data.empty())
+		{
+			std::ostringstream buffer;
 
-    const Vector<size_t> maximal_target_class_indices = target_class_distribution.calculate_maximal_indices(targets_number);
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "Vector< Statistics<double> > scale_targets_minimum_maximum(void) method.\n"
+				<< "Data file is not loaded.\n";
 
-    const size_t minimal_target_class_index = maximal_target_class_indices[targets_number - 1];
+			throw std::logic_error(buffer.str());
+		}
 
-    // Target class differences
+#endif
 
-    Vector<size_t> target_class_differences(targets_number);
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
 
-    for(size_t i = 0; i < targets_number; i++)
-    {
-        target_class_differences[i] = target_class_distribution[i] - target_class_distribution[minimal_target_class_index];
-    }
+		data.scale_columns_minimum_maximum(targets_statistics, targets_indices);
+	}
 
-    Vector<double> instance;
 
-    size_t count_instances = 0;
+	// Vector< Statistics<double> > scale_targets_minimum_maximum(void) method
 
-    size_t unbalanced_instances_number;
+	/// Scales the target variables with the calculated minimum and maximum values from the data matrix.
+	/// It updates the target variables of the data matrix.
+	/// It also returns a vector of vectors with the statistics of the input target variables. 
 
-    size_t instances_number;
-    Vector<size_t> instances_indices;
+	Vector< Statistics<double> > DataSet::scale_targets_minimum_maximum(void)
+	{
+		const Vector< Statistics<double> > targets_statistics = calculate_targets_statistics();
 
-    Vector< Histogram<double> > data_histograms;
+		scale_targets_minimum_maximum(targets_statistics);
 
-    Matrix<size_t> total_frequencies;
-    Vector<size_t> instance_frequencies;
+		return(targets_statistics);
+	}
 
-    size_t maximal_difference_index;
-    size_t instance_index;
-    size_t instance_target_index;
 
-    Vector<size_t> unbalanced_instances_indices;
+	// Vector< Statistics<double> > scale_targets(const std::string&) method
 
-    while(!target_class_differences.is_in(0, 0))
-    {
-        unbalanced_instances_indices.clear();
-        instances_indices.clear();
+	/// Calculates the input and target variables statistics. 
+	/// Then it scales the target variables with that values.
+	/// The method to be used is that in the scaling and unscaling method variable. 
+	/// Finally, it returns the statistics. 
 
-        instances_indices = instances.arrange_used_indices();
+	Vector< Statistics<double> > DataSet::scale_targets(const std::string& scaling_unscaling_method)
+	{
+		switch(get_scaling_unscaling_method(scaling_unscaling_method))
+		{
+			case MinimumMaximum:
+				{
+					return(scale_targets_minimum_maximum());
+				}            
+				break;
 
-        instances_number = instances_indices.size();
+			case MeanStandardDeviation:
+				{
+					return(scale_targets_mean_standard_deviation());
+				}
+				break;
 
+			default:
+				{
+					std::ostringstream buffer;
 
-        maximal_difference_index = target_class_differences.calculate_maximal_index();
+					buffer << "OpenNN Exception: DataSet class\n"
+						<< "Vector< Statistics<double> > scale_targets(const std::string&) method.\n"
+						<< "Unknown scaling and unscaling method.\n";
 
-        unbalanced_instances_number = (size_t) (target_class_differences[maximal_difference_index]/10);
+					throw std::logic_error(buffer.str());
+				}
+				break;
+		}
+	}
 
-        if(unbalanced_instances_number < 1)
-        {
-            unbalanced_instances_number = 1;
-        }
 
-        data_histograms = calculate_data_histograms(bins_number);
+	// void scale_targets(const std::string&, const Vector< Statistics<double> >&) method
 
-        total_frequencies.clear();
+	/// It scales the input variables with that values.
+	/// The method to be used is that in the scaling and unscaling method variable.
 
-        total_frequencies.set(instances_number, 2);
+	void DataSet::scale_targets(const std::string& scaling_unscaling_method, const Vector< Statistics<double> >& targets_statistics)
+	{
+		switch(get_scaling_unscaling_method(scaling_unscaling_method))
+		{
+			case MinimumMaximum:
+				{
+					scale_targets_minimum_maximum(targets_statistics);
+				}
+				break;
 
-        count_instances = 0;
+			case MeanStandardDeviation:
+				{
+					scale_targets_mean_standard_deviation(targets_statistics);
+				}
+				break;
 
-        for(size_t i = 0; i < instances_number; i++)
-        {
-            instance_index = instances_indices[i];
+			default:
+				{
+					std::ostringstream buffer;
 
-            instance = get_instance(instance_index);
+					buffer << "OpenNN Exception: DataSet class\n"
+						<< "void scale_targets(const std::string&, const Vector< Statistics<double> >&) method.\n"
+						<< "Unknown scaling and unscaling method.\n";
 
-            instance_target_index = targets_variables_indices[maximal_difference_index];
+					throw std::logic_error(buffer.str());
+				}
+				break;
+		}
+	}
 
-            if(instance[instance_target_index] == 1.0)
-            {
-                instance_frequencies = instance.calculate_total_frequencies(data_histograms);
 
-                total_frequencies(count_instances, 0) = instance_frequencies.calculate_partial_sum(inputs_variables_indices);
-                total_frequencies(count_instances, 1) = instance_index;
+	// void unscale_data_mean_standard_deviation(const Vector< Statistics<double> >&) method
 
-                count_instances++;
-            }
-        }
+	/// Unscales the data matrix with given mean and standard deviation values.
+	/// It updates the data matrix.
+	/// @param data_statistics Vector of statistics structures for all the variables in the data set.
+	/// The size of that vector must be equal to the number of variables.
 
-        unbalanced_instances_indices = total_frequencies.sort_greater_rows(0).arrange_column(1).arrange_subvector_first(unbalanced_instances_number);
+	void DataSet::unscale_data_mean_standard_deviation(const Vector< Statistics<double> >& data_statistics)
+	{
+		data.unscale_mean_standard_deviation(data_statistics);
+	}
 
-        unused_instances = unused_instances.assemble(unbalanced_instances_indices);
 
-        instances.set_unused(unbalanced_instances_indices);
+	// void unscale_data_minimum_maximum(const Vector< Statistics<double> >&) method
 
-        target_class_differences[maximal_difference_index] = target_class_differences[maximal_difference_index] - unbalanced_instances_number;
-    }
+	/// Unscales the data matrix with given minimum and maximum values.
+	/// It updates the data matrix.
+	/// @param data_statistics Vector of statistics structures for all the variables in the data set.
+	/// The size of that vector must be equal to the number of variables.
 
-    return(unused_instances);
-}
+	void DataSet::unscale_data_minimum_maximum(const Vector< Statistics<double> >& data_statistics)
+	{
+		data.unscale_minimum_maximum(data_statistics);
+	}
 
 
-// Vector<size_t> unuse_most_populated_target(const size_t&)
+	// void unscale_inputs_mean_standard_deviation(const Vector< Statistics<double> >&) method
 
-/// This method unuses a given number of instances of the most populated target.
-/// If the given number is greater than the number of used instances which belongs to that target,
-/// it unuses all the instances in that target.
-/// If the given number is lower than 1, it unuses 1 instance.
-/// @param unused_target_number Number of instances to set unused.
+	/// Unscales the input variables with given mean and standard deviation values.
+	/// It updates the input variables of the data matrix.
+	/// @param data_statistics Vector of statistics structures for all the variables in the data set.
+	/// The size of that vector must be equal to the number of variables.
 
-Vector<size_t> DataSet::unuse_most_populated_target(const size_t& instances_to_unuse)
-{
-    Vector<size_t> most_populated_instances(instances_to_unuse);
+	void DataSet::unscale_inputs_mean_standard_deviation(const Vector< Statistics<double> >& data_statistics)
+	{
+		const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
 
-    if(instances_to_unuse == 0)
-    {
-        return(most_populated_instances);
-    }
+		data.unscale_columns_mean_standard_deviation(data_statistics, inputs_indices);
+	}
 
-    const size_t bins_number = 10;
 
-    // Variables
+	// void unscale_inputs_minimum_maximum(const Vector< Statistics<double> >&) method
 
-    const size_t targets_number = variables.count_targets_number();
+	/// Unscales the input variables with given minimum and maximum values.
+	/// It updates the input variables of the data matrix.
+	/// @param data_statistics Vector of statistics structures for all the data in the data set.
+	/// The size of that vector must be equal to the number of variables.
 
-    const Vector<size_t> inputs = variables.arrange_inputs_indices();
-    const Vector<size_t> targets = variables.arrange_targets_indices();
+	void DataSet::unscale_inputs_minimum_maximum(const Vector< Statistics<double> >& data_statistics)
+	{
+		const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
 
-    const Vector<size_t> unused_variables = variables.arrange_unused_indices();
+		data.unscale_columns_minimum_maximum(data_statistics, inputs_indices);
+	}
 
-    // Instances
 
-    const Vector<size_t> used_instances = instances.arrange_used_indices();
+	// void unscale_targets_mean_standard_deviation(const Vector< Statistics<double> >&) method
 
-    const size_t used_instances_number = instances.count_used_instances_number();
+	/// Unscales the target variables with given mean and standard deviation values.
+	/// It updates the target variables of the data matrix.
+	/// @param data_statistics Vector of statistics structures for all the variables in the data set.
+	/// The size of that vector must be equal to the number of variables.
 
-    // Most populated target
+	void DataSet::unscale_targets_mean_standard_deviation(const Vector< Statistics<double> >& data_statistics)
+	{
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
 
-    const Vector< Histogram<double> > data_histograms = calculate_data_histograms(bins_number);
+		data.unscale_columns_mean_standard_deviation(data_statistics, targets_indices);
+	}
 
-    size_t most_populated_target;
-    size_t most_populated_bin;
 
-    size_t frequency;
-    size_t maximum_frequency = 0;
+	// void unscale_targets_minimum_maximum(const Vector< Statistics<double> >&) method
 
-    size_t unused;
+	/// Unscales the target variables with given minimum and maximum values.
+	/// It updates the target variables of the data matrix.
+	/// @param data_statistics Vector of statistics structures for all the variables.
+	/// The size of that vector must be equal to the number of variables.
 
-    for(size_t i = 0; i < targets_number; i++)
-    {
-        frequency = data_histograms[targets[i] - unused_variables.count_less_than(targets[i])].calculate_maximum_frequency();
+	void DataSet::unscale_targets_minimum_maximum(const Vector< Statistics<double> >& data_statistics)
+	{
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
 
-        if(frequency > maximum_frequency)
-        {
-            unused = unused_variables.count_less_than(targets[i]);
+		data.unscale_columns_minimum_maximum(data_statistics, targets_indices);
+	}
 
-            maximum_frequency = frequency;
 
-            most_populated_target = targets[i];
+	// void initialize_data(const double& value) method
 
-            most_populated_bin = data_histograms[targets[i] - unused].calculate_most_populated_bin();
-        }
-    }
+	/// Initializes the data matrix with a given value.
+	/// @param new_value Initialization value. 
 
-    // Calculates frequencies of the instances which belong to the most populated target
+	void DataSet::initialize_data(const double& new_value)
+	{
+		data.initialize(new_value);
+	}
 
-    size_t index;
-    size_t bin;
-    double value;
-    Vector<double> instance;
 
-    Vector<size_t> instance_frequencies;
+	// void randomize_data_uniform(const double&, const double&) method
 
-    Matrix<size_t> total_instances_frequencies(maximum_frequency, 2);
+	/// Initializes the data matrix with random values chosen from a uniform distribution
+	/// with given minimum and maximum.
 
-    size_t count_instances = 0;
+	void DataSet::randomize_data_uniform(const double& minimum, const double& maximum)
+	{
+		data.randomize_uniform(minimum, maximum);
+	}
 
-    int i = 0;
 
-//    #pragma omp parallel for private(i, instance_index, instance, instance_value, instance_bin, instance_frequencies) shared(count_instances, total_instances_frequencies, maximal_frequency_target_index)
+	// void randomize_data_normal(const double&, const double&) method
 
-    for(i = 0; i < (int)used_instances_number; i++)
-    {                
-        index = used_instances[i];
+	/// Initializes the data matrix with random values chosen from a normal distribution
+	/// with given mean and standard deviation.
 
-        instance = get_instance(index);
+	void DataSet::randomize_data_normal(const double& mean, const double& standard_deviation)
+	{
+		data.randomize_normal(mean, standard_deviation);
+	}
 
-        value = instance[most_populated_target];
 
-        bin = data_histograms[most_populated_target - unused].calculate_bin(value);
+	// tinyxml2::XMLDocument* to_XML(void) const method
 
-        if(bin == most_populated_bin)
-        {
-            instance_frequencies = instance.calculate_total_frequencies(data_histograms);
+	/// Serializes the data set object into a XML document of the TinyXML library. 
 
-            total_instances_frequencies(count_instances, 0) = instance_frequencies.calculate_partial_sum(inputs);
-            total_instances_frequencies(count_instances, 1) = used_instances[i];
+	tinyxml2::XMLDocument* DataSet::to_XML(void) const
+	{
+		tinyxml2::XMLDocument* document = new tinyxml2::XMLDocument;
 
-            count_instances++;
-        }
-    }
+		std::ostringstream buffer;
 
-    // Unuses instances
+		// Data set
 
-    if(instances_to_unuse > maximum_frequency)
-    {
-        most_populated_instances = total_instances_frequencies.sort_greater_rows(0).arrange_column(1).arrange_subvector_first(maximum_frequency);
-    }
-    else
-    {
-        most_populated_instances = total_instances_frequencies.sort_greater_rows(0).arrange_column(1).arrange_subvector_first(instances_to_unuse);
-    }
+		tinyxml2::XMLElement* data_set_element = document->NewElement("DataSet");
+		document->InsertFirstChild(data_set_element);
 
-    instances.set_unused(most_populated_instances);
+		tinyxml2::XMLElement* element = NULL;
+		tinyxml2::XMLText* text = NULL;
 
-    return(most_populated_instances);
-}
+		// Data file
 
+		tinyxml2::XMLElement* data_file_element = document->NewElement("DataFile");
 
-// Vector<size_t> balance_function_regression_targets_distribution(void)
+		data_set_element->InsertFirstChild(data_file_element);
 
-/// This method balances the target ditribution of a data set for a function regression problem.
-/// It returns a vector with the indices of the instances set unused.
-/// It unuses a given percentage of the instances.
-/// @param percentage_balanced_instances Perecentage of the instances to be unused.
+		// File type
+		{
+			element = document->NewElement("FileType");
+			data_file_element->LinkEndChild(element);
 
-Vector<size_t> DataSet::balance_function_regression_targets_distribution(const double& percentage)
-{
-    time_t beginning_time, current_time;
-    time(&beginning_time);
-    double elapsed_time;
+			text = document->NewText(write_file_type().c_str());
+			element->LinkEndChild(text);
+		}
 
-    Vector<size_t> unused_instances;
+		//First cell
+		{
+			element = document->NewElement("FirstCell");
+			data_file_element->LinkEndChild(element);
 
-    const size_t instances_number = instances.count_used_instances_number();
+			text = document->NewText(write_first_cell().c_str());
+			element->LinkEndChild(text);
+		}
 
-    const size_t instances_to_unuse = (size_t)(instances_number*percentage/100.0);
+		//Last cell
+		{
+			element = document->NewElement("LastCell");
+			data_file_element->LinkEndChild(element);
 
-//    std::cout << "Instances to unuse: " << instances_to_unuse << std::endl;
+			text = document->NewText(write_last_cell().c_str());
+			element->LinkEndChild(text);
+		}
 
-    size_t count;
+		//Sheet number
+		{
+			element = document->NewElement("SheetNumber");
+			data_file_element->LinkEndChild(element);
 
-    while(unused_instances.size() < instances_to_unuse)
-    {        
-        if(instances_to_unuse - unused_instances.size() < instances_to_unuse/10)
-        {
-            count = instances_to_unuse - unused_instances.size();
-        }
-        else
-        {
-            count = instances_to_unuse/10;
-        }
+			buffer.str("");
+			buffer << write_sheet_number();
 
-        if(count == 0)
-        {
-            count = 1;
-        }
+			text = document->NewText(buffer.str().c_str());
+			element->LinkEndChild(text);
+		}
 
-        unused_instances = unused_instances.assemble(unuse_most_populated_target(count));
-    }
+		// Lags Number
+		{
+			element = document->NewElement("LagsNumber");
+			data_file_element->LinkEndChild(element);
 
-    time(&current_time);
-    elapsed_time = difftime(current_time, beginning_time);
+			const size_t lags_number = get_lags_number();
 
-    return(unused_instances);
-}
+			buffer.str("");
+			buffer << lags_number;
 
+			text = document->NewText(buffer.str().c_str());
+			element->LinkEndChild(text);
+		}
 
-// Vector<size_t> arrange_binary_inputs_indices(void) const method
+		// Steps Ahead
+		{
+			element = document->NewElement("StepsAhead");
+			data_file_element->LinkEndChild(element);
 
-Vector<size_t> DataSet::arrange_binary_inputs_indices(void) const
-{
-    const size_t inputs_number = variables.count_inputs_number();
+			const size_t steps_ahead = get_steps_ahead();
 
-    const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
+			buffer.str("");
+			buffer << steps_ahead;
 
-    Vector<size_t> binary_inputs_indices;
+			text = document->NewText(buffer.str().c_str());
+			element->LinkEndChild(text);
+		}
 
-    for(size_t i = 0; i < inputs_number; i++)
-    {
-        if(is_binary_variable(inputs_indices[i]))
-        {
-            binary_inputs_indices.push_back(inputs_indices[i]);
-        }
-    }
+		// Header line
+		{
+			element = document->NewElement("ColumnsName");
+			data_file_element->LinkEndChild(element);
 
-    return(binary_inputs_indices);
-}
+			buffer.str("");
+			buffer << header_line;
 
+			text = document->NewText(buffer.str().c_str());
+			element->LinkEndChild(text);
+		}
 
-// Vector<size_t> arrange_real_inputs_indices(void) const method
+		// Rows label
+		{
+			element = document->NewElement("RowsLabel");
+			data_file_element->LinkEndChild(element);
 
-Vector<size_t> DataSet::arrange_real_inputs_indices(void) const
-{
-    const size_t inputs_number = variables.count_inputs_number();
+			buffer.str("");
+			buffer << rows_label;
 
-    const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
+			text = document->NewText(buffer.str().c_str());
+			element->LinkEndChild(text);
+		}
 
-    Vector<size_t> real_inputs_indices;
+		// Separator
+		{
+			element = document->NewElement("Separator");
+			data_file_element->LinkEndChild(element);
 
-    for(size_t i = 0; i < inputs_number; i++)
-    {
-        if(!is_binary_variable(inputs_indices[i]))
-        {
-            real_inputs_indices.push_back(inputs_indices[i]);
-        }
-    }
+			text = document->NewText(write_separator().c_str());
+			element->LinkEndChild(text);
+		}
 
-    return(real_inputs_indices);
-}
+		// Missing values label
+		{
+			element = document->NewElement("MissingValuesLabel");
+			data_file_element->LinkEndChild(element);
 
+			text = document->NewText(missing_values_label.c_str());
+			element->LinkEndChild(text);
+		}
 
-// void sum_binary_inputs(void) method
-// @todo
+		// Data file name
+		{
+			element = document->NewElement("DataFileName");
+			data_file_element->LinkEndChild(element);
 
-void DataSet::sum_binary_inputs(void)
-{
-//    const size_t inputs_number = variables.count_inputs_number();
+			text = document->NewText(data_file_name.c_str());
+			element->LinkEndChild(text);
+		}
 
-//    const size_t instances_number = instances.get_instances_number();
+		// Variables 
+		{
+			element = document->NewElement("Variables");
+			data_set_element->LinkEndChild(element);
 
-//    const Vector<size_t> binary_inputs_indices = arrange_binary_inputs_indices();
+			const tinyxml2::XMLDocument* variables_document = variables.to_XML();
 
-//    const size_t binary_inputs_number = binary_inputs_indices.size();
+			const tinyxml2::XMLElement* variables_element = variables_document->FirstChildElement("Variables");
 
-//    Vector<double> binary_variable(instances_number, 0.0);
+			DeepClone(element, variables_element, document, NULL);
 
-//    for(size_t i = 0; i < binary_inputs_number; i++)
-//    {
-//        binary_variable += data.arrange_column(binary_inputs_indices[i]);
-//    }
+			delete variables_document;
+		}
 
-//    const Vector<size_t> real_inputs_indices = arrange_real_inputs_indices();
+		// Instances
+		{
+			element = document->NewElement("Instances");
+			data_set_element->LinkEndChild(element);
 
-//    Matrix<double> new_data = data.arrange_submatrix_columns(real_inputs_indices);
+			const tinyxml2::XMLDocument* instances_document = instances.to_XML();
 
-//    new_data.append_column(binary_variable);
+			const tinyxml2::XMLElement* instances_element = instances_document->FirstChildElement("Instances");
 
-//    new_data = new_data.assemble_columns(arrange_target_data());
-}
+			DeepClone(element, instances_element, document, NULL);
 
+			delete instances_document;
+		}
 
-// Vector<double> calculate_distances(const size_t&) const
+		// Missing values
+		{
+			element = document->NewElement("MissingValues");
+			data_set_element->LinkEndChild(element);
 
-/// Returns a matrix with the distances between every instance and the rest of the instances.
-/// The number of rows is the number of instances in the data set.
-/// The number of columns is the number of instances in the data set.
-/// @param nearest_neighbors_number Nearest neighbors number.
+			const tinyxml2::XMLDocument* missing_values_document = missing_values.to_XML();
 
-Matrix<double> DataSet::calculate_instances_distances(const size_t& nearest_neighbors_number) const
-{
-    const size_t instances_number = instances.count_used_instances_number();
-    const Vector<size_t> instances_indices = instances.arrange_used_indices();
+			const tinyxml2::XMLElement* missing_values_element = missing_values_document->FirstChildElement("MissingValues");
 
-    //Matrix<double> distances(instances_number, instances_number, 0.0);
+			DeepClone(element, missing_values_element, document, NULL);
 
-    Vector<double> distances(nearest_neighbors_number , -1.0);
+			delete missing_values_document;
+		}
 
-    Vector<double> instance;
-    Vector<double> other_instance;
+		// Display
+		//   {
+		//      element = document->NewElement("Display");
+		//      data_set_element->LinkEndChild(element);
 
-    size_t maximal_index;
+		//      buffer.str("");
+		//      buffer << display;
 
-    double distance;
+		//      text = document->NewText(buffer.str().c_str());
+		//      element->LinkEndChild(text);
+		//   }
 
-   // #pragma omp parallel for private(i)
+		return(document);
+	}
 
-    for(size_t i = 0; i < instances_number; i++)
-    {
-        for(size_t j = 0; j < instances_number; j++)
-         {
 
-              distance = data.calculate_distance(instances_indices[i], instances_indices[j]);
+	// void write_XML(tinyxml2::XMLPrinter&) const method
 
-              if(distances.count_greater_than(distance) != 0)
-              {
-                   maximal_index = distances.calculate_maximal_index();
+	/// Serializes the data set object into a XML document of the TinyXML library without keep the DOM tree in memory.
 
-                   distances[maximal_index] = distance;
-              }
-          }
-    }
+	void DataSet::write_XML(tinyxml2::XMLPrinter& file_stream) const
+	{
+		std::ostringstream buffer;
 
-    Matrix<double> distances1(instances_number, instances_number, 0.0);
-    return(distances1);
-}
+		file_stream.OpenElement("DataSet");
 
+		// Data file
 
-// Matrix<size_t> calculate_nearest_neighbors(const Matrix<double>&, const size_t&) const
+		file_stream.OpenElement("DataFile");
 
-/// Returns a matrix with the k-nearest neighbors to every used instance in the data set.
-/// Number of rows is the number of isntances in the data set.
-/// Number of columns is the number of nearest neighbors to calculate.
-/// @param distances Distances between every instance and the rest of them.
-/// @param nearest_neighbors_number Number of nearest neighbors to be calculated.
+		// File type
 
-Matrix<size_t> DataSet::calculate_nearest_neighbors(const Matrix<double>& distances, const size_t& nearest_neighbors_number) const
-{
-    const size_t instances_number = instances.count_used_instances_number();
+		{
+			file_stream.OpenElement("FileType");
 
-    Matrix<size_t> nearest_neighbors(instances_number, nearest_neighbors_number);
+			file_stream.PushText(write_file_type().c_str());
 
-    Vector<double> instance_distances;
-    Vector<size_t> minimal_distances_indices;
+			file_stream.CloseElement();
+		}
 
-    for(size_t i = 0; i < instances_number; i++)
-    {
-        instance_distances = distances.arrange_row(i);
-        minimal_distances_indices = instance_distances.calculate_minimal_indices(nearest_neighbors_number + 1);
+		// First cell
 
-        for(size_t j = 0; j < nearest_neighbors_number; j++)
-        {
-            nearest_neighbors(i, j) = minimal_distances_indices[j + 1];
-        }
-    }
+		{
+			file_stream.OpenElement("FirstCell");
 
-    return(nearest_neighbors);
-}
+			file_stream.PushText(write_first_cell().c_str());
 
+			file_stream.CloseElement();
+		}
 
-// Vector<double> calculate_k_distances(const Matrix<double>&) const
+		// Last cell
 
-/// Returns a vector with the k-distance of every instance in the data set, which is the distance between every
-/// instance and k-th nearest neighbor.
-/// @param distances Distances between every instance in the data set.
-/// @param nearest_neighbors_number Number of nearest neighbors to be calculated.
+		{
+			file_stream.OpenElement("LastCell");
 
-Vector<double> DataSet::calculate_k_distances(const Matrix<double>& distances, const size_t& nearest_neighbors_number) const
-{
-    const size_t instances_number = instances.count_used_instances_number();
+			file_stream.PushText(write_last_cell().c_str());
 
-    const Matrix<size_t> nearest_neighbors = calculate_nearest_neighbors(distances, nearest_neighbors_number);
+			file_stream.CloseElement();
+		}
 
-    size_t maximal_index;
+		// Sheet number
 
-    Vector<double> k_distances(instances_number);
+		{
+			file_stream.OpenElement("SheetNumber");
 
-    for(size_t i = 0; i < instances_number; i++)
-    {
-        maximal_index = nearest_neighbors(i, nearest_neighbors_number - 1);
+			buffer.str("");
+			buffer << write_sheet_number();
 
-        k_distances[i] = distances.arrange_row(i)[maximal_index];
-    }
+			file_stream.PushText(buffer.str().c_str());
 
-    return(k_distances);
-}
+			file_stream.CloseElement();
+		}
 
+		// Lags number
 
-// Matrix<double> calculate_reachability_distance(const Matrix<double>&, Vector<double>&) const
+		{
+			file_stream.OpenElement("LagsNumber");
 
-/// Calculates the reachability distances for the instances in the data set.
-/// @param distances Distances between every instance.
-/// @param k_distances Distances of the k-th nearest neighbors.
+			buffer.str("");
+			buffer << get_lags_number();
 
-Matrix<double> DataSet::calculate_reachability_distances(const Matrix<double>& distances, const Vector<double>& k_distances) const
-{
-    const size_t instances_number = instances.count_used_instances_number();
+			file_stream.PushText(buffer.str().c_str());
 
-    Matrix<double> reachability_distances(instances_number, instances_number);
+			file_stream.CloseElement();
+		}
 
-    for(size_t i = 0; i < instances_number; i++)
-    {
-        for(size_t j = i; j < instances_number; j++)
-        {
-            if(distances(i, j) <= k_distances[i])
-            {
-                reachability_distances(i, j) = k_distances[i];
-                reachability_distances(j, i) = k_distances[i];
-            }
-            else if(distances(i, j) > k_distances[i])
-            {
-                reachability_distances(i, j) = distances(i, j);
-                reachability_distances(j, i) = distances(j, i);
-            }
-         }
-    }
+		// Steps Ahead
 
-    return (reachability_distances);
-}
+		{
+			file_stream.OpenElement("StepsAhead");
 
+			buffer.str("");
+			buffer << get_steps_ahead();
 
-// Vector<double> calculate_reachability_density(const Matrix<double>&, const size_t&) const
+			file_stream.PushText(buffer.str().c_str());
 
-/// Calculates reachability density for every element of the data set.
-/// @param distances Distances between every instance in the data set.
-/// @param nearest_neighbors_number Number of nearest neighbors to be calculated.
+			file_stream.CloseElement();
+		}
 
-Vector<double> DataSet::calculate_reachability_density(const Matrix<double>& distances, const size_t& nearest_neighbors_number) const
-{
-   const size_t instances_number = instances.count_used_instances_number();
+		// Header line
 
-   const Vector<double> k_distances = calculate_k_distances(distances, nearest_neighbors_number);
+		{
+			file_stream.OpenElement("ColumnsName");
 
-   const Matrix<double> reachability_distances = calculate_reachability_distances(distances, k_distances);
+			buffer.str("");
+			buffer << header_line;
 
-   const Matrix<size_t> nearest_neighbors_indices = calculate_nearest_neighbors(distances, nearest_neighbors_number);
+			file_stream.PushText(buffer.str().c_str());
 
-   Vector<double> reachability_density(instances_number);
+			file_stream.CloseElement();
+		}
 
-   Vector<size_t> nearest_neighbors_instance;
+		// Rows label
 
-   for(size_t i = 0; i < instances_number; i++)
-   {
-       nearest_neighbors_instance = nearest_neighbors_indices.arrange_row(i);
+		{
+			file_stream.OpenElement("RowsLabel");
 
-       reachability_density[i] = nearest_neighbors_number/ reachability_distances.arrange_row(i).calculate_partial_sum(nearest_neighbors_instance);
-   }
+			buffer.str("");
+			buffer << rows_label;
 
-   return (reachability_density);
+			file_stream.PushText(buffer.str().c_str());
 
-}
+			file_stream.CloseElement();
+		}
 
+		// Separator
 
-// Vector<double> calculate_local_outlier_factor(const size_t&) const
+		{
+			file_stream.OpenElement("Separator");
 
-/// Returns a vector with the local outlier factors for every used instance.
-/// @param nearest_neighbors_number Number of neighbors to be calculated.
+			file_stream.PushText(write_separator().c_str());
 
-Vector<double> DataSet::calculate_local_outlier_factor(const size_t& nearest_neighbors_number) const
-{
-    const size_t instances_number = instances.count_used_instances_number();
+			file_stream.CloseElement();
+		}
 
-    const Matrix<double> distances = calculate_instances_distances(nearest_neighbors_number);
-    const Vector<double> reachability_density = calculate_reachability_density(distances, nearest_neighbors_number);
+		// Missing values label
 
-    const Matrix<size_t> nearest_neighbors = calculate_nearest_neighbors(distances, nearest_neighbors_number);
+		{
+			file_stream.OpenElement("MissingValuesLabel");
 
-    Vector<size_t> instance_nearest_neighbors(nearest_neighbors_number);
+			file_stream.PushText(missing_values_label.c_str());
 
-    Vector<double> local_outlier_factor(instances_number);
+			file_stream.CloseElement();
+		}
 
-    for(size_t i = 0; i < instances_number; i++)
-    {
-        instance_nearest_neighbors = nearest_neighbors.arrange_row(i);
+		// Data file name
 
-        local_outlier_factor[i] = (reachability_density.calculate_partial_sum(instance_nearest_neighbors))/(nearest_neighbors_number*reachability_density[i]);
-    }
+		{
+			file_stream.OpenElement("DataFileName");
 
-    return (local_outlier_factor);
-}
+			file_stream.PushText(data_file_name.c_str());
 
+			file_stream.CloseElement();
+		}
 
-// Vector<size_t> clean_local_outlier_factor(const size_t&)
+		file_stream.CloseElement();
 
-/// Removes the outliers from the data set using the local outlier factor method.
-/// @param nearest_neighbors_number Number of nearest neighbros to calculate
-/// @todo
+		// Variables
 
-Vector<size_t> DataSet::clean_local_outlier_factor(const size_t& nearest_neighbors_number)
-{
-    Vector<size_t> unused_instances;
+		variables.write_XML(file_stream);
 
-    const Vector<double> local_outlier_factor = calculate_local_outlier_factor(nearest_neighbors_number);
+		// Instances
 
-    const size_t instances_number = instances.count_used_instances_number();
-    const Vector<size_t> instances_indices = instances.arrange_used_indices();
+		instances.write_XML(file_stream);
 
-    for(size_t i = 0; i < instances_number; i++)
-    {
-        if(local_outlier_factor[i] > 1.6001)
-        {
-            instances.set_use(instances_indices[i], Instances::Unused);
+		// Missing values
 
-            unused_instances.push_back(instances_indices[i]);
-        }
-    }
+		missing_values.write_XML(file_stream);
 
-    return(unused_instances);
-}
 
+		file_stream.CloseElement();
+	}
 
-// Vector<size_t> clean_Tukey_outliers(const double&)
 
-/// Removes the outliers from the data set using the Tukey's test.
-/// @param cleaning_parameter Parameter used to detect outliers.
+	// void from_XML(const tinyxml2::XMLDocument&) method
 
-Vector<size_t> DataSet::clean_Tukey_outliers(const double& cleaning_parameter)
-{
-    const size_t instances_number = instances.count_used_instances_number();
-    const Vector<size_t> instances_indices = instances.arrange_used_indices();
+	/// Deserializes a TinyXML document into this data set object.
+	/// @param data_set_document XML document containing the member data.
 
-    const size_t variables_number = variables.count_used_variables_number();
-    const Vector<size_t> used_variables_indices = variables.arrange_used_indices();
+	void DataSet::from_XML(const tinyxml2::XMLDocument& data_set_document)
+	{
+		std::ostringstream buffer;
 
-    Vector<size_t> unused_instances_indices;
+		// Data set element
 
-    Vector<double> instance;
+		const tinyxml2::XMLElement* data_set_element = data_set_document.FirstChildElement("DataSet");
 
-    Vector<double> box_plot;
-    double interquartile_range;
+		if(!data_set_element)
+		{
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void from_XML(const tinyxml2::XMLDocument&) method.\n"
+				<< "Data set element is NULL.\n";
 
-    size_t variable_index;
+			throw std::logic_error(buffer.str());
+		}
 
-    for(size_t i = 0; i < variables_number; i++)
-    {
-        variable_index = used_variables_indices[i];
+		// Data file
 
-        box_plot = data.arrange_column(variable_index).calculate_box_plots();
+		const tinyxml2::XMLElement* data_file_element = data_set_element->FirstChildElement("DataFile");
 
-        if(box_plot[3] == box_plot[1])
-        {
-            continue;
-        }
-        else if(is_binary_variable(variable_index))
-        {
-            continue;
-        }
-        else
-        {
-            interquartile_range = std::abs((box_plot[3] - box_plot[1]));
-        }
+		if(!data_file_element)
+		{
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void from_XML(const tinyxml2::XMLDocument&) method.\n"
+				<< "Data file element is NULL.\n";
 
-        for(size_t j = 0; j < instances_number; j++)
-        {
-            instance = get_instance(instances_indices[j]);
+			throw std::logic_error(buffer.str());
+		}
 
-            if(instance[variable_index] < (box_plot[1] - cleaning_parameter*interquartile_range)
-            && !(unused_instances_indices.contains(instances_indices[j])))
-            {
-                unused_instances_indices.push_back(instances_indices[j]);
-            }
-            else if(instance[variable_index] > (box_plot[3] + cleaning_parameter*interquartile_range)
-                 && !(unused_instances_indices.contains(instances_indices[j])))
-            {
-                unused_instances_indices.push_back(instances_indices[j]);
-            }
-        }
-    }
+		// Data file name
+		{
+			const tinyxml2::XMLElement* data_file_name_element = data_file_element->FirstChildElement("DataFileName");
 
-    instances.set_unused(unused_instances_indices);
+			if(!data_file_name_element)
+			{
+				buffer << "OpenNN Exception: DataSet class.\n"
+					<< "void from_XML(const tinyxml2::XMLDocument&) method.\n"
+					<< "Data file name element is NULL.\n";
 
-    return(unused_instances_indices);
-}
+				throw std::logic_error(buffer.str());
+			}
 
+			if(data_file_name_element->GetText())
+			{
+				const std::string new_data_file_name = data_file_name_element->GetText();
 
-// Matrix<double> calculate_autocorrelation(const size_t&) const method
+				set_data_file_name(new_data_file_name);
+			}
+		}
 
-/// Returns a matrix with the values of autocorrelation for every variable in the data set.
-/// The number of rows is equal to the number of instances.
-/// The number of columns is the maximum lags number.
-/// @param maximum_lags_number Maximum lags number for which autocorrelation is calculated.
+		// Lags number
+		{
+			const tinyxml2::XMLElement* lags_number_element = data_file_element->FirstChildElement("LagsNumber");
 
-Matrix<double> DataSet::calculate_autocorrelation(const size_t& maximum_lags_number) const
-{
-    if(lags_number > instances.count_used_instances_number())
-    {
-        std::ostringstream buffer;
+			if(!lags_number_element)
+			{
+				buffer << "OpenNN Exception: DataSet class.\n"
+					<< "void from_XML(const tinyxml2::XMLDocument&) method.\n"
+					<< "Lags number element is NULL.\n";
 
-        buffer << "OpenNN Exception: DataSet class.\n"
-               << "Matrix<double> calculate_autocorrelation(const size_t&) method.\n"
-               << "Maximum lags number (" << maximum_lags_number << ") is greater than the number of instances (" << instances.count_used_instances_number() <<") \n";
+				throw std::logic_error(buffer.str());
+			}
 
-        throw std::logic_error(buffer.str());
-    }
+			if(lags_number_element->GetText())
+			{
+				const size_t new_lags_number = atoi(lags_number_element->GetText());
 
-    const size_t variables_number = time_series_data.get_columns_number();
+				set_lags_number(new_lags_number);
+			}
+		}
 
-    Matrix<double> autocorrelation(variables_number, maximum_lags_number);
+		// Steps ahead
+		{
+			const tinyxml2::XMLElement* steps_ahead_element = data_file_element->FirstChildElement("StepsAhead");
 
-    for(size_t i = 0; i < maximum_lags_number; i++)
-    {
-        for(size_t j = 0; j < variables_number; j++)
-        {
-            autocorrelation.set_row(j, time_series_data.arrange_column(j).calculate_autocorrelation(maximum_lags_number));
-        }
-    }
+			if(!steps_ahead_element)
+			{
+				buffer << "OpenNN Exception: DataSet class.\n"
+					<< "void from_XML(const tinyxml2::XMLDocument&) method.\n"
+					<< "Steps ahead element is NULL.\n";
 
-    return autocorrelation;
-}
+				throw std::logic_error(buffer.str());
+			}
 
+			if(steps_ahead_element->GetText())
+			{
+				const size_t new_steps_ahead = atoi(steps_ahead_element->GetText());
 
-// Matrix< Vector<double> > calculate_cross_correlation(void)
+				set_steps_ahead_number(new_steps_ahead);
+			}
+		}
 
-/// Calculates the cross-correlation between all the variables in the data set.
+		// File Type
+		{
+			const tinyxml2::XMLElement* file_type_element = data_file_element->FirstChildElement("FileType");
 
-Matrix< Vector<double> > DataSet::calculate_cross_correlation(void) const
-{
-    const size_t variables_number = variables.count_used_variables_number()/(lags_number + steps_ahead);
+			if(!file_type_element)
+			{
+				buffer << "OpenNN Exception: DataSet class.\n"
+					<< "void from_XML(const tinyxml2::XMLDocument&) method.\n"
+					<< "File type element is NULL.\n";
 
-    Matrix< Vector<double> > cross_correlation(variables_number, variables_number);
+				throw std::logic_error(buffer.str());
+			}
 
-    Vector<double> actual_column;
+			if(file_type_element->GetText())
+			{
+				const std::string new_file_type = file_type_element->GetText();
 
-    for(size_t i = 0; i < variables_number; i++)
-    {
-        actual_column = time_series_data.arrange_column(i);
+				set_file_type(new_file_type);
+			}
+		}
 
-        for(size_t j = 0; j < variables_number; j++)
-        {
-            cross_correlation(i , j) = actual_column.calculate_cross_correlation(time_series_data.arrange_column(j));
-        }
-    }
+		// First Cell
+		{
+			const tinyxml2::XMLElement* first_cell_element = data_file_element->FirstChildElement("FirstCell");
 
-    return(cross_correlation);
-}
+			if(!first_cell_element)
+			{
+				buffer << "OpenNN Exception: DataSet class.\n"
+					<< "void from_XML(const tinyxml2::XMLDocument&) method.\n"
+					<< "First Cell element is NULL.\n";
 
+				throw std::logic_error(buffer.str());
+			}
 
-// void generate_artificial_data(const size_t&, const size_t&) method
+			if(first_cell_element->GetText())
+			{
+				const std::string new_first_cell = first_cell_element->GetText();
 
-/// Generates an artificial dataset with a given number of instances and number of variables
-/// using the Rosenbrock function.
-/// @param instances_number Number of instances in the dataset.
-/// @param variables_number Number of variables in the dataset.
+				first_cell = new_first_cell;
+			}
+		}
 
-void DataSet::generate_data_function_regression(const size_t& instances_number, const size_t& variables_number)
-{
-    const size_t inputs_number = variables_number-1;
-    const size_t targets_number = 1;
+		// Last Cell
+		{
+			const tinyxml2::XMLElement* last_cell_element = data_file_element->FirstChildElement("LastCell");
 
-    Matrix<double> input_data(instances_number, inputs_number);
-    input_data.randomize_uniform(-2.048, 2.048);
+			if(!last_cell_element)
+			{
+				buffer << "OpenNN Exception: DataSet class.\n"
+					<< "void from_XML(const tinyxml2::XMLDocument&) method.\n"
+					<< "Last Cell element is NULL.\n";
 
-    Matrix<double> target_data(instances_number, targets_number);
+				throw std::logic_error(buffer.str());
+			}
 
-    double rosenbrock;
+			if(last_cell_element->GetText())
+			{
+				const std::string new_last_cell = last_cell_element->GetText();
 
-    for(size_t i = 0; i < instances_number; i++)
-    {
-        target_data(i, 0) = input_data.arrange_row(i).calculate_norm();
+				last_cell = new_last_cell;
+			}
+		}
 
-        rosenbrock = 0.0;
+		// Sheet number
+		{
+			const tinyxml2::XMLElement* sheet_number_element = data_file_element->FirstChildElement("SheetNumber");
 
-        for(size_t j = 0; j < inputs_number-1; j++)
-        {
-            rosenbrock +=
-            (1.0 - input_data(i,j))*(1.0 - input_data(i,j))
-            + 100.0*(input_data(i,j+1)-input_data(i,j)*input_data(i,j))*(input_data(i,j+1)-input_data(i,j)*input_data(i,j));
-        }
+			if(!sheet_number_element)
+			{
+				buffer << "OpenNN Exception: DataSet class.\n"
+					<< "void from_XML(const tinyxml2::XMLDocument&) method.\n"
+					<< "Sheet Number element is NULL.\n";
 
-        target_data(i, 0) = rosenbrock;
-    }
+				throw std::logic_error(buffer.str());
+			}
 
-    set(input_data.assemble_columns(target_data));
+			if(sheet_number_element->GetText())
+			{
+				const size_t new_sheet_number = atoi(sheet_number_element->GetText());
 
-    data.scale_minimum_maximum();
-}
+				sheet_number = new_sheet_number;
+			}
+		}
 
+		// Header line
+		{
+			const tinyxml2::XMLElement* header_element = data_file_element->FirstChildElement("ColumnsName");
 
-// void generate_data_binary_classification(const size_t&, const size_t&) method
+			if(header_element)
+			{
+				const std::string new_header_string = header_element->GetText();
 
-void DataSet::generate_data_binary_classification(const size_t& instances_number, const size_t& inputs_number)
-{
-    const size_t negatives = instances_number/2;
-    const size_t positives = instances_number - negatives;
+				try
+				{
+					set_header_line(new_header_string != "0");
+				}
+				catch(const std::logic_error& e)
+				{
+					std::cout << e.what() << std::endl;
+				}
+			}
+		}
 
-    // Negatives data
+		// Rows label
+		{
+			const tinyxml2::XMLElement* rows_label_element = data_file_element->FirstChildElement("RowsLabel");
 
-    Vector<double> target_0(negatives, 0.0);
+			if(rows_label_element)
+			{
+				const std::string new_rows_label_string = rows_label_element->GetText();
 
-    Matrix<double> class_0(negatives, inputs_number);
+				try
+				{
+					set_rows_label(new_rows_label_string != "0");
+				}
+				catch(const std::logic_error& e)
+				{
+					std::cout << e.what() << std::endl;
+				}
+			}
+		}
 
-    class_0.randomize_normal(-1.0, 1.0);
+		// Separator
+		{
+			const tinyxml2::XMLElement* separator_element = data_file_element->FirstChildElement("Separator");
 
-    class_0.append_column(target_0);
+			if(separator_element)
+			{
+				if(separator_element->GetText())
+				{              
+					const std::string new_separator = separator_element->GetText();
 
-    // Positives data
+					set_separator(new_separator);
+				}
+				else
+				{
+					set_separator("Space");
+				}
+			}
+			else
+			{
+				set_separator("Space");
+			}
+		}
 
-    Vector<double> target_1(positives, 1.0);
+		// Missing values label
+		{
+			const tinyxml2::XMLElement* missing_values_label_element = data_file_element->FirstChildElement("MissingValuesLabel");
 
-    Matrix<double> class_1(positives, inputs_number);
+			if(missing_values_label_element)
+			{
+				if(missing_values_label_element->GetText())
+				{
+					const std::string new_missing_values_label = missing_values_label_element->GetText();
 
-    class_1.randomize_normal(1.0, 1.0);
+					set_missing_values_label(new_missing_values_label);
+				}
+			}
+		}
 
-    class_1.append_column(target_1);
+		// Variables
+		{
+			const tinyxml2::XMLElement* variables_element = data_set_element->FirstChildElement("Variables");
 
-    // Assemble
+			if(variables_element)
+			{
+				tinyxml2::XMLDocument variables_document;
 
-    set(class_0.assemble_rows(class_1));
+				tinyxml2::XMLElement* variables_element_clone = variables_document.NewElement("Variables");
+				variables_document.InsertFirstChild(variables_element_clone);
 
-}
+				DeepClone(variables_element_clone, variables_element, &variables_document, NULL);
 
+				variables.from_XML(variables_document);
+			}
+		}
 
-// void generate_data_multiple_classification(const size_t&, const size_t&) method
+		// Instances
+		{
+			const tinyxml2::XMLElement* instances_element = data_set_element->FirstChildElement("Instances");
 
-void DataSet::generate_data_multiple_classification(const size_t&, const size_t&)
-{
+			if(instances_element)
+			{
+				tinyxml2::XMLDocument instances_document;
 
-}
+				tinyxml2::XMLElement* instances_element_clone = instances_document.NewElement("Instances");
+				instances_document.InsertFirstChild(instances_element_clone);
 
+				DeepClone(instances_element_clone, instances_element, &instances_document, NULL);
 
-// bool has_data(void) const method
+				instances.from_XML(instances_document);
+			}
+		}
 
-/// Returns true if the data matrix is not empty (it has not been loaded),
-/// and false otherwise.
+		// Missing values
+		{
+			const tinyxml2::XMLElement* missing_values_element = data_set_element->FirstChildElement("MissingValues");
 
-bool DataSet::has_data(void) const
-{
-    if(data.empty())
-    {
-        return(false);
-    }
-    else
-    {
-        return(true);
-    }
-}
+			if(missing_values_element)
+			{
+				tinyxml2::XMLDocument missing_values_document;
 
+				tinyxml2::XMLElement* missing_values_element_clone = missing_values_document.NewElement("MissingValues");
+				missing_values_document.InsertFirstChild(missing_values_element_clone);
 
-// Vector<size_t> filter_data(const Vector<double>&, const Vector<double>&) method
+				DeepClone(missing_values_element_clone, missing_values_element, &missing_values_document, NULL);
 
-/// Unuses those instances with values outside a defined range.
-/// @param minimums Vector of minimum values in the range.
-/// The size must be equal to the number of variables.
-/// @param maximums Vector of maximum values in the range.
-/// The size must be equal to the number of variables.
+				missing_values.from_XML(missing_values_document);
+			}
+		}
 
-Vector<size_t> DataSet::filter_data(const Vector<double>& minimums, const Vector<double>& maximums)
-{
-    const size_t variables_number = variables.get_variables_number();
+		// Display
+		{
+			const tinyxml2::XMLElement* display_element = data_set_element->FirstChildElement("Display");
 
-    // Control sentence (if debug)
+			if(display_element)
+			{
+				const std::string new_display_string = display_element->GetText();
 
-    #ifdef __OPENNN_DEBUG__
+				try
+				{
+					set_display(new_display_string != "0");
+				}
+				catch(const std::logic_error& e)
+				{
+					std::cout << e.what() << std::endl;
+				}
+			}
+		}
 
-    if(minimums.size() != variables_number)
-    {
-        std::ostringstream buffer;
+	}
 
-        buffer << "OpenNN Exception: DataSet class.\n"
-               << "Vector<size_t> filter_data(const Vector<double>&, const Vector<double>&) method.\n"
-               << "Size of minimums (" << minimums.size() << ") is not equal to number of variables (" << variables_number << ").\n";
 
-        throw std::logic_error(buffer.str());
-    }
+	// std::string to_string(void) const method
 
-    if(maximums.size() != variables_number)
-    {
-        std::ostringstream buffer;
+	/// Returns a string representation of the current data set object. 
 
-        buffer << "OpenNN Exception: DataSet class.\n"
-               << "Vector<size_t> filter_data(const Vector<double>&, const Vector<double>&) method.\n"
-               << "Size of maximums (" << maximums.size() << ") is not equal to number of variables (" << variables_number << ").\n";
+	std::string DataSet::to_string(void) const
+	{
+		std::ostringstream buffer;
 
-        throw std::logic_error(buffer.str());
-    }
+		buffer << "Data set object\n"
+			<< "Data file name: " << data_file_name << "\n"
+			<< "Header line: " << header_line << "\n"
+			<< "Separator: " << separator << "\n"
+			<< "Missing values label: " << missing_values_label << "\n"
+			<< "Data:\n" << data << "\n"
+			<< "Display: " << display << "\n"
+			<< variables.to_string()
+			<< instances.to_string()
+			<< missing_values.to_string();
 
-    #endif
+		return(buffer.str());
+	}
 
-    const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
 
-    Vector<size_t> filtered_indices;
+	// void print(void) const method
 
-    const size_t instances_number = instances.get_instances_number();
+	/// Prints to the screen in text format the members of the data set object.
 
-    for(size_t i = 0; i < instances_number; i++)
-    {
-        for(size_t j = 0; j < variables_number; j++)
-        {
-            if(missing_values.is_missing_value(i, j))
-            {
-                continue;
-            }
+	void DataSet::print(void) const
+	{
+		if(display)
+		{
+			std::cout << to_string();
+		}
+	}
 
-            if(data(i,j) < minimums[j] || data(i,j) > maximums[j])
-            {
-                if(instances.is_used(i))
-                {
-                    filtered_indices.push_back(i);
 
-                    instances.set_use(i, Instances::Unused);
-                }
-            }
-        }
-    }
+	// void print_summary(void) const method
 
-    return(filtered_indices);
-}
+	/// Prints to the screen in text format the main numbers from the data set object.
 
+	void DataSet::print_summary(void) const
+	{
+		if(display)
+		{
+			const size_t variables_number = variables.get_variables_number();
+			const size_t instances_number = instances.get_instances_number();
+			const size_t missing_values_number = missing_values.get_missing_values_number();
 
-// void convert_angular_variable_degrees(const size_t&) method
+			std::cout << "Data set object summary:\n"
+				<< "Number of variables: " << variables_number << "\n"
+				<< "Number of instances: " << instances_number << "\n"
+				<< "Number of missing values: " << missing_values_number << std::endl;
+		}
+	}
 
-/// Replaces a given angular variable expressed in degrees by the sinus and cosinus of that variable.
-/// This solves the discontinuity associated with angular variables.
-/// Note that this method modifies the number of variables.
-/// @param variable_index Index of angular variable.
 
-void DataSet::convert_angular_variable_degrees(const size_t& variable_index)
-{
-    // Control sentence (if debug)
+	// void save(const std::string&) const method
 
-    #ifdef __OPENNN_DEBUG__
+	/// Saves the members of a data set object to a XML-type file in an XML-type format.
+	/// @param file_name Name of data set XML-type file.
 
-    const size_t variables_number = variables.get_variables_number();
+	void DataSet::save(const std::string& file_name) const
+	{
+		tinyxml2::XMLDocument* document = to_XML();
 
-    if(variable_index >= variables_number)
-    {
-        std::ostringstream buffer;
+		document->SaveFile(file_name.c_str());
 
-        buffer << "OpenNN Exception: DataSet class.\n"
-               << "void convert_angular_variable_degrees(const size_t&) method.\n"
-               << "Index of variable (" << variable_index << ") must be less than number of variables (" << variables_number << ").\n";
+		delete document;
+	}
 
-        throw std::logic_error(buffer.str());
-    }
 
-    #endif
+	// void load(const std::string&) method
 
-    Vector<Variables::Item> items = variables.get_items();
+	/// Loads the members of a data set object from a XML-type file:
+	/// <ul>
+	/// <li> Instances number.
+	/// <li> Training instances number.
+	/// <li> Training instances indices.
+	/// <li> Selection instances number.
+	/// <li> Selection instances indices.
+	/// <li> Testing instances number.
+	/// <li> Testing instances indices.
+	/// <li> Input variables number.
+	/// <li> Input variables indices.
+	/// <li> Target variables number.
+	/// <li> Target variables indices.
+	/// <li> Input variables name. 
+	/// <li> Target variables name.
+	/// <li> Input variables description. 
+	/// <li> Target variables description.
+	/// <li> Display.
+	/// <li> Data.
+	/// </ul> 
+	/// Please mind about the file format. This is specified in the User's Guide.
+	/// @param file_name Name of data set XML-type file.
 
-    Variables::Item sin_item = items[variable_index];
-    prepend("sin_", sin_item.name);
+	void DataSet::load(const std::string& file_name)
+	{
+		tinyxml2::XMLDocument document;
 
-    Variables::Item cos_item = items[variable_index];
-    prepend("cos_", cos_item.name);
+		if(document.LoadFile(file_name.c_str()))
+		{
+			std::ostringstream buffer;
 
-    items[variable_index] = sin_item;
-    items = items.insert_element(variable_index, cos_item);
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void load(const std::string&) method.\n"
+				<< "Cannot load XML file " << file_name << ".\n";
 
-    variables.set_items(items);
+			throw std::logic_error(buffer.str());
+		}
 
-    data.convert_angular_variables_degrees(variable_index);
+		from_XML(document);
+	}
 
-}
 
+	// void print_data(void) const method
 
-// void convert_angular_variable_radians(const size_t&) method
+	/// Prints to the sceen the values of the data matrix.
 
-/// Replaces a given angular variable expressed in radians by the sinus and cosinus of that variable.
-/// This solves the discontinuity associated with angular variables.
-/// Note that this method modifies the number of variables.
-/// @param variable_index Index of angular variable.
+	void DataSet::print_data(void) const
+	{
+		if(display)
+		{
+			std::cout << data << std::endl;
+		}
+	}
 
-void DataSet::convert_angular_variable_radians(const size_t& variable_index)
-{
-    // Control sentence (if debug)
 
-    #ifdef __OPENNN_DEBUG__
+	// void print_data_preview(void) const method
 
-    const size_t variables_number = variables.get_variables_number();
+	/// Prints to the sceen a preview of the data matrix,
+	/// i.e., the first, second and last instances
 
-    if(variable_index >= variables_number)
-    {
-        std::ostringstream buffer;
+	void DataSet::print_data_preview(void) const
+	{
+		if(display)
+		{
+			const size_t instances_number = instances.get_instances_number();
 
-        buffer << "OpenNN Exception: DataSet class.\n"
-               << "void convert_angular_variable_radians(const size_t&) method.\n"
-               << "Index of variable (" << variable_index << ") must be less than number of variables (" << variables_number << ").\n";
+			if(instances_number > 0)
+			{
+				const Vector<double> first_instance = data.arrange_row(0);
 
-        throw std::logic_error(buffer.str());
-    }
+				std::cout << "First instance:\n"
+					<< first_instance << std::endl;
+			}
 
-    #endif
+			if(instances_number > 1)
+			{
+				const Vector<double> second_instance = data.arrange_row(1);
 
-    Vector<Variables::Item> items = variables.get_items();
+				std::cout << "Second instance:\n"
+					<< second_instance << std::endl;
+			}
 
-    Variables::Item sin_item = items[variable_index];
-    prepend("sin_", sin_item.name);
+			if(instances_number > 2)
+			{
+				const Vector<double> last_instance = data.arrange_row(instances_number-1);
 
-    Variables::Item cos_item = items[variable_index];
-    prepend("cos_", cos_item.name);
+				std::cout << "Instance " << instances_number << ":\n"
+					<< last_instance << std::endl;
+			}
+		}
+	}
 
-    items[variable_index] = sin_item;
-    items = items.insert_element(variable_index, cos_item);
 
-    variables.set_items(items);
+	// void save_data(void) const method
 
-    data.convert_angular_variables_radians(variable_index);
+	/// Saves to the data file the values of the data matrix.
 
-}
+	void DataSet::save_data(void) const
+	{
+		std::ofstream file(data_file_name.c_str());
 
+		if(!file.is_open())
+		{
+			std::ostringstream buffer;
 
-// void convert_angular_variables_degrees(const Vector<size_t>&)
+			buffer << "OpenNN Exception: DataSet class.\n" 
+				<< "void save_data(void) const method.\n"
+				<< "Cannot open data file.\n";
 
-/// Replaces a given set of angular variables expressed in degrees by the sinus and cosinus of that variable.
-/// This solves the discontinuity associated with angular variables.
-/// Note that this method modifies the number of variables.
-/// @param indices Indices of angular variables.
+			throw std::logic_error(buffer.str());	  
+		}
 
-void DataSet::convert_angular_variables_degrees(const Vector<size_t>& indices)
-{
-    // Control sentence (if debug)
+		if(header_line)
+		{
+			const Vector<std::string> variables_name = variables.arrange_names();
 
-    #ifdef __OPENNN_DEBUG__
+			file << variables_name << std::endl;
+		}
 
-    const size_t variables_number = variables.get_variables_number();
+		// Write data
 
-    for(size_t i = 0; i < indices.size(); i++)
-    {
-        if(indices[i] >= variables_number)
-        {
-            std::ostringstream buffer;
+		const size_t rows_number = data.get_rows_number();
+		const size_t columns_number = data.get_columns_number();
 
-            buffer << "OpenNN Exception: DataSet class.\n"
-                   << "void convert_angular_variables_degrees(const Vector<size_t>&) method.\n"
-                   << "Index (" << i << ") must be less than number of variables (" << variables_number << ").\n";
+		const std::string separator_string = get_separator_string();
 
-            throw std::logic_error(buffer.str());
-        }
-    }
+		for(size_t i = 0; i < rows_number; i++)
+		{
+			for(size_t j = 0; j < columns_number; j++)
+			{
+				file << data(i,j);
 
-    #endif
+				if(j != columns_number-1)
+				{
+					file << separator_string;
+				}
+			}
 
-    size_t size = indices.size();
+			file << std::endl;
+		}
 
-    unsigned count = 0;
+		// Close file
 
-    size_t index;
+		file.close();
+	}
 
-    for(size_t i = 0; i < size; i++)
-    {
-        index = indices[i]+count;
 
-        convert_angular_variable_degrees(index);
+	// size_t get_column_index(const Vector< Vector<std::string> >&, const size_t) const method
 
-        count++;
-    }
-}
+	/// Returns the index of a variable when reading the data file.
+	/// @param nominal_labels Values of all nominal variables in the data file.
+	/// @param column_index Index of column.
 
+	size_t DataSet::get_column_index(const Vector< Vector<std::string> >& nominal_labels, const size_t column_index) const
+	{
+		size_t variable_index = 0;
 
-// void convert_angular_variables_radians(const Vector<size_t>&)
+		for(size_t i = 0; i < column_index; i++)
+		{
+			if(nominal_labels[i].size() <= 2)
+			{
+				variable_index++;
+			}
+			else
+			{
+				variable_index += nominal_labels[i].size();
+			}
+		}
 
-/// Replaces a given set of angular variables expressed in radians by the sinus and cosinus of that variable.
-/// This solves the discontinuity associated with angular variables.
-/// Note that this method modifies the number of variables.
-/// @param indices Indices of angular variables.
+		return variable_index;
+	}
 
-void DataSet::convert_angular_variables_radians(const Vector<size_t>& indices)
-{
-    // Control sentence (if debug)
 
-    #ifdef __OPENNN_DEBUG__
+	// void check_separator(const std::string&) method
 
-    const size_t variables_number = variables.get_variables_number();
+	/// Verifies that a given line in the data file contains the separator characer.
+	/// If the line does not contain the separator, this method throws an exception.
+	/// @param line Data file line.
 
-    for(size_t i = 0; i < indices.size(); i++)
-    {
-        if(indices[i] >= variables_number)
-        {
-            std::ostringstream buffer;
+	void DataSet::check_separator(const std::string& line) const
+	{
+		if(line.empty())
+		{
+			return;
+		}
 
-            buffer << "OpenNN Exception: DataSet class.\n"
-                   << "void convert_angular_variables_radians(const Vector<size_t>&) method.\n"
-                   << "Index (" << i << ") must be less than number of variables (" << variables_number << ").\n";
+		const std::string separator_string = get_separator_string();
 
-            throw std::logic_error(buffer.str());
-        }
-    }
+		if(line.find(separator_string) == std::string::npos)
+		{
+			std::ostringstream buffer;
 
-    #endif
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void check_separator(const std::string&) method.\n"
+				<< "Separator '" << write_separator() << "' not found in data file " << data_file_name << ".\n";
 
-    size_t size = indices.size();
+			throw std::logic_error(buffer.str());
+		}
+	}
 
-    unsigned count = 0;
 
-    size_t index;
+	// size_t count_data_file_columns_number(void) const method
 
-    for(size_t i = 0; i < size; i++)
-    {
-        index = indices[i]+count;
+	/// Returns the number of tokens in the first line of the data file.
+	/// That will be interpreted as the number of columns in the data file.
 
-        convert_angular_variable_radians(index);
+	size_t DataSet::count_data_file_columns_number(void) const
+	{
+		std::ifstream file(data_file_name.c_str());
 
-        count++;
-    }
-}
+		std::string line;
 
+		size_t columns_number = 0;
 
-// void convert_angular_variables(void) method
+		while(file.good())
+		{
+			getline(file, line);
 
-/// Replaces a given set of angular variables by the sinus and cosinus of that variable, according to the angular units used.
-/// This solves the discontinuity associated with angular variables.
-/// Note that this method modifies the number of variables.
+			if(separator != Tab)
+			{
+				std::replace(line.begin(), line.end(), '\t', ' ');
+			}
 
-void DataSet::convert_angular_variables(void)
-{
-    switch(angular_units)
-    {
-       case DataSet::Radians:
-       {
-            convert_angular_variables_radians(angular_variables);
-       }
-       break;
+			trim(line);
 
-       case DataSet::Degrees:
-       {
-            convert_angular_variables_degrees(angular_variables);
-       }
-       break;
+			if(line.empty())
+			{
+				continue;
+			}
 
-       default:
-       {
-          std::ostringstream buffer;
+			check_separator(line);
 
-          buffer << "OpenNN Exception: DataSet class.\n"
-                 << "void convert_angular_variables(void) method.\n"
-                 << "Unknown angular units.\n";
+			columns_number = count_tokens(line);
 
-          throw std::logic_error(buffer.str());
-       }
-       break;
-    }
+			break;
+		}
 
-}
+		file.close();
 
+		return columns_number;
 
-// void scrub_missing_values_unuse(void) method
+	}
 
-/// Sets all the instances with missing values to "Unused".
 
-void DataSet::scrub_missing_values_unuse(void)
-{
-    const Vector<size_t> missing_instances = missing_values.arrange_missing_instances();
+	// void check_header_line(void) method
 
-    for(size_t i = 0; i < missing_instances.size(); i++)
-    {
-        instances.set_use(missing_instances[i], Instances::Unused);
-    }
-}
+	/// Verifies that the data file has a header line.
+	/// All elements in a header line must be strings.
+	/// This method can change the value of the header line member.
+	/// It throws an exception if some inconsistencies are found.
 
+	void DataSet::check_header_line(void)
+	{
+		std::ifstream file(data_file_name.c_str());
 
-// void scrub_missing_values_mean(void) method
+		std::string line;
+		Vector<std::string> tokens;
 
-/// Substitutes all the missing values by the mean of the corresponding variable.
+		while(file.good())
+		{
+			getline(file, line);
 
-void DataSet::scrub_missing_values_mean(void)
-{
-    const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+			if(separator != Tab)
+			{
+				std::replace(line.begin(), line.end(), '\t', ' ');
+			}
 
-    const Vector<double> means = data.calculate_mean_missing_values(missing_indices);
+			trim(line);
 
-    const size_t variables_number = variables.get_variables_number();
+			if(line.empty())
+			{
+				continue;
+			}
 
-    const Vector<size_t> targets_indices = variables.arrange_targets_indices();
+			break;
+		}
 
-    size_t instance_index;
+		file.close();
 
-    for(size_t i = 0; i < variables_number; i++)
-    {
-        for(size_t j = 0; j < missing_indices[i].size(); j++)
-        {
-            instance_index = missing_indices[i][j];
+		check_separator(line);
 
-            data(instance_index, i) = means[i];
-        }
-    }
-}
+		tokens = get_tokens(line);
 
+		if(header_line && is_not_numeric(tokens))
+		{
+			return;
+		}
+		if(header_line && is_numeric(tokens))
+		{
+			if(display)
+			{
+				std::cout << "OpenNN Warning: DataSet class.\n"
+					<< "void check_header_line(void) method.\n"
+					<< "First line of data file interpreted as not header.\n";
+			}
 
-// void scrub_missing_values(void) method
+			header_line = false;
+		}
+		else if(header_line && is_mixed(tokens))
+		{
+			std::ostringstream buffer;
 
-/// General method for dealing with missing values.
-/// It switches among the different scrubbing methods available,
-/// according to the corresponding value in the missing values object.
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void check_header_line(void) method.\n"
+				<< "Header line contains numeric values: \n"
+				<< line << "\n";
 
-void DataSet::scrub_missing_values(void)
-{
-    const MissingValues::ScrubbingMethod scrubbing_method = missing_values.get_scrubbing_method();
+			throw std::logic_error(buffer.str());
+		}
+		else if(!header_line && is_not_numeric(tokens))
+		{
+			if(display)
+			{
+				std::cout << "OpenNN Warning: DataSet class.\n"
+					<< "void check_header_line(void) method.\n"
+					<< "First line of data file interpreted as header.\n";
+			}
 
-    switch(scrubbing_method)
-    {
-       case MissingValues::Unuse:
-       {
-            scrub_missing_values_unuse();
-       }
-       break;
+			header_line = true;
+		}
+	}
 
-       case MissingValues::Mean:
-       {
-            scrub_missing_values_mean();
-       }
-       break;
 
-       default:
-       {
-          std::ostringstream buffer;
+	// Vector<std::string> read_header_line(void) const method
 
-          buffer << "OpenNN Exception: DataSet class\n"
-                 << "void scrub_missing_values(void) method.\n"
-                 << "Unknown scrubbing method.\n";
+	/// Returns the name of the columns in the data set as a list of strings.
 
-          throw std::logic_error(buffer.str());
-       }
-       break;
-    }
-}
+	Vector<std::string> DataSet::read_header_line(void) const
+	{
+		Vector<std::string> header_line;
 
+		std::string line;
 
-// size_t count_tokens(std::string& str) const method
+		std::ifstream file(data_file_name.c_str());
 
-/// Returns the number of strings delimited by separator.
-/// If separator does not match anywhere in the string, this method returns 0.
-/// @param str String to be tokenized.
+		// First line
 
-size_t DataSet::count_tokens(std::string& str) const
-{
-//    if(!(this->find(separator) != std::string::npos))
-//    {
-//        std::ostringstream buffer;
-//
-//        buffer << "OpenNN Exception:\n"
-//               << "std::string class.\n"
-//               << "inline size_t count_tokens(const std::string&) const method.\n"
-//               << "Separator not found in string: \"" << separator << "\".\n";
-//
-//        throw std::logic_error(buffer.str());
-//    }
+		while(file.good())
+		{
+			getline(file, line);
 
-    trim(str);
+			if(separator != Tab)
+			{
+				std::replace(line.begin(), line.end(), '\t', ' ');
+			}
 
-    size_t tokens_count = 0;
+			trim(line);
 
-    // Skip delimiters at beginning.
+			if(line.empty())
+			{
+				continue;
+			}
 
-    const std::string separator_string = get_separator_string();
+			check_separator(line);
 
-    std::string::size_type last_pos = str.find_first_not_of(separator_string, 0);
+			header_line = get_tokens(line);
 
-    // Find first "non-delimiter".
+			break;
+		}
 
-    std::string::size_type pos = str.find_first_of(separator_string, last_pos);
+		file.close();
 
-    while (std::string::npos != pos || std::string::npos != last_pos)
-    {
-        // Found a token, add it to the vector
+		return header_line;
+	}
 
-        tokens_count++;
 
-        // Skip delimiters.  Note the "not_of"
+	// void read_instance(const std::string&, const Vector< Vector<std::string> >&, const size_t&) method
 
-        last_pos = str.find_first_not_of(separator_string, pos);
+	/// Sets the values of a single instance in the data matrix from a line in the data file.
+	/// @param line Data file line.
+	/// @param nominal_labels Values of all nominal variables in the data file.
+	/// @param instance_index Index of instance.
 
-        // Find next "non-delimiter"
+	void DataSet::read_instance(const std::string& line, const Vector< Vector<std::string> >& nominal_labels, const size_t& instance_index)
+	{
+		// Control sentence (if debug)
 
-        pos = str.find_first_of(separator_string, last_pos);
-    }
+#ifdef __OPENNN_DEBUG__
 
-    return(tokens_count);
-}
+		const size_t instances_number = instances.get_instances_number();
 
+		if(instance_index >= instances_number)
+		{
+			std::ostringstream buffer;
 
-/// Splits the string into substrings (tokens) wherever separator occurs, and returns a vector with those strings.
-/// If separator does not match anywhere in the string, this method returns a single-element list containing this string.
-/// @param str String to be tokenized.
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void read_instance(const std::string&, const Vector< Vector<std::string> >&, const size_t&) method.\n"
+				<< "Index of instance (" << instance_index << ") must be less than number of instances (" << instances_number << ").\n";
 
-Vector<std::string> DataSet::get_tokens(const std::string& str) const
-{   
-    const std::string new_string = get_trimmed(str);
+			throw std::logic_error(buffer.str());
+		}
 
-    Vector<std::string> tokens;
+#endif
 
-    const std::string separator_string = get_separator_string();
+		const Vector<std::string> tokens = get_tokens(line);
 
-    // Skip delimiters at beginning.
+#ifdef __OPENNN_DEBUG__
 
-    std::string::size_type lastPos = new_string.find_first_not_of(separator_string, 0);
+		if(tokens.size() != nominal_labels.size())
+		{
+			std::ostringstream buffer;
 
-    // Find first "non-delimiter"
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void read_instance(const std::string&, const Vector< Vector<std::string> >&, const size_t&) method.\n"
+				<< "Size of tokens (" << tokens.size() << ") must be equal to size of names (" << nominal_labels.size() << ").\n";
 
-    std::string::size_type pos = new_string.find_first_of(separator_string, lastPos);
+			throw std::logic_error(buffer.str());
+		}
 
-    while(std::string::npos != pos || std::string::npos != lastPos)
-    {
-        // Found a token, add it to the vector
+#endif
 
-        tokens.push_back(new_string.substr(lastPos, pos - lastPos));
+		size_t column_index;
 
-        // Skip delimiters. Note the "not_of"
+		for(size_t j = 0; j < tokens.size(); j++)
+		{
+			column_index = get_column_index(nominal_labels, j);
 
-        lastPos = new_string.find_first_not_of(separator_string, pos);
+			if(nominal_labels[j].size() == 0) // Numeric variable
+			{
+				if(tokens[j] != missing_values_label) // No missing values
+				{
+					data(instance_index, column_index) = atof(tokens[j].c_str());
+				}
+				else // Missing values
+				{
+					data(instance_index, column_index) = -99.9;
 
-        // Find next "non-delimiter"
+					missing_values.append(instance_index, column_index);
+				}
+			}
 
-        pos = new_string.find_first_of(separator_string, lastPos);
-    }
+			else if(nominal_labels[j].size() == 2) // Binary variable
+			{
+				if(tokens[j] != missing_values_label) // No missing values
+				{
+					if(tokens[j] == "false" || tokens[j] == "False"||  tokens[j] == "FALSE" || tokens[j] == "F"
+							|| tokens[j] == "negative"|| tokens[j] == "Negative"|| tokens[j] == "NEGATIVE")
+					{
+						data(instance_index, column_index) = 0.0;
+					}
+					else if(tokens[j] == "true" || tokens[j] == "True"||  tokens[j] == "TRUE" || tokens[j] == "T"
+							|| tokens[j] == "positive"|| tokens[j] == "Positive"|| tokens[j] == "POSITIVE")
+					{
+						data(instance_index, column_index) = 1.0;
+					}
+					else if(tokens[j] == nominal_labels[j][0])
+					{
+						data(instance_index, column_index) = 0.0;
+					}
+					else if(tokens[j] == nominal_labels[j][1])
+					{
+						data(instance_index, column_index) = 1.0;
+					}
+					else
+					{
+						std::ostringstream buffer;
 
-    for(size_t i = 0; i < tokens.size(); i++)
-    {
-        trim(tokens[i]);
-    }
+						buffer << "OpenNN Exception: DataSet class.\n"
+							<< "void read_instance(const std::string&, const Vector< Vector<std::string> >&, const size_t&) method.\n"
+							<< "Unknown token binary value.\n";
 
-    return(tokens);
-}
+						throw std::logic_error(buffer.str());
+					}
+				}
+				else // Missing values
+				{
+					data(instance_index, column_index) = -99.9;
 
+					missing_values.append(instance_index, column_index);
+				}
+			}
 
-// bool is_numeric(const std::string&) const method
+			else // Nominal variable
+			{
+				if(tokens[j] != missing_values_label)
+				{
+					for(size_t k = 0; k < nominal_labels[j].size(); k++)
+					{
+						if(tokens[j] == nominal_labels[j][k])
+						{
+							data(instance_index, column_index+k) = 1.0;
+						}
+						else
+						{
+							data(instance_index, column_index+k) = 0.0;
+						}
+					}
+				}
+				else // Missing values
+				{
+					for(size_t k = 0; k < nominal_labels[j].size(); k++)
+					{
+						data(instance_index, column_index+k) = -99.9;
 
-/// Returns true if the string passed as argument represents a number, and false otherwise.
-/// @param str String to be checked.
+						missing_values.append(instance_index, column_index+k);
+					}
+				}
+			}
+		}       
+	}
 
-bool DataSet::is_numeric(const std::string& str) const
-{
-    std::istringstream iss(str.data());
 
-    double dTestSink;
+	// Vector< Vector<std::string> > set_from_data_file(void) method
 
-    iss >> dTestSink;
+	/// Performs a first data file read in which the format is checked,
+	/// and the numbers of variables, instances and missing values are set.
 
-    // was any input successfully consumed/converted?
+	Vector< Vector<std::string> > DataSet::set_from_data_file(void)
+	{
+		const size_t columns_number = count_data_file_columns_number();
 
-    if(!iss)
-    {
-        return false;
-    }
+		Vector< Vector<std::string> > nominal_labels(columns_number);
 
-    // was all the input successfully consumed/converted?
+		std::string line;
+		Vector<std::string> tokens;
 
-    return(iss.rdbuf()->in_avail() == 0);
-}
+		//    bool numeric;
 
+		check_header_line();
 
-// void DataSet::trim(std::string&) const method
+		int instances_count;
 
-/// Removes whitespaces from the start and the end of the string passed as argument.
-/// This includes the ASCII characters "\t", "\n", "\v", "\f", "\r", and " ".
-/// @param str String to be checked.
+		if(header_line)
+		{
+			instances_count = -1;
+		}
+		else
+		{
+			instances_count = 0;
+		}
 
-void DataSet::trim(std::string& str) const
-{
-    //prefixing spaces
+		std::ifstream file(data_file_name.c_str());   
 
-    str.erase(0, str.find_first_not_of(' '));
+		// Rest of lines
 
-    //surfixing spaces
+		while(file.good())
+		{
+			getline(file, line);
 
-    str.erase(str.find_last_not_of(' ') + 1);
-}
+			if(separator != Tab)
+			{
+				std::replace(line.begin(), line.end(), '\t', ' ');
+			}
 
+			trim(line);
 
-/// Returns a string that has whitespace removed from the start and the end.
-/// This includes the ASCII characters "\t", "\n", "\v", "\f", "\r", and " ".
-/// @param str String to be checked.
+			if(line.empty())
+			{
+				continue;
+			}
 
-std::string DataSet::get_trimmed(const std::string& str) const
-{
-    std::string output(str);
+			if(header_line && instances_count == -1)
+			{
+				instances_count = 0;
 
-    //prefixing spaces
+				continue;
+			}
 
-    output.erase(0, output.find_first_not_of(' '));
+			check_separator(line);
 
-    //surfixing spaces
+			tokens = get_tokens(line);
+			// caixa
+			/*      if(tokens.size() != columns_number)
+				{
+				std::ostringstream buffer;
 
-    output.erase(output.find_last_not_of(' ') + 1);
+				buffer << "OpenNN Exception: DataSet class.\n"
+				<< "Vector< Vector<std::string> > DataSet::set_from_data_file(void).\n"
+				<< "Row " << instances_count << ": Size of tokens (" << tokens.size() << ") is not equal to "
+				<< "number of columns (" << columns_number << ").\n";
 
-    return(output);
-}
+				throw std::logic_error(buffer.str());
+				}
+				*/
+			instances_count++;
 
+			/*
+			   if(tokens.size() == columns_number)
+			   {
+			   instances_count++;
+			   for(size_t j = 0; j < columns_number; j++)
+			   {
+			   numeric = is_numeric(tokens[j]);
 
-// std::string prepend(const std::string&, const std::string&) const method
+			   if(!numeric
+			   && tokens[j] != missing_values_label
+			   && !nominal_labels[j].contains(tokens[j]))
+			   {
+			   nominal_labels[j].push_back(tokens[j]);
+			   }
+			   }
+			   }*/
 
-/// Prepends the string pre to the beginning of the string str and returns the whole string.
-/// @param pre String to be prepended.
-/// @param str original string.
 
-std::string DataSet::prepend(const std::string& pre, const std::string& str) const
-{
-    std::ostringstream buffer;
+		}
 
-    buffer << pre << str;
+		file.close();
 
-    return(buffer.str());
-}
+		size_t variables_count = 0;
 
+		for(size_t i = 0; i < columns_number; i++)
+		{
+			if(nominal_labels[i].size() == 0 || nominal_labels[i].size() == 2)
+			{
+				variables_count++;
+			}
+			else
+			{
+				variables_count += nominal_labels[i].size();
+			}
+		}
 
-// bool is_numeric(const Vector<std::string>&) const
+		// Fix label case
 
-/// Returns true if all the elements in a string list are numeric, and false otherwise.
-/// @param v String list to be checked.
+		for(size_t i = 0; i < columns_number; i++)
+		{
+			if(nominal_labels[i].size() == (size_t)instances_count)
+			{
+				std::ostringstream buffer;
 
-bool DataSet::is_numeric(const Vector<std::string>& v) const
-{
-    for(size_t i = 0; i < v.size(); i++)
-    {
-        if(!is_numeric(v[i]))
-        {
-            return false;
-        }
-    }
+				buffer << "OpenNN Exception: DataSet class.\n"
+					<< "Vector< Vector<std::string> > DataSet::set_from_data_file(void).\n"
+					<< "Column " << i << ": All elements are nominal and different. It contains meaningless data.\n";
 
-    return true;
-}
+				throw std::logic_error(buffer.str());
+			}
+		}
 
+		// Set instances and variables number
 
-// bool is_not_numeric(const Vector<std::string>&) const
+		if(instances_count == 0 || variables_count == 0)
+		{
+			set();
 
-/// Returns true if none element in a string list is numeric, and false otherwise.
-/// @param v String list to be checked.
+			return(nominal_labels);
+		}
 
-bool DataSet::is_not_numeric(const Vector<std::string>& v) const
-{
-    for(size_t i = 0; i < v.size(); i++)
-    {
-        if(is_numeric(v[i]))
-        {
-            return false;
-        }
-    }
+		data.set(instances_count, variables_count);
 
-    return true;
-}
+		if(variables.get_variables_number() != variables_count)
+		{
+			variables.set(variables_count);
 
+			if(nominal_labels[columns_number-1].size() > 2)
+			{
+				for(size_t i = variables_count-1; i >= variables_count - nominal_labels[columns_number-1].size(); i--)
+				{
+					variables.set_use(i, Variables::Target);
+				}
+			}
+		}
 
-// bool is_mixed(const Vector<std::string>&) const
+		if(instances.get_instances_number() != (size_t)instances_count)
+		{
+			instances.set(instances_count);
+		}
 
-/// Returns true if some the elements in a string list are numeric and some others are not numeric.
-/// @param v String list to be checked.
+		missing_values.set(instances.get_instances_number(), variables.get_variables_number());
 
-bool DataSet::is_mixed(const Vector<std::string>& v) const
-{
-    unsigned count_numeric = 0;
-    unsigned count_not_numeric = 0;
+		return(nominal_labels);
+	}
 
-    for(size_t i = 0; i < v.size(); i++)
-    {
-        if(is_numeric(v[i]))
-        {
-            count_numeric++;
-        }
-        else
-        {
-            count_not_numeric++;
-        }
-    }
 
-    if(count_numeric > 0 && count_not_numeric > 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
+	// void read_from_data_file(Vector< Vector<std::string> >&) method
+
+	/// Performs a second data file read in which the data is set.
+
+	void DataSet::read_from_data_file(const Vector< Vector<std::string> >& nominal_labels)
+	{
+		std::ifstream file(data_file_name.c_str());
+
+		file.clear();
+		file.seekg(0, std::ios::beg);
+
+		std::string line;
+
+		if(header_line)
+		{
+			while(file.good())
+			{
+				getline(file, line);
+
+				if(separator != Tab)
+				{
+					std::replace(line.begin(), line.end(), '\t', ' ');
+				}
+
+				trim(line);
+
+				if(line.empty())
+				{
+					continue;
+				}
+
+				break;
+			}                
+		}
+
+		size_t i = 0;
+
+		//    #pragma omp parallel for private(i, line)
+
+		while(file.good())
+		{
+			getline(file, line);
+
+			if(separator != Tab)
+			{
+				std::replace(line.begin(), line.end(), '\t', ' ');
+			}
+
+			const Vector<std::string> tokens = get_tokens(line);
+
+			trim(line);
+
+			if(line.empty())
+			{
+				continue;
+			}
+
+			// #pragma omp task
+			/*
+			   if(tokens.size() == nominal_labels.size())
+			   {
+			   read_instance(line, nominal_labels, i);
+			   i++;
+			   }*/
+			// caixa
+			read_instance(line, nominal_labels, i);
+			i++;
+
+		}
+
+		file.close();
+	}
+
+
+	// Vector<std::string> arrange_time_series_prediction_names(const Vector<std::string>&) const method
+
+	/// Returns a vector with the names arranged for time series prediction, according to the number of lags.
+	/// @todo
+
+	Vector<std::string> DataSet::arrange_time_series_names(const Vector<std::string>&) const
+	{        
+		Vector<std::string> time_series_prediction_names;
+		/*
+		   Vector< Vector<std::string> > new_names((1+columns_number)*lags_number);
+
+		   for(size_t i = 0; i < 1+lags_number; i++)
+		   {
+		   for(size_t j = 0; j < names.size(); j++)
+		   {
+		   new_names[i+j] = names[j];
+
+		   if(i != lags_number)
+		   {
+		   for(size_t k = 0; k < names[j].size();k++)
+		   {
+		   new_names[i+j][k].append("_lag_").append(std::string::from_size_t(lags_number-i).c_str());
+		   }
+		   }
+		   }
+		   }
+		   */
+		return(time_series_prediction_names);
+	}
+
+
+	// Vector<std::string> DataSet::arrange_autoassociation_names(const Vector<std::string>& names) const method
+
+	/// Returns a vector with the names arranged for autoassociation.
+	/// @todo
+
+	Vector<std::string> DataSet::arrange_autoassociation_names(const Vector<std::string>&) const
+	{
+		Vector<std::string> autoassociation_names;
+
+		return(autoassociation_names);
+	}
+
+
+	// void convert_time_series(void) method
+
+	/// Arranges an input-target matrix from a time series matrix, according to the number of lags.
+	/// @todo
+
+	void DataSet::convert_time_series(void)
+	{
+		if(lags_number == 0)
+		{
+			return;
+		}
+
+		data.convert_time_series(lags_number);
+
+		variables.convert_time_series(lags_number);
+
+		instances.convert_time_series(lags_number);
+
+		missing_values.convert_time_series(lags_number);
+	}
+
+
+	// void convert_autoassociation(void) method
+
+	/// Arranges the data set for autoassociation.
+	/// @todo
+
+	void DataSet::convert_autoassociation(void)
+	{
+		data.convert_autoassociation();
+
+		variables.convert_autoassociation();
+
+		missing_values.convert_autoassociation();
+	}
+
+
+	// void load_data(void) method
+
+	/// This method loads the data file.
+
+	void DataSet::load_data(void)
+	{
+		if(data_file_name.empty())
+		{
+			std::ostringstream buffer;
+
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void load_data(void) method.\n"
+				<< "Data file name has not been set.\n";
+
+			throw std::logic_error(buffer.str());
+		}
+
+		std::ifstream file(data_file_name.c_str());
+
+		if(!file.is_open())
+		{
+			std::ostringstream buffer;
+
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void load_data(void) method.\n"
+				<< "Cannot open data file: " << data_file_name << "\n";
+
+			throw std::logic_error(buffer.str());
+		}
+
+		file.close();
+
+		const Vector< Vector<std::string> > nominal_labels = set_from_data_file();
+
+		read_from_data_file(nominal_labels);
+
+		// Variables name
+
+		Vector<std::string> columns_name;
+
+		if(header_line)
+		{
+			columns_name = read_header_line();
+		}
+		else
+		{
+			for(unsigned i = 0; i < nominal_labels.size(); i++)
+			{
+				std::ostringstream buffer;
+
+				buffer << "variable_" << i;
+
+				columns_name.push_back(buffer.str());
+			}
+		}
+
+		variables.set_names(columns_name, nominal_labels);
+
+		// Angular variables
+
+		if(!angular_variables.empty())
+		{
+			convert_angular_variables();
+		}
+
+		// Time series
+
+		if(lags_number != 0)
+		{
+			convert_time_series();
+		}
+
+		// Autoassociation
+
+		if(autoassociation)
+		{
+			convert_autoassociation();
+		}
+	}
+
+
+	/// This method loads the data from a binary data file.
+
+	void DataSet::load_data_binary(void)
+	{
+		std::ifstream file;
+
+		file.open(data_file_name.c_str(), std::ios::binary);
+
+		if(!file.is_open())
+		{
+			std::ostringstream buffer;
+
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void load_data_binary(void) method.\n"
+				<< "Cannot open data file: " << data_file_name << "\n";
+
+			throw std::logic_error(buffer.str());
+		}
+
+		std::streamsize size = sizeof(size_t);
+
+		size_t variables_number;
+		size_t instances_number;
+
+		file.read(reinterpret_cast<char*>(&variables_number), size);
+		file.read(reinterpret_cast<char*>(&instances_number), size);
+
+		size = sizeof(double);
+
+		double value;
+
+		data.set(instances_number, variables_number);
+
+		for(size_t i = 0; i < variables_number*instances_number; i++)
+		{
+			file.read(reinterpret_cast<char*>(&value), size);
+
+			data[i] = value;
+		}
+
+		file.close();
+	}
+
+
+	/// This method loads data from a binary data file for time series prediction methods.
+
+	void DataSet::load_time_series_data_binary(void)
+	{
+		std::ifstream file;
+
+		file.open(data_file_name.c_str(), std::ios::binary);
+
+		if(!file.is_open())
+		{
+			std::ostringstream buffer;
+
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void load_data_binary(void) method.\n"
+				<< "Cannot open data file: " << data_file_name << "\n";
+
+			throw std::logic_error(buffer.str());
+		}
+
+		std::streamsize size = sizeof(size_t);
+
+		size_t variables_number;
+		size_t instances_number;
+
+		file.read(reinterpret_cast<char*>(&variables_number), size);
+		file.read(reinterpret_cast<char*>(&instances_number), size);
+
+		size = sizeof(double);
+
+		double value;
+
+		data.set(instances_number, variables_number);
+
+		for(size_t i = 0; i < variables_number*instances_number; i++)
+		{
+			file.read(reinterpret_cast<char*>(&value), size);
+
+			data[i] = value;
+		}
+
+		//    if(get_missing_values().has_missing_values())
+		//    {
+		//        scrub_missing_values();
+		//    }
+
+		size = sizeof(size_t);
+
+		size_t time_series_instances_number;
+		size_t time_series_variables_number;
+
+		file.read(reinterpret_cast<char*>(&time_series_instances_number), size);
+		file.read(reinterpret_cast<char*>(&time_series_variables_number), size);
+
+		time_series_data.set(time_series_instances_number, time_series_variables_number);
+
+		size = sizeof(double);
+
+		for(size_t i = 0; i < time_series_instances_number*time_series_variables_number; i++)
+		{
+			file.read(reinterpret_cast<char*>(&value), size);
+
+			time_series_data[i] = value;
+		}    
+
+		file.close();
+	}
+
+
+	// void load_time_series_data(void) method
+
+	/// @todo This method is not implemented.
+	/*
+	   void DataSet::load_time_series_data(void)
+	   {
+	   if(lags_number <= 0)
+	   {
+	   std::ostringstream buffer;
+
+	   buffer << "OpenNN Exception: DataSet class.\n"
+	   << "void load_time_series_data(void) const method.\n"
+	   << "Number of lags (" << lags_number << ") must be greater than zero.\n";
+
+	   throw std::logic_error(buffer.str());
+	   }
+
+
+	   if(header)
+	   {
+	//        Vector<std::string> columns_name;
+
+	//        variables.set_names(names);
+	}
+
+
+	const Matrix<double> time_series_data(data_file_name);
+
+	const size_t rows_number = time_series_data.get_rows_number();
+	const size_t columns_number = time_series_data.get_columns_number();
+
+	const size_t instances_number = rows_number - lags_number;
+	const size_t variables_number = columns_number*(1 + lags_number);
+
+	set(variables_number, instances_number);
+
+	Vector<double> row(rows_number);
+
+	for(size_t i = 0; i < instances_number; i++)
+	{
+	row = time_series_data.arrange_row(i);
+
+	for(size_t j = 1; j <= lags_number; j++)
+	{
+	row = row.assemble(time_series_data.arrange_row(i+j));
+	}
+
+	data.set_row(i, row);
+	}
+
+	// Variables
+
+	Vector<Variables::Use> uses(variables_number);
+
+	std::fill(uses.begin(), uses.begin()+lags_number*variables_number/(lags_number+1)-1, Variables::Use::Input);
+	std::fill(uses.begin()+lags_number*variables_number/(lags_number+1), uses.end(), Variables::Use::Target);
+
+	variables.set_uses(uses);
+
+	}
+	*/
+
+	// Vector<size_t> calculate_target_distribution(void) const method
+
+	/// Returns a vector containing the number of instances of each class in the data set.
+	/// If the number of target variables is one then the number of classes is two.
+	/// If the number of target variables is greater than one then the number of classes is equal to the number 
+	/// of target variables.
+
+	Vector<size_t> DataSet::calculate_target_distribution(void) const
+	{ 
+		// Control sentence (if debug)
+
+		const size_t instances_number = instances.get_instances_number();
+		const size_t targets_number = variables.count_targets_number();
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
+
+		Vector<size_t> class_distribution;
+
+		if(targets_number == 1) // Two classes
+		{
+			class_distribution.set(2, 0);
+
+			size_t target_index = targets_indices[0];
+
+			for(size_t instance_index = 0; instance_index < instances_number; instance_index++)
+			{
+				if(missing_values.arrange_missing_indices()[target_index].contains(instance_index))
+				{
+					continue;
+				}
+				if(instances.get_use(instance_index) != Instances::Unused)
+				{
+					if(data(instance_index,target_index) < 0.5)
+					{
+						class_distribution[0]++;
+					}
+					else
+					{
+						class_distribution[1]++;
+					}
+				}
+			}
+		}
+		else // More than two classes
+		{
+			class_distribution.set(targets_number, 0);
+
+			for(size_t i = 0; i < instances_number; i++)
+			{          
+				if(instances.get_use(i) != Instances::Unused)
+				{
+					for(size_t j = 0; j < targets_number; j++)
+					{
+						if(data(i,targets_indices[j]) == -123.456)
+						{
+							continue;
+						}
+
+						if(data(i,targets_indices[j]) > 0.5)
+						{
+							class_distribution[j]++;
+						}
+					}
+				}
+			}
+		}
+
+		// Check data consistency
+
+		//   const size_t used_instances_number = instances.count_used_instances_number();
+
+		//   if(class_distribution.calculate_sum() != used_instances_number)
+		//   {
+		//      std::ostringstream buffer;
+
+		//      buffer << "OpenNN Exception: DataSet class.\n"
+		//             << "Vector<size_t> calculate_target_distribution(void) const method.\n"
+		//             << "Sum of class distributions (" << class_distribution << ") is not equal to "
+		//             << "number of used instances (" << used_instances_number << ")." << std::endl;
+
+		//      throw std::logic_error(buffer.str());
+		//   }
+
+		return(class_distribution);
+	}
+
+
+	// Vector<double> calculate_distances(void) const method
+
+	/// Returns a normalized distance between each instance and the mean instance.
+	/// The size of this vector is the number of instances.
+
+	Vector<double> DataSet::calculate_distances(void) const
+	{
+		const Matrix<double> data_statistics_matrix = calculate_data_statistics_matrix();
+
+		const Vector<double> means = data_statistics_matrix.arrange_column(2);
+		const Vector<double> standard_deviations = data_statistics_matrix.arrange_column(3);
+
+		const size_t instances_number = instances.get_instances_number();
+		Vector<double> distances(instances_number);
+
+		const size_t variables_number = variables.get_variables_number();
+		Vector<double> instance(variables_number);
+
+		int i = 0;
+
+#pragma omp parallel for private(i, instance)
+
+		for(i = 0; i < (int)instances_number; i++)
+		{
+			instance = data.arrange_row(i);
+
+			distances[i] = (instance-means/standard_deviations).calculate_norm();
+		}
+
+		return(distances);
+	}
+
+
+	// Vector<size_t> balance_binary_targets_class_distribution(void) method
+
+	/// This method balances the targets ditribution of a data set with only one target variable by unusing
+	/// instances whose target variable belongs to the most populated target class.
+	/// It returns a vector with the indices of the instances set unused.
+	/// @param percentage Percentage of instances to be unused.
+
+	Vector<size_t> DataSet::balance_binary_targets_distribution(const double& percentage)
+	{
+		Vector<size_t> unused_instances;
+
+		const size_t instances_number = instances.count_used_instances_number();
+
+		const Vector<size_t> target_class_distribution = calculate_target_distribution();
+
+		const Vector<size_t> maximal_indices = target_class_distribution.calculate_maximal_indices(2);
+
+		const size_t maximal_target_class_index = maximal_indices[0];
+		const size_t minimal_target_class_index = maximal_indices[1];
+
+		size_t total_unbalanced_instances_number = (size_t)((percentage/100.0)*(target_class_distribution[maximal_target_class_index] - target_class_distribution[minimal_target_class_index]));
+
+		size_t actual_unused_instances_number;
+
+		size_t unbalanced_instances_number = total_unbalanced_instances_number/10;
+
+		Vector<size_t> actual_unused_instances;
+
+		//    std::cout << "Instances to unuse: " << total_unbalanced_instances_number << std::endl;
+
+		while(total_unbalanced_instances_number != 0)
+		{
+			if(total_unbalanced_instances_number < instances_number/10)
+			{
+				unbalanced_instances_number = total_unbalanced_instances_number;
+			}
+			else if(total_unbalanced_instances_number > 0 && unbalanced_instances_number < 1)
+			{
+				unbalanced_instances_number = total_unbalanced_instances_number;
+			}
+
+			actual_unused_instances = unuse_most_populated_target(unbalanced_instances_number);
+
+			actual_unused_instances_number = actual_unused_instances.size();
+
+			unused_instances = unused_instances.assemble(actual_unused_instances);
+
+			total_unbalanced_instances_number = total_unbalanced_instances_number - actual_unused_instances_number;
+
+			actual_unused_instances.clear();
+		}
+
+		return (unused_instances);
+	}
+
+
+	// Vector<size_t> balance_multiple_targets_distribution(void) method
+
+	/// This method balances the targets ditribution of a data set with more than one target variable by unusing
+	/// instances whose target variable belongs to the most populated target class.
+	/// It returns a vector with the indices of the instances set unused.
+
+	Vector<size_t> DataSet::balance_multiple_targets_distribution(void)
+	{
+		Vector<size_t> unused_instances;
+
+		const size_t bins_number = 10;
+
+		const Vector<size_t> target_class_distribution = calculate_target_distribution();
+
+		const size_t targets_number = variables.count_targets_number();
+
+		const Vector<size_t> inputs_variables_indices = variables.arrange_inputs_indices();
+		const Vector<size_t> targets_variables_indices = variables.arrange_targets_indices();
+
+		const Vector<size_t> maximal_target_class_indices = target_class_distribution.calculate_maximal_indices(targets_number);
+
+		const size_t minimal_target_class_index = maximal_target_class_indices[targets_number - 1];
+
+		// Target class differences
+
+		Vector<size_t> target_class_differences(targets_number);
+
+		for(size_t i = 0; i < targets_number; i++)
+		{
+			target_class_differences[i] = target_class_distribution[i] - target_class_distribution[minimal_target_class_index];
+		}
+
+		Vector<double> instance;
+
+		size_t count_instances = 0;
+
+		size_t unbalanced_instances_number;
+
+		size_t instances_number;
+		Vector<size_t> instances_indices;
+
+		Vector< Histogram<double> > data_histograms;
+
+		Matrix<size_t> total_frequencies;
+		Vector<size_t> instance_frequencies;
+
+		size_t maximal_difference_index;
+		size_t instance_index;
+		size_t instance_target_index;
+
+		Vector<size_t> unbalanced_instances_indices;
+
+		while(!target_class_differences.is_in(0, 0))
+		{
+			unbalanced_instances_indices.clear();
+			instances_indices.clear();
+
+			instances_indices = instances.arrange_used_indices();
+
+			instances_number = instances_indices.size();
+
+
+			maximal_difference_index = target_class_differences.calculate_maximal_index();
+
+			unbalanced_instances_number = (size_t) (target_class_differences[maximal_difference_index]/10);
+
+			if(unbalanced_instances_number < 1)
+			{
+				unbalanced_instances_number = 1;
+			}
+
+			data_histograms = calculate_data_histograms(bins_number);
+
+			total_frequencies.clear();
+
+			total_frequencies.set(instances_number, 2);
+
+			count_instances = 0;
+
+			for(size_t i = 0; i < instances_number; i++)
+			{
+				instance_index = instances_indices[i];
+
+				instance = get_instance(instance_index);
+
+				instance_target_index = targets_variables_indices[maximal_difference_index];
+
+				if(instance[instance_target_index] == 1.0)
+				{
+					instance_frequencies = instance.calculate_total_frequencies(data_histograms);
+
+					total_frequencies(count_instances, 0) = instance_frequencies.calculate_partial_sum(inputs_variables_indices);
+					total_frequencies(count_instances, 1) = instance_index;
+
+					count_instances++;
+				}
+			}
+
+			unbalanced_instances_indices = total_frequencies.sort_greater_rows(0).arrange_column(1).arrange_subvector_first(unbalanced_instances_number);
+
+			unused_instances = unused_instances.assemble(unbalanced_instances_indices);
+
+			instances.set_unused(unbalanced_instances_indices);
+
+			target_class_differences[maximal_difference_index] = target_class_differences[maximal_difference_index] - unbalanced_instances_number;
+		}
+
+		return(unused_instances);
+	}
+
+
+	// Vector<size_t> unuse_most_populated_target(const size_t&)
+
+	/// This method unuses a given number of instances of the most populated target.
+	/// If the given number is greater than the number of used instances which belongs to that target,
+	/// it unuses all the instances in that target.
+	/// If the given number is lower than 1, it unuses 1 instance.
+	/// @param unused_target_number Number of instances to set unused.
+
+	Vector<size_t> DataSet::unuse_most_populated_target(const size_t& instances_to_unuse)
+	{
+		Vector<size_t> most_populated_instances(instances_to_unuse);
+
+		if(instances_to_unuse == 0)
+		{
+			return(most_populated_instances);
+		}
+
+		const size_t bins_number = 10;
+
+		// Variables
+
+		const size_t targets_number = variables.count_targets_number();
+
+		const Vector<size_t> inputs = variables.arrange_inputs_indices();
+		const Vector<size_t> targets = variables.arrange_targets_indices();
+
+		const Vector<size_t> unused_variables = variables.arrange_unused_indices();
+
+		// Instances
+
+		const Vector<size_t> used_instances = instances.arrange_used_indices();
+
+		const size_t used_instances_number = instances.count_used_instances_number();
+
+		// Most populated target
+
+		const Vector< Histogram<double> > data_histograms = calculate_data_histograms(bins_number);
+
+		size_t most_populated_target;
+		size_t most_populated_bin;
+
+		size_t frequency;
+		size_t maximum_frequency = 0;
+
+		size_t unused;
+
+		for(size_t i = 0; i < targets_number; i++)
+		{
+			frequency = data_histograms[targets[i] - unused_variables.count_less_than(targets[i])].calculate_maximum_frequency();
+
+			if(frequency > maximum_frequency)
+			{
+				unused = unused_variables.count_less_than(targets[i]);
+
+				maximum_frequency = frequency;
+
+				most_populated_target = targets[i];
+
+				most_populated_bin = data_histograms[targets[i] - unused].calculate_most_populated_bin();
+			}
+		}
+
+		// Calculates frequencies of the instances which belong to the most populated target
+
+		size_t index;
+		size_t bin;
+		double value;
+		Vector<double> instance;
+
+		Vector<size_t> instance_frequencies;
+
+		Matrix<size_t> total_instances_frequencies(maximum_frequency, 2);
+
+		size_t count_instances = 0;
+
+		int i = 0;
+
+		//    #pragma omp parallel for private(i, instance_index, instance, instance_value, instance_bin, instance_frequencies) shared(count_instances, total_instances_frequencies, maximal_frequency_target_index)
+
+		for(i = 0; i < (int)used_instances_number; i++)
+		{                
+			index = used_instances[i];
+
+			instance = get_instance(index);
+
+			value = instance[most_populated_target];
+
+			bin = data_histograms[most_populated_target - unused].calculate_bin(value);
+
+			if(bin == most_populated_bin)
+			{
+				instance_frequencies = instance.calculate_total_frequencies(data_histograms);
+
+				total_instances_frequencies(count_instances, 0) = instance_frequencies.calculate_partial_sum(inputs);
+				total_instances_frequencies(count_instances, 1) = used_instances[i];
+
+				count_instances++;
+			}
+		}
+
+		// Unuses instances
+
+		if(instances_to_unuse > maximum_frequency)
+		{
+			most_populated_instances = total_instances_frequencies.sort_greater_rows(0).arrange_column(1).arrange_subvector_first(maximum_frequency);
+		}
+		else
+		{
+			most_populated_instances = total_instances_frequencies.sort_greater_rows(0).arrange_column(1).arrange_subvector_first(instances_to_unuse);
+		}
+
+		instances.set_unused(most_populated_instances);
+
+		return(most_populated_instances);
+	}
+
+
+	// Vector<size_t> balance_function_regression_targets_distribution(void)
+
+	/// This method balances the target ditribution of a data set for a function regression problem.
+	/// It returns a vector with the indices of the instances set unused.
+	/// It unuses a given percentage of the instances.
+	/// @param percentage_balanced_instances Perecentage of the instances to be unused.
+
+	Vector<size_t> DataSet::balance_function_regression_targets_distribution(const double& percentage)
+	{
+		time_t beginning_time, current_time;
+		time(&beginning_time);
+		double elapsed_time;
+
+		Vector<size_t> unused_instances;
+
+		const size_t instances_number = instances.count_used_instances_number();
+
+		const size_t instances_to_unuse = (size_t)(instances_number*percentage/100.0);
+
+		//    std::cout << "Instances to unuse: " << instances_to_unuse << std::endl;
+
+		size_t count;
+
+		while(unused_instances.size() < instances_to_unuse)
+		{        
+			if(instances_to_unuse - unused_instances.size() < instances_to_unuse/10)
+			{
+				count = instances_to_unuse - unused_instances.size();
+			}
+			else
+			{
+				count = instances_to_unuse/10;
+			}
+
+			if(count == 0)
+			{
+				count = 1;
+			}
+
+			unused_instances = unused_instances.assemble(unuse_most_populated_target(count));
+		}
+
+		time(&current_time);
+		elapsed_time = difftime(current_time, beginning_time);
+
+		return(unused_instances);
+	}
+
+
+	// Vector<size_t> arrange_binary_inputs_indices(void) const method
+
+	Vector<size_t> DataSet::arrange_binary_inputs_indices(void) const
+	{
+		const size_t inputs_number = variables.count_inputs_number();
+
+		const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
+
+		Vector<size_t> binary_inputs_indices;
+
+		for(size_t i = 0; i < inputs_number; i++)
+		{
+			if(is_binary_variable(inputs_indices[i]))
+			{
+				binary_inputs_indices.push_back(inputs_indices[i]);
+			}
+		}
+
+		return(binary_inputs_indices);
+	}
+
+
+	// Vector<size_t> arrange_real_inputs_indices(void) const method
+
+	Vector<size_t> DataSet::arrange_real_inputs_indices(void) const
+	{
+		const size_t inputs_number = variables.count_inputs_number();
+
+		const Vector<size_t> inputs_indices = variables.arrange_inputs_indices();
+
+		Vector<size_t> real_inputs_indices;
+
+		for(size_t i = 0; i < inputs_number; i++)
+		{
+			if(!is_binary_variable(inputs_indices[i]))
+			{
+				real_inputs_indices.push_back(inputs_indices[i]);
+			}
+		}
+
+		return(real_inputs_indices);
+	}
+
+
+	// void sum_binary_inputs(void) method
+	// @todo
+
+	void DataSet::sum_binary_inputs(void)
+	{
+		//    const size_t inputs_number = variables.count_inputs_number();
+
+		//    const size_t instances_number = instances.get_instances_number();
+
+		//    const Vector<size_t> binary_inputs_indices = arrange_binary_inputs_indices();
+
+		//    const size_t binary_inputs_number = binary_inputs_indices.size();
+
+		//    Vector<double> binary_variable(instances_number, 0.0);
+
+		//    for(size_t i = 0; i < binary_inputs_number; i++)
+		//    {
+		//        binary_variable += data.arrange_column(binary_inputs_indices[i]);
+		//    }
+
+		//    const Vector<size_t> real_inputs_indices = arrange_real_inputs_indices();
+
+		//    Matrix<double> new_data = data.arrange_submatrix_columns(real_inputs_indices);
+
+		//    new_data.append_column(binary_variable);
+
+		//    new_data = new_data.assemble_columns(arrange_target_data());
+	}
+
+
+	// Vector<double> calculate_distances(const size_t&) const
+
+	/// Returns a matrix with the distances between every instance and the rest of the instances.
+	/// The number of rows is the number of instances in the data set.
+	/// The number of columns is the number of instances in the data set.
+	/// @param nearest_neighbors_number Nearest neighbors number.
+
+	Matrix<double> DataSet::calculate_instances_distances(const size_t& nearest_neighbors_number) const
+	{
+		const size_t instances_number = instances.count_used_instances_number();
+		const Vector<size_t> instances_indices = instances.arrange_used_indices();
+
+		//Matrix<double> distances(instances_number, instances_number, 0.0);
+
+		Vector<double> distances(nearest_neighbors_number , -1.0);
+
+		Vector<double> instance;
+		Vector<double> other_instance;
+
+		size_t maximal_index;
+
+		double distance;
+
+		// #pragma omp parallel for private(i)
+
+		for(size_t i = 0; i < instances_number; i++)
+		{
+			for(size_t j = 0; j < instances_number; j++)
+			{
+
+				distance = data.calculate_distance(instances_indices[i], instances_indices[j]);
+
+				if(distances.count_greater_than(distance) != 0)
+				{
+					maximal_index = distances.calculate_maximal_index();
+
+					distances[maximal_index] = distance;
+				}
+			}
+		}
+
+		Matrix<double> distances1(instances_number, instances_number, 0.0);
+		return(distances1);
+	}
+
+
+	// Matrix<size_t> calculate_nearest_neighbors(const Matrix<double>&, const size_t&) const
+
+	/// Returns a matrix with the k-nearest neighbors to every used instance in the data set.
+	/// Number of rows is the number of isntances in the data set.
+	/// Number of columns is the number of nearest neighbors to calculate.
+	/// @param distances Distances between every instance and the rest of them.
+	/// @param nearest_neighbors_number Number of nearest neighbors to be calculated.
+
+	Matrix<size_t> DataSet::calculate_nearest_neighbors(const Matrix<double>& distances, const size_t& nearest_neighbors_number) const
+	{
+		const size_t instances_number = instances.count_used_instances_number();
+
+		Matrix<size_t> nearest_neighbors(instances_number, nearest_neighbors_number);
+
+		Vector<double> instance_distances;
+		Vector<size_t> minimal_distances_indices;
+
+		for(size_t i = 0; i < instances_number; i++)
+		{
+			instance_distances = distances.arrange_row(i);
+			minimal_distances_indices = instance_distances.calculate_minimal_indices(nearest_neighbors_number + 1);
+
+			for(size_t j = 0; j < nearest_neighbors_number; j++)
+			{
+				nearest_neighbors(i, j) = minimal_distances_indices[j + 1];
+			}
+		}
+
+		return(nearest_neighbors);
+	}
+
+
+	// Vector<double> calculate_k_distances(const Matrix<double>&) const
+
+	/// Returns a vector with the k-distance of every instance in the data set, which is the distance between every
+	/// instance and k-th nearest neighbor.
+	/// @param distances Distances between every instance in the data set.
+	/// @param nearest_neighbors_number Number of nearest neighbors to be calculated.
+
+	Vector<double> DataSet::calculate_k_distances(const Matrix<double>& distances, const size_t& nearest_neighbors_number) const
+	{
+		const size_t instances_number = instances.count_used_instances_number();
+
+		const Matrix<size_t> nearest_neighbors = calculate_nearest_neighbors(distances, nearest_neighbors_number);
+
+		size_t maximal_index;
+
+		Vector<double> k_distances(instances_number);
+
+		for(size_t i = 0; i < instances_number; i++)
+		{
+			maximal_index = nearest_neighbors(i, nearest_neighbors_number - 1);
+
+			k_distances[i] = distances.arrange_row(i)[maximal_index];
+		}
+
+		return(k_distances);
+	}
+
+
+	// Matrix<double> calculate_reachability_distance(const Matrix<double>&, Vector<double>&) const
+
+	/// Calculates the reachability distances for the instances in the data set.
+	/// @param distances Distances between every instance.
+	/// @param k_distances Distances of the k-th nearest neighbors.
+
+	Matrix<double> DataSet::calculate_reachability_distances(const Matrix<double>& distances, const Vector<double>& k_distances) const
+	{
+		const size_t instances_number = instances.count_used_instances_number();
+
+		Matrix<double> reachability_distances(instances_number, instances_number);
+
+		for(size_t i = 0; i < instances_number; i++)
+		{
+			for(size_t j = i; j < instances_number; j++)
+			{
+				if(distances(i, j) <= k_distances[i])
+				{
+					reachability_distances(i, j) = k_distances[i];
+					reachability_distances(j, i) = k_distances[i];
+				}
+				else if(distances(i, j) > k_distances[i])
+				{
+					reachability_distances(i, j) = distances(i, j);
+					reachability_distances(j, i) = distances(j, i);
+				}
+			}
+		}
+
+		return (reachability_distances);
+	}
+
+
+	// Vector<double> calculate_reachability_density(const Matrix<double>&, const size_t&) const
+
+	/// Calculates reachability density for every element of the data set.
+	/// @param distances Distances between every instance in the data set.
+	/// @param nearest_neighbors_number Number of nearest neighbors to be calculated.
+
+	Vector<double> DataSet::calculate_reachability_density(const Matrix<double>& distances, const size_t& nearest_neighbors_number) const
+	{
+		const size_t instances_number = instances.count_used_instances_number();
+
+		const Vector<double> k_distances = calculate_k_distances(distances, nearest_neighbors_number);
+
+		const Matrix<double> reachability_distances = calculate_reachability_distances(distances, k_distances);
+
+		const Matrix<size_t> nearest_neighbors_indices = calculate_nearest_neighbors(distances, nearest_neighbors_number);
+
+		Vector<double> reachability_density(instances_number);
+
+		Vector<size_t> nearest_neighbors_instance;
+
+		for(size_t i = 0; i < instances_number; i++)
+		{
+			nearest_neighbors_instance = nearest_neighbors_indices.arrange_row(i);
+
+			reachability_density[i] = nearest_neighbors_number/ reachability_distances.arrange_row(i).calculate_partial_sum(nearest_neighbors_instance);
+		}
+
+		return (reachability_density);
+
+	}
+
+
+	// Vector<double> calculate_local_outlier_factor(const size_t&) const
+
+	/// Returns a vector with the local outlier factors for every used instance.
+	/// @param nearest_neighbors_number Number of neighbors to be calculated.
+
+	Vector<double> DataSet::calculate_local_outlier_factor(const size_t& nearest_neighbors_number) const
+	{
+		const size_t instances_number = instances.count_used_instances_number();
+
+		const Matrix<double> distances = calculate_instances_distances(nearest_neighbors_number);
+		const Vector<double> reachability_density = calculate_reachability_density(distances, nearest_neighbors_number);
+
+		const Matrix<size_t> nearest_neighbors = calculate_nearest_neighbors(distances, nearest_neighbors_number);
+
+		Vector<size_t> instance_nearest_neighbors(nearest_neighbors_number);
+
+		Vector<double> local_outlier_factor(instances_number);
+
+		for(size_t i = 0; i < instances_number; i++)
+		{
+			instance_nearest_neighbors = nearest_neighbors.arrange_row(i);
+
+			local_outlier_factor[i] = (reachability_density.calculate_partial_sum(instance_nearest_neighbors))/(nearest_neighbors_number*reachability_density[i]);
+		}
+
+		return (local_outlier_factor);
+	}
+
+
+	// Vector<size_t> clean_local_outlier_factor(const size_t&)
+
+	/// Removes the outliers from the data set using the local outlier factor method.
+	/// @param nearest_neighbors_number Number of nearest neighbros to calculate
+	/// @todo
+
+	Vector<size_t> DataSet::clean_local_outlier_factor(const size_t& nearest_neighbors_number)
+	{
+		Vector<size_t> unused_instances;
+
+		const Vector<double> local_outlier_factor = calculate_local_outlier_factor(nearest_neighbors_number);
+
+		const size_t instances_number = instances.count_used_instances_number();
+		const Vector<size_t> instances_indices = instances.arrange_used_indices();
+
+		for(size_t i = 0; i < instances_number; i++)
+		{
+			if(local_outlier_factor[i] > 1.6001)
+			{
+				instances.set_use(instances_indices[i], Instances::Unused);
+
+				unused_instances.push_back(instances_indices[i]);
+			}
+		}
+
+		return(unused_instances);
+	}
+
+
+	// Vector<size_t> clean_Tukey_outliers(const double&)
+
+	/// Removes the outliers from the data set using the Tukey's test.
+	/// @param cleaning_parameter Parameter used to detect outliers.
+
+	Vector<size_t> DataSet::clean_Tukey_outliers(const double& cleaning_parameter)
+	{
+		const size_t instances_number = instances.count_used_instances_number();
+		const Vector<size_t> instances_indices = instances.arrange_used_indices();
+
+		const size_t variables_number = variables.count_used_variables_number();
+		const Vector<size_t> used_variables_indices = variables.arrange_used_indices();
+
+		Vector<size_t> unused_instances_indices;
+
+		Vector<double> instance;
+
+		Vector<double> box_plot;
+		double interquartile_range;
+
+		size_t variable_index;
+
+		for(size_t i = 0; i < variables_number; i++)
+		{
+			variable_index = used_variables_indices[i];
+
+			box_plot = data.arrange_column(variable_index).calculate_box_plots();
+
+			if(box_plot[3] == box_plot[1])
+			{
+				continue;
+			}
+			else if(is_binary_variable(variable_index))
+			{
+				continue;
+			}
+			else
+			{
+				interquartile_range = std::abs((box_plot[3] - box_plot[1]));
+			}
+
+			for(size_t j = 0; j < instances_number; j++)
+			{
+				instance = get_instance(instances_indices[j]);
+
+				if(instance[variable_index] < (box_plot[1] - cleaning_parameter*interquartile_range)
+						&& !(unused_instances_indices.contains(instances_indices[j])))
+				{
+					unused_instances_indices.push_back(instances_indices[j]);
+				}
+				else if(instance[variable_index] > (box_plot[3] + cleaning_parameter*interquartile_range)
+						&& !(unused_instances_indices.contains(instances_indices[j])))
+				{
+					unused_instances_indices.push_back(instances_indices[j]);
+				}
+			}
+		}
+
+		instances.set_unused(unused_instances_indices);
+
+		return(unused_instances_indices);
+	}
+
+
+	// Matrix<double> calculate_autocorrelation(const size_t&) const method
+
+	/// Returns a matrix with the values of autocorrelation for every variable in the data set.
+	/// The number of rows is equal to the number of instances.
+	/// The number of columns is the maximum lags number.
+	/// @param maximum_lags_number Maximum lags number for which autocorrelation is calculated.
+
+	Matrix<double> DataSet::calculate_autocorrelation(const size_t& maximum_lags_number) const
+	{
+		if(lags_number > instances.count_used_instances_number())
+		{
+			std::ostringstream buffer;
+
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "Matrix<double> calculate_autocorrelation(const size_t&) method.\n"
+				<< "Maximum lags number (" << maximum_lags_number << ") is greater than the number of instances (" << instances.count_used_instances_number() <<") \n";
+
+			throw std::logic_error(buffer.str());
+		}
+
+		const size_t variables_number = time_series_data.get_columns_number();
+
+		Matrix<double> autocorrelation(variables_number, maximum_lags_number);
+
+		for(size_t i = 0; i < maximum_lags_number; i++)
+		{
+			for(size_t j = 0; j < variables_number; j++)
+			{
+				autocorrelation.set_row(j, time_series_data.arrange_column(j).calculate_autocorrelation(maximum_lags_number));
+			}
+		}
+
+		return autocorrelation;
+	}
+
+
+	// Matrix< Vector<double> > calculate_cross_correlation(void)
+
+	/// Calculates the cross-correlation between all the variables in the data set.
+
+	Matrix< Vector<double> > DataSet::calculate_cross_correlation(void) const
+	{
+		const size_t variables_number = variables.count_used_variables_number()/(lags_number + steps_ahead);
+
+		Matrix< Vector<double> > cross_correlation(variables_number, variables_number);
+
+		Vector<double> actual_column;
+
+		for(size_t i = 0; i < variables_number; i++)
+		{
+			actual_column = time_series_data.arrange_column(i);
+
+			for(size_t j = 0; j < variables_number; j++)
+			{
+				cross_correlation(i , j) = actual_column.calculate_cross_correlation(time_series_data.arrange_column(j));
+			}
+		}
+
+		return(cross_correlation);
+	}
+
+
+	// void generate_artificial_data(const size_t&, const size_t&) method
+
+	/// Generates an artificial dataset with a given number of instances and number of variables
+	/// using the Rosenbrock function.
+	/// @param instances_number Number of instances in the dataset.
+	/// @param variables_number Number of variables in the dataset.
+
+	void DataSet::generate_data_function_regression(const size_t& instances_number, const size_t& variables_number)
+	{
+		const size_t inputs_number = variables_number-1;
+		const size_t targets_number = 1;
+
+		Matrix<double> input_data(instances_number, inputs_number);
+		input_data.randomize_uniform(-2.048, 2.048);
+
+		Matrix<double> target_data(instances_number, targets_number);
+
+		double rosenbrock;
+
+		for(size_t i = 0; i < instances_number; i++)
+		{
+			target_data(i, 0) = input_data.arrange_row(i).calculate_norm();
+
+			rosenbrock = 0.0;
+
+			for(size_t j = 0; j < inputs_number-1; j++)
+			{
+				rosenbrock +=
+					(1.0 - input_data(i,j))*(1.0 - input_data(i,j))
+					+ 100.0*(input_data(i,j+1)-input_data(i,j)*input_data(i,j))*(input_data(i,j+1)-input_data(i,j)*input_data(i,j));
+			}
+
+			target_data(i, 0) = rosenbrock;
+		}
+
+		set(input_data.assemble_columns(target_data));
+
+		data.scale_minimum_maximum();
+	}
+
+
+	// void generate_data_binary_classification(const size_t&, const size_t&) method
+
+	void DataSet::generate_data_binary_classification(const size_t& instances_number, const size_t& inputs_number)
+	{
+		const size_t negatives = instances_number/2;
+		const size_t positives = instances_number - negatives;
+
+		// Negatives data
+
+		Vector<double> target_0(negatives, 0.0);
+
+		Matrix<double> class_0(negatives, inputs_number);
+
+		class_0.randomize_normal(-1.0, 1.0);
+
+		class_0.append_column(target_0);
+
+		// Positives data
+
+		Vector<double> target_1(positives, 1.0);
+
+		Matrix<double> class_1(positives, inputs_number);
+
+		class_1.randomize_normal(1.0, 1.0);
+
+		class_1.append_column(target_1);
+
+		// Assemble
+
+		set(class_0.assemble_rows(class_1));
+
+	}
+
+
+	// void generate_data_multiple_classification(const size_t&, const size_t&) method
+
+	void DataSet::generate_data_multiple_classification(const size_t&, const size_t&)
+	{
+
+	}
+
+
+	// bool has_data(void) const method
+
+	/// Returns true if the data matrix is not empty (it has not been loaded),
+	/// and false otherwise.
+
+	bool DataSet::has_data(void) const
+	{
+		if(data.empty())
+		{
+			return(false);
+		}
+		else
+		{
+			return(true);
+		}
+	}
+
+
+	// Vector<size_t> filter_data(const Vector<double>&, const Vector<double>&) method
+
+	/// Unuses those instances with values outside a defined range.
+	/// @param minimums Vector of minimum values in the range.
+	/// The size must be equal to the number of variables.
+	/// @param maximums Vector of maximum values in the range.
+	/// The size must be equal to the number of variables.
+
+	Vector<size_t> DataSet::filter_data(const Vector<double>& minimums, const Vector<double>& maximums)
+	{
+		const size_t variables_number = variables.get_variables_number();
+
+		// Control sentence (if debug)
+
+#ifdef __OPENNN_DEBUG__
+
+		if(minimums.size() != variables_number)
+		{
+			std::ostringstream buffer;
+
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "Vector<size_t> filter_data(const Vector<double>&, const Vector<double>&) method.\n"
+				<< "Size of minimums (" << minimums.size() << ") is not equal to number of variables (" << variables_number << ").\n";
+
+			throw std::logic_error(buffer.str());
+		}
+
+		if(maximums.size() != variables_number)
+		{
+			std::ostringstream buffer;
+
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "Vector<size_t> filter_data(const Vector<double>&, const Vector<double>&) method.\n"
+				<< "Size of maximums (" << maximums.size() << ") is not equal to number of variables (" << variables_number << ").\n";
+
+			throw std::logic_error(buffer.str());
+		}
+
+#endif
+
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+
+		Vector<size_t> filtered_indices;
+
+		const size_t instances_number = instances.get_instances_number();
+
+		for(size_t i = 0; i < instances_number; i++)
+		{
+			for(size_t j = 0; j < variables_number; j++)
+			{
+				if(missing_values.is_missing_value(i, j))
+				{
+					continue;
+				}
+
+				if(data(i,j) < minimums[j] || data(i,j) > maximums[j])
+				{
+					if(instances.is_used(i))
+					{
+						filtered_indices.push_back(i);
+
+						instances.set_use(i, Instances::Unused);
+					}
+				}
+			}
+		}
+
+		return(filtered_indices);
+	}
+
+
+	// void convert_angular_variable_degrees(const size_t&) method
+
+	/// Replaces a given angular variable expressed in degrees by the sinus and cosinus of that variable.
+	/// This solves the discontinuity associated with angular variables.
+	/// Note that this method modifies the number of variables.
+	/// @param variable_index Index of angular variable.
+
+	void DataSet::convert_angular_variable_degrees(const size_t& variable_index)
+	{
+		// Control sentence (if debug)
+
+#ifdef __OPENNN_DEBUG__
+
+		const size_t variables_number = variables.get_variables_number();
+
+		if(variable_index >= variables_number)
+		{
+			std::ostringstream buffer;
+
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void convert_angular_variable_degrees(const size_t&) method.\n"
+				<< "Index of variable (" << variable_index << ") must be less than number of variables (" << variables_number << ").\n";
+
+			throw std::logic_error(buffer.str());
+		}
+
+#endif
+
+		Vector<Variables::Item> items = variables.get_items();
+
+		Variables::Item sin_item = items[variable_index];
+		prepend("sin_", sin_item.name);
+
+		Variables::Item cos_item = items[variable_index];
+		prepend("cos_", cos_item.name);
+
+		items[variable_index] = sin_item;
+		items = items.insert_element(variable_index, cos_item);
+
+		variables.set_items(items);
+
+		data.convert_angular_variables_degrees(variable_index);
+
+	}
+
+
+	// void convert_angular_variable_radians(const size_t&) method
+
+	/// Replaces a given angular variable expressed in radians by the sinus and cosinus of that variable.
+	/// This solves the discontinuity associated with angular variables.
+	/// Note that this method modifies the number of variables.
+	/// @param variable_index Index of angular variable.
+
+	void DataSet::convert_angular_variable_radians(const size_t& variable_index)
+	{
+		// Control sentence (if debug)
+
+#ifdef __OPENNN_DEBUG__
+
+		const size_t variables_number = variables.get_variables_number();
+
+		if(variable_index >= variables_number)
+		{
+			std::ostringstream buffer;
+
+			buffer << "OpenNN Exception: DataSet class.\n"
+				<< "void convert_angular_variable_radians(const size_t&) method.\n"
+				<< "Index of variable (" << variable_index << ") must be less than number of variables (" << variables_number << ").\n";
+
+			throw std::logic_error(buffer.str());
+		}
+
+#endif
+
+		Vector<Variables::Item> items = variables.get_items();
+
+		Variables::Item sin_item = items[variable_index];
+		prepend("sin_", sin_item.name);
+
+		Variables::Item cos_item = items[variable_index];
+		prepend("cos_", cos_item.name);
+
+		items[variable_index] = sin_item;
+		items = items.insert_element(variable_index, cos_item);
+
+		variables.set_items(items);
+
+		data.convert_angular_variables_radians(variable_index);
+
+	}
+
+
+	// void convert_angular_variables_degrees(const Vector<size_t>&)
+
+	/// Replaces a given set of angular variables expressed in degrees by the sinus and cosinus of that variable.
+	/// This solves the discontinuity associated with angular variables.
+	/// Note that this method modifies the number of variables.
+	/// @param indices Indices of angular variables.
+
+	void DataSet::convert_angular_variables_degrees(const Vector<size_t>& indices)
+	{
+		// Control sentence (if debug)
+
+#ifdef __OPENNN_DEBUG__
+
+		const size_t variables_number = variables.get_variables_number();
+
+		for(size_t i = 0; i < indices.size(); i++)
+		{
+			if(indices[i] >= variables_number)
+			{
+				std::ostringstream buffer;
+
+				buffer << "OpenNN Exception: DataSet class.\n"
+					<< "void convert_angular_variables_degrees(const Vector<size_t>&) method.\n"
+					<< "Index (" << i << ") must be less than number of variables (" << variables_number << ").\n";
+
+				throw std::logic_error(buffer.str());
+			}
+		}
+
+#endif
+
+		size_t size = indices.size();
+
+		unsigned count = 0;
+
+		size_t index;
+
+		for(size_t i = 0; i < size; i++)
+		{
+			index = indices[i]+count;
+
+			convert_angular_variable_degrees(index);
+
+			count++;
+		}
+	}
+
+
+	// void convert_angular_variables_radians(const Vector<size_t>&)
+
+	/// Replaces a given set of angular variables expressed in radians by the sinus and cosinus of that variable.
+	/// This solves the discontinuity associated with angular variables.
+	/// Note that this method modifies the number of variables.
+	/// @param indices Indices of angular variables.
+
+	void DataSet::convert_angular_variables_radians(const Vector<size_t>& indices)
+	{
+		// Control sentence (if debug)
+
+#ifdef __OPENNN_DEBUG__
+
+		const size_t variables_number = variables.get_variables_number();
+
+		for(size_t i = 0; i < indices.size(); i++)
+		{
+			if(indices[i] >= variables_number)
+			{
+				std::ostringstream buffer;
+
+				buffer << "OpenNN Exception: DataSet class.\n"
+					<< "void convert_angular_variables_radians(const Vector<size_t>&) method.\n"
+					<< "Index (" << i << ") must be less than number of variables (" << variables_number << ").\n";
+
+				throw std::logic_error(buffer.str());
+			}
+		}
+
+#endif
+
+		size_t size = indices.size();
+
+		unsigned count = 0;
+
+		size_t index;
+
+		for(size_t i = 0; i < size; i++)
+		{
+			index = indices[i]+count;
+
+			convert_angular_variable_radians(index);
+
+			count++;
+		}
+	}
+
+
+	// void convert_angular_variables(void) method
+
+	/// Replaces a given set of angular variables by the sinus and cosinus of that variable, according to the angular units used.
+	/// This solves the discontinuity associated with angular variables.
+	/// Note that this method modifies the number of variables.
+
+	void DataSet::convert_angular_variables(void)
+	{
+		switch(angular_units)
+		{
+			case DataSet::Radians:
+				{
+					convert_angular_variables_radians(angular_variables);
+				}
+				break;
+
+			case DataSet::Degrees:
+				{
+					convert_angular_variables_degrees(angular_variables);
+				}
+				break;
+
+			default:
+				{
+					std::ostringstream buffer;
+
+					buffer << "OpenNN Exception: DataSet class.\n"
+						<< "void convert_angular_variables(void) method.\n"
+						<< "Unknown angular units.\n";
+
+					throw std::logic_error(buffer.str());
+				}
+				break;
+		}
+
+	}
+
+
+	// void scrub_missing_values_unuse(void) method
+
+	/// Sets all the instances with missing values to "Unused".
+
+	void DataSet::scrub_missing_values_unuse(void)
+	{
+		const Vector<size_t> missing_instances = missing_values.arrange_missing_instances();
+
+		for(size_t i = 0; i < missing_instances.size(); i++)
+		{
+			instances.set_use(missing_instances[i], Instances::Unused);
+		}
+	}
+
+
+	// void scrub_missing_values_mean(void) method
+
+	/// Substitutes all the missing values by the mean of the corresponding variable.
+
+	void DataSet::scrub_missing_values_mean(void)
+	{
+		const Vector< Vector<size_t> > missing_indices = missing_values.arrange_missing_indices();
+
+		const Vector<double> means = data.calculate_mean_missing_values(missing_indices);
+
+		const size_t variables_number = variables.get_variables_number();
+
+		const Vector<size_t> targets_indices = variables.arrange_targets_indices();
+
+		size_t instance_index;
+
+		for(size_t i = 0; i < variables_number; i++)
+		{
+			for(size_t j = 0; j < missing_indices[i].size(); j++)
+			{
+				instance_index = missing_indices[i][j];
+
+				data(instance_index, i) = means[i];
+			}
+		}
+	}
+
+
+	// void scrub_missing_values(void) method
+
+	/// General method for dealing with missing values.
+	/// It switches among the different scrubbing methods available,
+	/// according to the corresponding value in the missing values object.
+
+	void DataSet::scrub_missing_values(void)
+	{
+		const MissingValues::ScrubbingMethod scrubbing_method = missing_values.get_scrubbing_method();
+
+		switch(scrubbing_method)
+		{
+			case MissingValues::Unuse:
+				{
+					scrub_missing_values_unuse();
+				}
+				break;
+
+			case MissingValues::Mean:
+				{
+					scrub_missing_values_mean();
+				}
+				break;
+
+			default:
+				{
+					std::ostringstream buffer;
+
+					buffer << "OpenNN Exception: DataSet class\n"
+						<< "void scrub_missing_values(void) method.\n"
+						<< "Unknown scrubbing method.\n";
+
+					throw std::logic_error(buffer.str());
+				}
+				break;
+		}
+	}
+
+
+	// size_t count_tokens(std::string& str) const method
+
+	/// Returns the number of strings delimited by separator.
+	/// If separator does not match anywhere in the string, this method returns 0.
+	/// @param str String to be tokenized.
+
+	size_t DataSet::count_tokens(std::string& str) const
+	{
+		//    if(!(this->find(separator) != std::string::npos))
+		//    {
+		//        std::ostringstream buffer;
+		//
+		//        buffer << "OpenNN Exception:\n"
+		//               << "std::string class.\n"
+		//               << "inline size_t count_tokens(const std::string&) const method.\n"
+		//               << "Separator not found in string: \"" << separator << "\".\n";
+		//
+		//        throw std::logic_error(buffer.str());
+		//    }
+
+		trim(str);
+
+		size_t tokens_count = 0;
+
+		// Skip delimiters at beginning.
+
+		const std::string separator_string = get_separator_string();
+
+		std::string::size_type last_pos = str.find_first_not_of(separator_string, 0);
+
+		// Find first "non-delimiter".
+
+		std::string::size_type pos = str.find_first_of(separator_string, last_pos);
+
+		while (std::string::npos != pos || std::string::npos != last_pos)
+		{
+			// Found a token, add it to the vector
+
+			tokens_count++;
+
+			// Skip delimiters.  Note the "not_of"
+
+			last_pos = str.find_first_not_of(separator_string, pos);
+
+			// Find next "non-delimiter"
+
+			pos = str.find_first_of(separator_string, last_pos);
+		}
+
+		return(tokens_count);
+	}
+
+
+	/// Splits the string into substrings (tokens) wherever separator occurs, and returns a vector with those strings.
+	/// If separator does not match anywhere in the string, this method returns a single-element list containing this string.
+	/// @param str String to be tokenized.
+
+	Vector<std::string> DataSet::get_tokens(const std::string& str) const
+	{   
+		const std::string new_string = get_trimmed(str);
+
+		Vector<std::string> tokens;
+
+		const std::string separator_string = get_separator_string();
+
+		// Skip delimiters at beginning.
+
+		std::string::size_type lastPos = new_string.find_first_not_of(separator_string, 0);
+
+		// Find first "non-delimiter"
+
+		std::string::size_type pos = new_string.find_first_of(separator_string, lastPos);
+
+		while(std::string::npos != pos || std::string::npos != lastPos)
+		{
+			// Found a token, add it to the vector
+
+			tokens.push_back(new_string.substr(lastPos, pos - lastPos));
+
+			// Skip delimiters. Note the "not_of"
+
+			lastPos = new_string.find_first_not_of(separator_string, pos);
+
+			// Find next "non-delimiter"
+
+			pos = new_string.find_first_of(separator_string, lastPos);
+		}
+
+		for(size_t i = 0; i < tokens.size(); i++)
+		{
+			trim(tokens[i]);
+		}
+
+		return(tokens);
+	}
+
+
+	// bool is_numeric(const std::string&) const method
+
+	/// Returns true if the string passed as argument represents a number, and false otherwise.
+	/// @param str String to be checked.
+
+	bool DataSet::is_numeric(const std::string& str) const
+	{
+		std::istringstream iss(str.data());
+
+		double dTestSink;
+
+		iss >> dTestSink;
+
+		// was any input successfully consumed/converted?
+
+		if(!iss)
+		{
+			return false;
+		}
+
+		// was all the input successfully consumed/converted?
+
+		return(iss.rdbuf()->in_avail() == 0);
+	}
+
+
+	// void DataSet::trim(std::string&) const method
+
+	/// Removes whitespaces from the start and the end of the string passed as argument.
+	/// This includes the ASCII characters "\t", "\n", "\v", "\f", "\r", and " ".
+	/// @param str String to be checked.
+
+	void DataSet::trim(std::string& str) const
+	{
+		//prefixing spaces
+
+		str.erase(0, str.find_first_not_of(' '));
+
+		//surfixing spaces
+
+		str.erase(str.find_last_not_of(' ') + 1);
+	}
+
+
+	/// Returns a string that has whitespace removed from the start and the end.
+	/// This includes the ASCII characters "\t", "\n", "\v", "\f", "\r", and " ".
+	/// @param str String to be checked.
+
+	std::string DataSet::get_trimmed(const std::string& str) const
+	{
+		std::string output(str);
+
+		//prefixing spaces
+
+		output.erase(0, output.find_first_not_of(' '));
+
+		//surfixing spaces
+
+		output.erase(output.find_last_not_of(' ') + 1);
+
+		return(output);
+	}
+
+
+	// std::string prepend(const std::string&, const std::string&) const method
+
+	/// Prepends the string pre to the beginning of the string str and returns the whole string.
+	/// @param pre String to be prepended.
+	/// @param str original string.
+
+	std::string DataSet::prepend(const std::string& pre, const std::string& str) const
+	{
+		std::ostringstream buffer;
+
+		buffer << pre << str;
+
+		return(buffer.str());
+	}
+
+
+	// bool is_numeric(const Vector<std::string>&) const
+
+	/// Returns true if all the elements in a string list are numeric, and false otherwise.
+	/// @param v String list to be checked.
+
+	bool DataSet::is_numeric(const Vector<std::string>& v) const
+	{
+		for(size_t i = 0; i < v.size(); i++)
+		{
+			if(!is_numeric(v[i]))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+
+	// bool is_not_numeric(const Vector<std::string>&) const
+
+	/// Returns true if none element in a string list is numeric, and false otherwise.
+	/// @param v String list to be checked.
+
+	bool DataSet::is_not_numeric(const Vector<std::string>& v) const
+	{
+		for(size_t i = 0; i < v.size(); i++)
+		{
+			if(is_numeric(v[i]))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+
+	// bool is_mixed(const Vector<std::string>&) const
+
+	/// Returns true if some the elements in a string list are numeric and some others are not numeric.
+	/// @param v String list to be checked.
+
+	bool DataSet::is_mixed(const Vector<std::string>& v) const
+	{
+		unsigned count_numeric = 0;
+		unsigned count_not_numeric = 0;
+
+		for(size_t i = 0; i < v.size(); i++)
+		{
+			if(is_numeric(v[i]))
+			{
+				count_numeric++;
+			}
+			else
+			{
+				count_not_numeric++;
+			}
+		}
+
+		if(count_numeric > 0 && count_not_numeric > 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 
 }
 

@@ -26,6 +26,8 @@
 #include <stdexcept>
 #include <ctime>
 #include <exception>
+#include <utility>
+#include <unordered_map>
 
 // OpenNN includes
 
@@ -35,6 +37,7 @@
 #include "missing_values.h"
 #include "variables.h"
 #include "instances.h"
+#include "probability.h"
 
 // TinyXml includes
 
@@ -43,553 +46,567 @@
 namespace NaiveBayes 
 {
 
-/// This class represents the concept of data set for data modelling problems, 
-/// such as function regression, pattern recognition and time series prediction.
-/// It basically consists of a data matrix plus a variables and an instances objects. 
+	/// This class represents the concept of data set for data modelling problems, 
+	/// such as function regression, pattern recognition and time series prediction.
+	/// It basically consists of a data matrix plus a variables and an instances objects. 
 
-class DataSet 
-{
+	class DataSet 
+	{
 
-public:  
+		public:  
 
-    // DEFAULT CONSTRUCTOR
+			// DEFAULT CONSTRUCTOR
 
-    explicit DataSet(void);
+			explicit DataSet(void);
 
-    // DATA CONSTRUCTOR
+			// DATA CONSTRUCTOR
 
-    explicit DataSet(const Matrix<double>&);
+			explicit DataSet(const Matrix<double>&);
 
-   // INSTANCES AND VARIABLES CONSTRUCTOR
+			// INSTANCES AND VARIABLES CONSTRUCTOR
 
-   explicit DataSet(const size_t&, const size_t&);
+			explicit DataSet(const size_t&, const size_t&);
 
-   // INSTANCES, INPUTS AND TARGETS CONSTRUCTOR
+			// INSTANCES, INPUTS AND TARGETS CONSTRUCTOR
 
-   explicit DataSet(const size_t&, const size_t&, const size_t&);
+			explicit DataSet(const size_t&, const size_t&, const size_t&);
 
-   // XML CONSTRUCTOR
+			// XML CONSTRUCTOR
 
-   explicit DataSet(const tinyxml2::XMLDocument&);
+			explicit DataSet(const tinyxml2::XMLDocument&);
 
-   // FILE CONSTRUCTOR
+			// FILE CONSTRUCTOR
 
-   explicit DataSet(const std::string&);
+			explicit DataSet(const std::string&);
 
-   // COPY CONSTRUCTOR
+			// COPY CONSTRUCTOR
 
-   DataSet(const DataSet&);
+			DataSet(const DataSet&);
 
-   // DESTRUCTOR
+			// DESTRUCTOR
 
-   virtual ~DataSet(void);
+			virtual ~DataSet(void);
 
-   // ASSIGNMENT OPERATOR
+			// ASSIGNMENT OPERATOR
 
-   DataSet& operator = (const DataSet&);
+			DataSet& operator = (const DataSet&);
 
-   // EQUAL TO OPERATOR
+			// EQUAL TO OPERATOR
 
-   bool operator == (const DataSet&) const;
+			bool operator == (const DataSet&) const;
 
-   // ENUMERATIONS
+			// ENUMERATIONS
 
-   /// Enumeration of available separators for the data file.
+			/// Enumeration of available separators for the data file.
 
-   enum Separator{Space, Tab, Comma, Semicolon};
+			enum Separator{Space, Tab, Comma, Semicolon};
 
-   /// Enumeration of available methods for scaling and unscaling the data.  
-   
-   enum ScalingUnscalingMethod{MinimumMaximum, MeanStandardDeviation};
+			/// Enumeration of available methods for scaling and unscaling the data.  
 
-   /// Enumeration of the units used for angular variables.
+			enum ScalingUnscalingMethod{MinimumMaximum, MeanStandardDeviation};
 
-   enum AngularUnits{Radians, Degrees};
+			/// Enumeration of the units used for angular variables.
 
-   /// Enumeration of the file types
+			enum AngularUnits{Radians, Degrees};
 
-   enum FileType{TXT, DAT, DATA, CSV, ODS, XLSX, ARFF};
+			/// Enumeration of the file types
 
-   /// Enumeration of the learning tasks
+			enum FileType{TXT, DAT, DATA, CSV, ODS, XLSX, ARFF};
 
-   enum LearningTask{FunctionRegression, PatternRecognition, TimeSeriesPrediction, Autoassociation};
+			/// Enumeration of the learning tasks
 
-   // METHODS
+			enum LearningTask{FunctionRegression, PatternRecognition, TimeSeriesPrediction, Autoassociation};
 
-   // Get methods
+			// METHODS
 
-   FileType get_file_type(void) const;
-   std::string write_file_type(void) const;
+			// Get methods
 
-   std::string write_first_cell(void) const;
-   std::string write_last_cell(void) const;
-   size_t write_sheet_number(void) const;
+			FileType get_file_type(void) const;
+			std::string write_file_type(void) const;
 
-   LearningTask get_learning_task(void) const;
-   std::string write_learning_task(void) const;
+			std::string write_first_cell(void) const;
+			std::string write_last_cell(void) const;
+			size_t write_sheet_number(void) const;
 
-   const std::string& get_data_file_name(void) const;
+			LearningTask get_learning_task(void) const;
+			std::string write_learning_task(void) const;
 
-   const bool& get_header_line(void) const;
-   const bool& get_rows_label(void) const;
+			const std::string& get_data_file_name(void) const;
 
-   const Separator& get_separator(void) const;
-   std::string get_separator_string(void) const;
-   std::string write_separator(void) const;
+			const bool& get_header_line(void) const;
+			const bool& get_rows_label(void) const;
 
-   const std::string& get_missing_values_label(void) const;
+			const Separator& get_separator(void) const;
+			std::string get_separator_string(void) const;
+			std::string write_separator(void) const;
 
-   const size_t& get_lags_number(void) const;
-   const size_t& get_steps_ahead(void) const;
+			const std::string& get_missing_values_label(void) const;
 
-   const bool& get_autoassociation(void) const;
+			const size_t& get_lags_number(void) const;
+			const size_t& get_steps_ahead(void) const;
 
-   const Vector<size_t>& get_angular_variables(void) const;
-   const AngularUnits& get_angular_units(void) const;
+			const bool& get_autoassociation(void) const;
 
-   static ScalingUnscalingMethod get_scaling_unscaling_method(const std::string&);
+			const Vector<size_t>& get_angular_variables(void) const;
+			const AngularUnits& get_angular_units(void) const;
 
-   const MissingValues& get_missing_values(void) const;
-   MissingValues* get_missing_values_pointer(void);
+			static ScalingUnscalingMethod get_scaling_unscaling_method(const std::string&);
 
-   const Variables& get_variables(void) const;
-   Variables* get_variables_pointer(void);
+			const MissingValues& get_missing_values(void) const;
+			MissingValues* get_missing_values_pointer(void);
 
-   const Instances& get_instances(void) const;
-   Instances* get_instances_pointer(void);
+			const Variables& get_variables(void) const;
+			Variables* get_variables_pointer(void);
 
-   const bool& get_display(void) const;
+			const Instances& get_instances(void) const;
+			Instances* get_instances_pointer(void);
 
-   bool is_binary_classification(void) const;
-   bool is_multiple_classification(void) const;
+			const std::unordered_map< std::pair<int, int>, ConditionalProbability, pair_hash >& get_conditional_probabilities(void) const; //##
 
-   bool is_binary_variable(const size_t&) const;
+			const bool& get_display(void) const;
 
-   // Data methods
+			bool is_binary_classification(void) const;
+			bool is_multiple_classification(void) const;
 
-   bool empty(void) const;
+			bool is_binary_variable(const size_t&) const;
 
-   const Matrix<double>& get_data(void) const;
-   const Matrix<double>& get_time_series_data(void) const;
+			// Data methods
 
-   Matrix<double> arrange_training_data(void) const;
-   Matrix<double> arrange_selection_data(void) const;
-   Matrix<double> arrange_testing_data(void) const;
+			bool empty(void) const;
 
-   Matrix<double> arrange_input_data(void) const;
-   Matrix<double> arrange_target_data(void) const;
+			const Matrix<double>& get_data(void) const;
+			const Matrix<double>& get_time_series_data(void) const;
 
-   Matrix<double> arrange_training_input_data(void) const;
-   Matrix<double> arrange_training_target_data(void) const;  
-   Matrix<double> get_selection_input_data(void) const;
-   Matrix<double> get_selection_target_data(void) const;
-   Matrix<double> arrange_testing_input_data(void) const;
-   Matrix<double> arrange_testing_target_data(void) const;
+			Matrix<double> arrange_training_data(void) const;
+			Matrix<double> arrange_selection_data(void) const;
+			Matrix<double> arrange_testing_data(void) const;
 
-   // Instance methods
+			Matrix<double> arrange_input_data(void) const;
+			Matrix<double> arrange_target_data(void) const;
 
-   Vector<double> get_instance(const size_t&) const;
-   Vector<double> get_instance(const size_t&, const Vector<size_t>&) const;
+			Matrix<double> arrange_training_input_data(void) const;
+			Matrix<double> arrange_training_target_data(void) const;  
+			Matrix<double> get_selection_input_data(void) const;
+			Matrix<double> get_selection_target_data(void) const;
+			Matrix<double> arrange_testing_input_data(void) const;
+			Matrix<double> arrange_testing_target_data(void) const;
 
-   // Variable methods
+			// Instance methods
 
-   Vector<double> get_variable(const size_t&) const;
-   Vector<double> get_variable(const size_t&, const Vector<size_t>&) const;
+			Vector<double> get_instance(const size_t&) const;
+			Vector<double> get_instance(const size_t&, const Vector<size_t>&) const;
 
-   // Set methods
+			// Variable methods
 
-   void set(void);
-   void set(const Matrix<double>&);
-   void set(const size_t&, const size_t&);
-   void set(const size_t&, const size_t&, const size_t&);
-   void set(const DataSet&);
-   void set(const tinyxml2::XMLDocument&);
-   void set(const std::string&);
+			Vector<double> get_variable(const size_t&) const;
+			Vector<double> get_variable(const size_t&, const Vector<size_t>&) const;
 
-   // Data methods
+			// Set methods
 
-   void set_data(const Matrix<double>&);
+			void set(void);
+			void set(const Matrix<double>&);
+			void set(const size_t&, const size_t&);
+			void set(const size_t&, const size_t&, const size_t&);
+			void set(const DataSet&);
+			void set(const tinyxml2::XMLDocument&);
+			void set(const std::string&);
 
-   void set_instances_number(const size_t&);
-   void set_variables_number(const size_t&);
+			// Data methods
 
-   void set_data_file_name(const std::string&);
+			void set_data(const Matrix<double>&);
 
-   void set_file_type(const FileType&);
-   void set_file_type(const std::string&);
+			void set_instances_number(const size_t&);
+			void set_variables_number(const size_t&);
 
-   void set_header_line(const bool&);
-   void set_rows_label(const bool&);
+			void set_data_file_name(const std::string&);
 
-   void set_separator(const Separator&);
-   void set_separator(const std::string&);
+			void set_file_type(const FileType&);
+			void set_file_type(const std::string&);
 
-   void set_missing_values_label(const std::string&);
+			void set_header_line(const bool&);
+			void set_rows_label(const bool&);
 
-   void set_lags_number(const size_t&);
-   void set_steps_ahead_number(const size_t&);
+			void set_separator(const Separator&);
+			void set_separator(const std::string&);
 
-   void set_autoassociation(const bool&);
+			void set_missing_values_label(const std::string&);
 
-   void set_learning_task(const LearningTask&);
-   void set_learning_task(const std::string&);
+			void set_lags_number(const size_t&);
+			void set_steps_ahead_number(const size_t&);
 
-   void set_angular_variables(const Vector<size_t>&);
-   void set_angular_units(AngularUnits&);
+			void set_autoassociation(const bool&);
 
-   // Utilities
+			void set_learning_task(const LearningTask&);
+			void set_learning_task(const std::string&);
 
-   void set_display(const bool&);
+			void set_angular_variables(const Vector<size_t>&);
+			void set_angular_units(AngularUnits&);
 
-   void set_default(void);
+			void set_conditional_probabilities(std::unordered_map< std::pair<int, int>, ConditionalProbability, pair_hash >&); //##
 
-   // Instance methods
+			// Utilities
 
-   void set_instance(const size_t&, const Vector<double>&);
+			void set_display(const bool&);
 
-   // Data resizing methods
+			void set_default(void);
 
-   void add_instance(const Vector<double>&);
-   void subtract_instance(const size_t&);
+			// Instance methods
 
-   void append_variable(const Vector<double>&);
-   void subtract_variable(const size_t&);
+			void set_instance(const size_t&, const Vector<double>&);
 
-   Vector<size_t> unuse_constant_variables(void);
-   Vector<size_t> unuse_repeated_instances(void);
+			// Data resizing methods
 
-   Vector<size_t> unuse_non_significant_inputs(void);
+			void add_instance(const Vector<double>&);
+			void subtract_instance(const size_t&);
 
-   // Initialization methods
+			void append_variable(const Vector<double>&);
+			void subtract_variable(const size_t&);
 
-   void initialize_data(const double&);
+			Vector<size_t> unuse_constant_variables(void);
+			Vector<size_t> unuse_repeated_instances(void);
 
-   void randomize_data_uniform(const double& minimum = -1.0, const double& maximum = 1.0);
-   void randomize_data_normal(const double& mean = 0.0, const double& standard_deviation = 1.0);
+			Vector<size_t> unuse_non_significant_inputs(void);
 
-   // Statistics methods
+			// Initialization methods
 
-   Vector< Statistics<double> > calculate_data_statistics(void) const;
+			void initialize_data(const double&);
 
-   Vector< Vector<double> > calculate_data_shape_parameters(void) const;
+			void randomize_data_uniform(const double& minimum = -1.0, const double& maximum = 1.0);
+			void randomize_data_normal(const double& mean = 0.0, const double& standard_deviation = 1.0);
 
-   Matrix<double> calculate_data_statistics_matrix(void) const;
+			// Statistics methods
 
-   Matrix<double> calculate_data_shape_parameters_matrix(void) const;
+			Vector< Statistics<double> > calculate_data_statistics(void) const;
 
-   Vector< Statistics<double> > calculate_training_instances_statistics(void) const;
-   Vector< Statistics<double> > calculate_selection_instances_statistics(void) const;
-   Vector< Statistics<double> > calculate_testing_instances_statistics(void) const;
+			Vector< Vector<double> > calculate_data_shape_parameters(void) const;
 
-   Vector< Vector<double> > calculate_training_instances_shape_parameters(void) const;
-   Vector< Vector<double> > calculate_selection_instances_shape_parameters(void) const;
-   Vector< Vector<double> > calculate_testing_instances_shape_parameters(void) const;
+			Matrix<double> calculate_data_statistics_matrix(void) const;
 
-   Vector< Statistics<double> > calculate_inputs_statistics(void) const;
-   Vector< Statistics<double> > calculate_targets_statistics(void) const;
+			Matrix<double> calculate_data_shape_parameters_matrix(void) const;
 
-   Vector<double> calculate_training_target_data_mean(void) const;
-   Vector<double> calculate_selection_target_data_mean(void) const;
-   Vector<double> calculate_testing_target_data_mean(void) const;
+			Vector< Statistics<double> > calculate_training_instances_statistics(void) const;
+			Vector< Statistics<double> > calculate_selection_instances_statistics(void) const;
+			Vector< Statistics<double> > calculate_testing_instances_statistics(void) const;
 
-   // Correlation methods
+			Vector< Vector<double> > calculate_training_instances_shape_parameters(void) const;
+			Vector< Vector<double> > calculate_selection_instances_shape_parameters(void) const;
+			Vector< Vector<double> > calculate_testing_instances_shape_parameters(void) const;
 
-   Matrix<double> calculate_linear_correlations(void) const;
+			Vector< Statistics<double> > calculate_inputs_statistics(void) const;
+			Vector< Statistics<double> > calculate_targets_statistics(void) const;
 
-   // Principal components mehtod
+			PriorProbability calculate_prior_probs(const Vector<double>&, int, const Vector<size_t>&) const; //##
+			std::unordered_map< int, PriorProbability > calculate_training_target_prior_probabilities(void) const; //##
 
-   Matrix<double> calculate_covariance_matrix(void) const;
+			ConditionalProbability calculate_conditional_probs(const Vector<double>& range_input, const Vector<double>& range_target, int intput_index, int target_index, const Vector<size_t>& training_indices) const; //##
+			std::unordered_map< std::pair<int, int>, ConditionalProbability, pair_hash > calculate_training_conditional_probabilities(void) const; //##
 
-   Matrix<double> perform_principal_components_analysis(const double& = 0.0);
+			Vector<double> calculate_training_target_data_mean(void) const;
+			Vector<double> calculate_selection_target_data_mean(void) const;
+			Vector<double> calculate_testing_target_data_mean(void) const;
 
-   // Histrogram methods
+			// Correlation methods
 
-   Vector< Histogram<double> > calculate_data_histograms(const size_t& = 10) const;
+			Matrix<double> calculate_linear_correlations(void) const;
 
-   Vector< Histogram<double> > calculate_targets_histograms(const size_t& = 10) const;
+			// Principal components mehtod
 
-   // Box and whiskers
+			Matrix<double> calculate_covariance_matrix(void) const;
 
-   Vector< Vector<double> > calculate_box_plots(void) const;
+			Matrix<double> perform_principal_components_analysis(const double& = 0.0);
 
-   size_t calculate_training_negatives(const size_t&) const;
-   size_t calculate_selection_negatives(const size_t&) const;
-   size_t calculate_testing_negatives(const size_t&) const;
+			// Histrogram methods
 
-   // Filtering methods
+			Vector< Histogram<double> > calculate_data_histograms(const size_t& = 10) const;
 
-   Vector<size_t> filter_data(const Vector<double>&, const Vector<double>&);
+			Vector< Histogram<double> > calculate_targets_histograms(const size_t& = 10) const;
 
-   // Data scaling
+			// Box and whiskers
 
-   void scale_data_minimum_maximum(const Vector< Statistics<double> >&);
-   void scale_data_mean_standard_deviation(const Vector< Statistics<double> >&);
+			Vector< Vector<double> > calculate_box_plots(void) const;
 
-   Vector< Statistics<double> > scale_data_minimum_maximum(void);
-   Vector< Statistics<double> > scale_data_mean_standard_deviation(void);
+			size_t calculate_training_negatives(const size_t&) const;
+			size_t calculate_selection_negatives(const size_t&) const;
+			size_t calculate_testing_negatives(const size_t&) const;
 
-   void scale_data(const std::string&, const Vector< Statistics<double> >&);
+			// Filtering methods
 
-   Vector< Statistics<double> > scale_data(const std::string&);
+			Vector<size_t> filter_data(const Vector<double>&, const Vector<double>&);
 
-   // Input variables scaling
+			// Data scaling
 
-   void scale_inputs_minimum_maximum(const Vector< Statistics<double> >&);
-   Vector< Statistics<double> > scale_inputs_minimum_maximum(void);
+			void scale_data_minimum_maximum(const Vector< Statistics<double> >&);
+			void scale_data_mean_standard_deviation(const Vector< Statistics<double> >&);
 
-   void scale_inputs_mean_standard_deviation(const Vector< Statistics<double> >&);
-   Vector< Statistics<double> > scale_inputs_mean_standard_deviation(void);
+			Vector< Statistics<double> > scale_data_minimum_maximum(void);
+			Vector< Statistics<double> > scale_data_mean_standard_deviation(void);
 
-   Vector< Statistics<double> > scale_inputs(const std::string&);
-   void scale_inputs(const std::string&, const Vector< Statistics<double> >&);
+			void scale_data(const std::string&, const Vector< Statistics<double> >&);
 
-   // Target variables scaling
+			Vector< Statistics<double> > scale_data(const std::string&);
 
-   void scale_targets_minimum_maximum(const Vector< Statistics<double> >&);
-   Vector< Statistics<double> > scale_targets_minimum_maximum(void);
+			// Input variables scaling
 
-   void scale_targets_mean_standard_deviation(const Vector< Statistics<double> >&);
-   Vector< Statistics<double> > scale_targets_mean_standard_deviation(void);
+			void scale_inputs_minimum_maximum(const Vector< Statistics<double> >&);
+			Vector< Statistics<double> > scale_inputs_minimum_maximum(void);
 
-   Vector< Statistics<double> > scale_targets(const std::string&);
-   void scale_targets(const std::string&, const Vector< Statistics<double> >&);
+			void scale_inputs_mean_standard_deviation(const Vector< Statistics<double> >&);
+			Vector< Statistics<double> > scale_inputs_mean_standard_deviation(void);
 
-   // Data unscaling
+			Vector< Statistics<double> > scale_inputs(const std::string&);
+			void scale_inputs(const std::string&, const Vector< Statistics<double> >&);
 
-   void unscale_data_minimum_maximum(const Vector< Statistics<double> >&);
-   void unscale_data_mean_standard_deviation(const Vector< Statistics<double> >&);
+			// Target variables scaling
 
-   // Input variables unscaling
+			void scale_targets_minimum_maximum(const Vector< Statistics<double> >&);
+			Vector< Statistics<double> > scale_targets_minimum_maximum(void);
 
-   void unscale_inputs_minimum_maximum(const Vector< Statistics<double> >&);
-   void unscale_inputs_mean_standard_deviation(const Vector< Statistics<double> >&);
+			void scale_targets_mean_standard_deviation(const Vector< Statistics<double> >&);
+			Vector< Statistics<double> > scale_targets_mean_standard_deviation(void);
 
-   // Target variables unscaling
+			Vector< Statistics<double> > scale_targets(const std::string&);
+			void scale_targets(const std::string&, const Vector< Statistics<double> >&);
 
-   void unscale_targets_minimum_maximum(const Vector< Statistics<double> >&);
-   void unscale_targets_mean_standard_deviation(const Vector< Statistics<double> >&);
+			// Data unscaling
 
-   // Pattern recognition methods
+			void unscale_data_minimum_maximum(const Vector< Statistics<double> >&);
+			void unscale_data_mean_standard_deviation(const Vector< Statistics<double> >&);
 
-   Vector<size_t> calculate_target_distribution(void) const;
+			// Input variables unscaling
 
-   Vector<double> calculate_distances(void) const;
+			void unscale_inputs_minimum_maximum(const Vector< Statistics<double> >&);
+			void unscale_inputs_mean_standard_deviation(const Vector< Statistics<double> >&);
 
-   Vector<size_t> balance_binary_targets_distribution(const double& = 100.0);
-   Vector<size_t> balance_multiple_targets_distribution(void);
+			// Target variables unscaling
 
-   Vector<size_t> unuse_most_populated_target(const size_t&);
+			void unscale_targets_minimum_maximum(const Vector< Statistics<double> >&);
+			void unscale_targets_mean_standard_deviation(const Vector< Statistics<double> >&);
 
-   Vector<size_t> balance_function_regression_targets_distribution(const double& = 10.0);
+			// Pattern recognition methods
 
-   Vector<size_t> arrange_binary_inputs_indices(void) const;
-   Vector<size_t> arrange_real_inputs_indices(void) const;
+			Vector<size_t> calculate_target_distribution(void) const;
 
-   void sum_binary_inputs(void);
+			Vector<double> calculate_distances(void) const;
 
-   // Outlier detection
+			Vector<size_t> balance_binary_targets_distribution(const double& = 100.0);
+			Vector<size_t> balance_multiple_targets_distribution(void);
 
-   Matrix<double> calculate_instances_distances(const size_t&) const;
-   Matrix<size_t> calculate_nearest_neighbors(const Matrix<double>&, const size_t&) const;
-   Vector<double> calculate_k_distances(const Matrix<double>&, const size_t&) const;
-   Matrix<double> calculate_reachability_distances(const Matrix<double>&, const Vector<double>&) const;
-   Vector<double> calculate_reachability_density(const Matrix<double>&, const size_t&) const;
-   Vector<double> calculate_local_outlier_factor(const size_t& = 5) const;
+			Vector<size_t> unuse_most_populated_target(const size_t&);
 
-   Vector<size_t> clean_local_outlier_factor(const size_t& = 5);
-   Vector<size_t> clean_Tukey_outliers(const double& = 1.5);
+			Vector<size_t> balance_function_regression_targets_distribution(const double& = 10.0);
 
-   // Time series methods
+			Vector<size_t> arrange_binary_inputs_indices(void) const;
+			Vector<size_t> arrange_real_inputs_indices(void) const;
 
-   Matrix<double> calculate_autocorrelation(const size_t& = 10) const;
-   Matrix< Vector<double> > calculate_cross_correlation(void) const;
+			void sum_binary_inputs(void);
 
-   // Data generation
+			// Outlier detection
 
-   void generate_data_function_regression(const size_t&, const size_t&);
+			Matrix<double> calculate_instances_distances(const size_t&) const;
+			Matrix<size_t> calculate_nearest_neighbors(const Matrix<double>&, const size_t&) const;
+			Vector<double> calculate_k_distances(const Matrix<double>&, const size_t&) const;
+			Matrix<double> calculate_reachability_distances(const Matrix<double>&, const Vector<double>&) const;
+			Vector<double> calculate_reachability_density(const Matrix<double>&, const size_t&) const;
+			Vector<double> calculate_local_outlier_factor(const size_t& = 5) const;
 
-   void generate_data_binary_classification(const size_t&, const size_t&);
-   void generate_data_multiple_classification(const size_t&, const size_t&);
+			Vector<size_t> clean_local_outlier_factor(const size_t& = 5);
+			Vector<size_t> clean_Tukey_outliers(const double& = 1.5);
 
-   // Serialization methods
+			// Time series methods
 
-   std::string to_string(void) const;
+			Matrix<double> calculate_autocorrelation(const size_t& = 10) const;
+			Matrix< Vector<double> > calculate_cross_correlation(void) const;
 
-   void print(void) const;
-   void print_summary(void) const;
+			// Data generation
 
-   tinyxml2::XMLDocument* to_XML(void) const;
-   void from_XML(const tinyxml2::XMLDocument&);
+			void generate_data_function_regression(const size_t&, const size_t&);
 
-   void write_XML(tinyxml2::XMLPrinter&) const;
-   //void read_XML(   );
+			void generate_data_binary_classification(const size_t&, const size_t&);
+			void generate_data_multiple_classification(const size_t&, const size_t&);
 
-   void save(const std::string&) const;
-   void load(const std::string&);
+			// Serialization methods
 
-   void print_data(void) const;
-   void print_data_preview(void) const;
+			std::string to_string(void) const;
 
-   void save_data(void) const;
+			void print(void) const;
+			void print_summary(void) const;
 
-   bool has_data(void) const;
+			tinyxml2::XMLDocument* to_XML(void) const;
+			void from_XML(const tinyxml2::XMLDocument&);
 
-   // Data load methods
+			void write_XML(tinyxml2::XMLPrinter&) const;
+			//void read_XML(   );
 
-   void load_data(void);
-   void load_data_binary(void);
-   void load_time_series_data_binary(void);
+			void save(const std::string&) const;
+			void load(const std::string&);
 
-   Vector<std::string> arrange_time_series_names(const Vector<std::string>&) const;
+			void print_data(void) const;
+			void print_data_preview(void) const;
 
-   Vector<std::string> arrange_autoassociation_names(const Vector<std::string>&) const;
+			void save_data(void) const;
 
-   void convert_time_series(void);
-   void convert_autoassociation(void);
+			bool has_data(void) const;
 
-   void convert_angular_variable_degrees(const size_t&);
-   void convert_angular_variable_radians(const size_t&);
+			// Data load methods
 
-   void convert_angular_variables_degrees(const Vector<size_t>&);
-   void convert_angular_variables_radians(const Vector<size_t>&);
+			void load_data(void);
+			void load_data_binary(void);
+			void load_time_series_data_binary(void);
 
-   void convert_angular_variables(void);
+			Vector<std::string> arrange_time_series_names(const Vector<std::string>&) const;
 
-   // Missing values
+			Vector<std::string> arrange_autoassociation_names(const Vector<std::string>&) const;
 
-   void scrub_missing_values_unuse(void);
-   void scrub_missing_values_mean(void);
-   void scrub_input_missing_values_mean(void);
-   void scrub_missing_values(void);
+			void convert_time_series(void);
+			void convert_autoassociation(void);
 
-   // String utilities
+			void convert_angular_variable_degrees(const size_t&);
+			void convert_angular_variable_radians(const size_t&);
 
-   size_t count_tokens(std::string&) const;
+			void convert_angular_variables_degrees(const Vector<size_t>&);
+			void convert_angular_variables_radians(const Vector<size_t>&);
 
-   Vector<std::string> get_tokens(const std::string&) const;
+			void convert_angular_variables(void);
 
-   bool is_numeric(const std::string&) const;
+			// Missing values
 
-   void trim(std::string&) const;
+			void scrub_missing_values_unuse(void);
+			void scrub_missing_values_mean(void);
+			void scrub_input_missing_values_mean(void);
+			void scrub_missing_values(void);
 
-   std::string get_trimmed(const std::string&) const;
+			// String utilities
 
-   std::string prepend(const std::string&, const std::string&) const;
+			size_t count_tokens(std::string&) const;
 
-   // Vector string utilities
+			Vector<std::string> get_tokens(const std::string&) const;
 
-   bool is_numeric(const Vector<std::string>&) const;
-   bool is_not_numeric(const Vector<std::string>&) const;
-   bool is_mixed(const Vector<std::string>&) const;
+			bool is_numeric(const std::string&) const;
 
-private:
+			void trim(std::string&) const;
 
-   // MEMBERS
+			std::string get_trimmed(const std::string&) const;
 
-   /// File type.
+			std::string prepend(const std::string&, const std::string&) const;
 
-   FileType file_type;
+			// Vector string utilities
 
-   /// First cell.
+			bool is_numeric(const Vector<std::string>&) const;
+			bool is_not_numeric(const Vector<std::string>&) const;
+			bool is_mixed(const Vector<std::string>&) const;
 
-   std::string first_cell;
+		private:
 
-   /// Last cell.
+			// MEMBERS
 
-   std::string last_cell;
+			/// File type.
 
-   /// Sheet number.
+			FileType file_type;
 
-   size_t sheet_number;
+			/// First cell.
 
-   /// Data file name.
+			std::string first_cell;
 
-   std::string data_file_name;
+			/// Last cell.
 
-   /// Header which contains variables name.
+			std::string last_cell;
 
-   bool header_line;
+			/// Sheet number.
 
-   /// Header wihch contains the rows label.
+			size_t sheet_number;
 
-   bool rows_label;
+			/// Data file name.
 
-   /// Separator character.
+			std::string data_file_name;
 
-   Separator separator;
+			/// Header which contains variables name.
 
-   /// Missing values label.
+			bool header_line;
 
-   std::string missing_values_label;
+			/// Header wihch contains the rows label.
 
-   /// Number of lags.
+			bool rows_label;
 
-   size_t lags_number;
+			/// Separator character.
 
-   /// Number of steps ahead
+			Separator separator;
 
-   size_t steps_ahead;
+			/// Missing values label.
 
-   /// Autoassociation flag.
+			std::string missing_values_label;
 
-    bool autoassociation;
+			/// Number of lags.
 
-   /// Learning task
+			size_t lags_number;
 
-    LearningTask learning_task;
+			/// Number of steps ahead
 
-   /// Indices of angular variables.
+			size_t steps_ahead;
 
-    Vector<size_t> angular_variables;
+			/// Autoassociation flag.
 
-   /// Units of angular variables.
+			bool autoassociation;
 
-    AngularUnits angular_units;
+			/// Learning task
 
-   /// Data Matrix.
-   /// The number of rows is the number of instances.
-   /// The number of columns is the number of variables.
+			LearningTask learning_task;
 
-   Matrix<double> data;
+			/// Indices of angular variables.
 
-   /// Time series data matrix.
-   /// The number of rows is the number of instances before time series changes.
-   /// The number of columns is the number of variables before tim series changes.
+			Vector<size_t> angular_variables;
 
-   Matrix<double> time_series_data;
+			/// Units of angular variables.
 
-   /// Variables object (inputs and target variables).
+			AngularUnits angular_units;
 
-   Variables variables;
+			/// Data Matrix.
+			/// The number of rows is the number of instances.
+			/// The number of columns is the number of variables.
 
-   /// Instances  object (training, selection and testing instances).
+			Matrix<double> data;
 
-   Instances instances;
+			/// Time series data matrix.
+			/// The number of rows is the number of instances before time series changes.
+			/// The number of columns is the number of variables before tim series changes.
 
-   /// Missing values object.
+			Matrix<double> time_series_data;
 
-   MissingValues missing_values;
+			/// Variables object (inputs and target variables).
 
-   /// Display messages to screen.
-   
-   bool display;
+			Variables variables;
 
-   // METHODS
+			/// Instances  object (training, selection and testing instances).
 
-   size_t get_column_index(const Vector< Vector<std::string> >&, const size_t) const;
+			Instances instances;
 
-   void check_separator(const std::string&) const;
+			/// Missing values object.
 
-   size_t count_data_file_columns_number(void) const;
-   void check_header_line(void);
-   Vector<std::string> read_header_line(void) const;
+			MissingValues missing_values;
 
-   void read_instance(const std::string&, const Vector< Vector<std::string> >&, const size_t&);
+			/// Conditional Probabilities of this data set.
 
-   Vector< Vector<std::string> > set_from_data_file(void);
-   void read_from_data_file(const Vector< Vector<std::string> >&);
+			std::unordered_map< std::pair<int, int>, ConditionalProbability, pair_hash > conditional_probabilities; //##
 
-};
+			/// Display messages to screen.
+
+			bool display;
+
+			// METHODS
+
+			size_t get_column_index(const Vector< Vector<std::string> >&, const size_t) const;
+
+			void check_separator(const std::string&) const;
+
+			size_t count_data_file_columns_number(void) const;
+			void check_header_line(void);
+			Vector<std::string> read_header_line(void) const;
+
+			void read_instance(const std::string&, const Vector< Vector<std::string> >&, const size_t&);
+
+			Vector< Vector<std::string> > set_from_data_file(void);
+			void read_from_data_file(const Vector< Vector<std::string> >&);
+
+	};
 
 }
 

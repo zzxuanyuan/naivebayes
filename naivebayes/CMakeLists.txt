@@ -6,13 +6,15 @@ variables.h
     vector.h 
     matrix.h 
     opennn.h 
+    probability.h
 )
 
 set(NAIVEBAYES_SRCS
 variables.cpp 
     instances.cpp 
     missing_values.cpp 
-    data_set.cpp 
+    data_set.cpp
+    probability.cpp
         )
 
 add_library(naivebayes ${NAIVEBAYES_SRCS})

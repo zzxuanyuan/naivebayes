@@ -210,6 +210,7 @@ naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o
  /Users/zhezhang/Desktop/naivebayes/naivebayes/instances.h
  /Users/zhezhang/Desktop/naivebayes/naivebayes/matrix.h
  /Users/zhezhang/Desktop/naivebayes/naivebayes/missing_values.h
+ /Users/zhezhang/Desktop/naivebayes/naivebayes/probability.h
  /Users/zhezhang/Desktop/naivebayes/naivebayes/variables.h
  /Users/zhezhang/Desktop/naivebayes/naivebayes/vector.h
  /Users/zhezhang/Desktop/naivebayes/tinyxml2/tinyxml2.h
@@ -631,6 +632,9 @@ naivebayes/CMakeFiles/naivebayes.dir/missing_values.cpp.o
  /Users/zhezhang/Desktop/naivebayes/naivebayes/missing_values.h
  /Users/zhezhang/Desktop/naivebayes/naivebayes/vector.h
  /Users/zhezhang/Desktop/naivebayes/tinyxml2/tinyxml2.h
+naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o
+ /Users/zhezhang/Desktop/naivebayes/naivebayes/probability.cpp
+ /Users/zhezhang/Desktop/naivebayes/naivebayes/probability.h
 naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o
  /Users/zhezhang/Desktop/naivebayes/eigen/Cholesky
  /Users/zhezhang/Desktop/naivebayes/eigen/Core
@@ -836,6 +840,7 @@ naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o
  /Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/MatrixCwiseBinaryOps.h
  /Users/zhezhang/Desktop/naivebayes/eigen/src/plugins/MatrixCwiseUnaryOps.h
  /Users/zhezhang/Desktop/naivebayes/naivebayes/matrix.h
+ /Users/zhezhang/Desktop/naivebayes/naivebayes/probability.h
  /Users/zhezhang/Desktop/naivebayes/naivebayes/variables.cpp
  /Users/zhezhang/Desktop/naivebayes/naivebayes/variables.h
  /Users/zhezhang/Desktop/naivebayes/naivebayes/vector.h

@@ -272,6 +272,33 @@ missing_values.cpp.s:
 	cd /Users/zhezhang/Desktop/naivebayes && $(MAKE) -f naivebayes/CMakeFiles/naivebayes.dir/build.make naivebayes/CMakeFiles/naivebayes.dir/missing_values.cpp.s
 .PHONY : missing_values.cpp.s
 
+probability.o: probability.cpp.o
+
+.PHONY : probability.o
+
+# target to build an object file
+probability.cpp.o:
+	cd /Users/zhezhang/Desktop/naivebayes && $(MAKE) -f naivebayes/CMakeFiles/naivebayes.dir/build.make naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o
+.PHONY : probability.cpp.o
+
+probability.i: probability.cpp.i
+
+.PHONY : probability.i
+
+# target to preprocess a source file
+probability.cpp.i:
+	cd /Users/zhezhang/Desktop/naivebayes && $(MAKE) -f naivebayes/CMakeFiles/naivebayes.dir/build.make naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.i
+.PHONY : probability.cpp.i
+
+probability.s: probability.cpp.s
+
+.PHONY : probability.s
+
+# target to generate assembly for a file
+probability.cpp.s:
+	cd /Users/zhezhang/Desktop/naivebayes && $(MAKE) -f naivebayes/CMakeFiles/naivebayes.dir/build.make naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.s
+.PHONY : probability.cpp.s
+
 variables.o: variables.cpp.o
 
 .PHONY : variables.o
@@ -323,6 +350,9 @@ help:
 	@echo "... missing_values.o"
 	@echo "... missing_values.i"
 	@echo "... missing_values.s"
+	@echo "... probability.o"
+	@echo "... probability.i"
+	@echo "... probability.s"
 	@echo "... variables.o"
 	@echo "... variables.i"
 	@echo "... variables.s"

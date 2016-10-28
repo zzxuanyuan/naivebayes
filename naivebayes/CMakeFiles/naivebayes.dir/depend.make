@@ -209,6 +209,7 @@ naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o: naivebayes/data_set.h
 naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o: naivebayes/instances.h
 naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o: naivebayes/matrix.h
 naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o: naivebayes/missing_values.h
+naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o: naivebayes/probability.h
 naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o: naivebayes/variables.h
 naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o: naivebayes/vector.h
 naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o: tinyxml2/tinyxml2.h
@@ -631,6 +632,9 @@ naivebayes/CMakeFiles/naivebayes.dir/missing_values.cpp.o: naivebayes/missing_va
 naivebayes/CMakeFiles/naivebayes.dir/missing_values.cpp.o: naivebayes/vector.h
 naivebayes/CMakeFiles/naivebayes.dir/missing_values.cpp.o: tinyxml2/tinyxml2.h
 
+naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o: naivebayes/probability.cpp
+naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o: naivebayes/probability.h
+
 naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o: eigen/Cholesky
 naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o: eigen/Core
 naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o: eigen/Dense
@@ -835,6 +839,7 @@ naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o: eigen/src/plugins/CommonCw
 naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o: eigen/src/plugins/MatrixCwiseBinaryOps.h
 naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o: eigen/src/plugins/MatrixCwiseUnaryOps.h
 naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o: naivebayes/matrix.h
+naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o: naivebayes/probability.h
 naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o: naivebayes/variables.cpp
 naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o: naivebayes/variables.h
 naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o: naivebayes/vector.h

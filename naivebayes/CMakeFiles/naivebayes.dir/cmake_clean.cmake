@@ -3,6 +3,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/naivebayes.dir/instances.cpp.o"
   "CMakeFiles/naivebayes.dir/missing_values.cpp.o"
   "CMakeFiles/naivebayes.dir/data_set.cpp.o"
+  "CMakeFiles/naivebayes.dir/probability.cpp.o"
   "libnaivebayes.pdb"
   "libnaivebayes.a"
 )

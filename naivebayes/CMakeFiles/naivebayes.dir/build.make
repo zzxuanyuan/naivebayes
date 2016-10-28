@@ -153,12 +153,37 @@ naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o.provides: naivebayes/CMakeFi
 naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o.provides.build: naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o
 
 
+naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o: naivebayes/CMakeFiles/naivebayes.dir/flags.make
+naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o: naivebayes/probability.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/zhezhang/Desktop/naivebayes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o"
+	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/naivebayes.dir/probability.cpp.o -c /Users/zhezhang/Desktop/naivebayes/naivebayes/probability.cpp
+
+naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/naivebayes.dir/probability.cpp.i"
+	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/zhezhang/Desktop/naivebayes/naivebayes/probability.cpp > CMakeFiles/naivebayes.dir/probability.cpp.i
+
+naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/naivebayes.dir/probability.cpp.s"
+	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/zhezhang/Desktop/naivebayes/naivebayes/probability.cpp -o CMakeFiles/naivebayes.dir/probability.cpp.s
+
+naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o.requires:
+
+.PHONY : naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o.requires
+
+naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o.provides: naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o.requires
+	$(MAKE) -f naivebayes/CMakeFiles/naivebayes.dir/build.make naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o.provides.build
+.PHONY : naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o.provides
+
+naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o.provides.build: naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o
+
+
 # Object files for target naivebayes
 naivebayes_OBJECTS = \
 "CMakeFiles/naivebayes.dir/variables.cpp.o" \
 "CMakeFiles/naivebayes.dir/instances.cpp.o" \
 "CMakeFiles/naivebayes.dir/missing_values.cpp.o" \
-"CMakeFiles/naivebayes.dir/data_set.cpp.o"
+"CMakeFiles/naivebayes.dir/data_set.cpp.o" \
+"CMakeFiles/naivebayes.dir/probability.cpp.o"
 
 # External object files for target naivebayes
 naivebayes_EXTERNAL_OBJECTS =
@@ -167,9 +192,10 @@ naivebayes/libnaivebayes.a: naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o
 naivebayes/libnaivebayes.a: naivebayes/CMakeFiles/naivebayes.dir/instances.cpp.o
 naivebayes/libnaivebayes.a: naivebayes/CMakeFiles/naivebayes.dir/missing_values.cpp.o
 naivebayes/libnaivebayes.a: naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o
+naivebayes/libnaivebayes.a: naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o
 naivebayes/libnaivebayes.a: naivebayes/CMakeFiles/naivebayes.dir/build.make
 naivebayes/libnaivebayes.a: naivebayes/CMakeFiles/naivebayes.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/zhezhang/Desktop/naivebayes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX static library libnaivebayes.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/zhezhang/Desktop/naivebayes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX static library libnaivebayes.a"
 	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && $(CMAKE_COMMAND) -P CMakeFiles/naivebayes.dir/cmake_clean_target.cmake
 	cd /Users/zhezhang/Desktop/naivebayes/naivebayes && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/naivebayes.dir/link.txt --verbose=$(VERBOSE)
 
@@ -182,6 +208,7 @@ naivebayes/CMakeFiles/naivebayes.dir/requires: naivebayes/CMakeFiles/naivebayes.
 naivebayes/CMakeFiles/naivebayes.dir/requires: naivebayes/CMakeFiles/naivebayes.dir/instances.cpp.o.requires
 naivebayes/CMakeFiles/naivebayes.dir/requires: naivebayes/CMakeFiles/naivebayes.dir/missing_values.cpp.o.requires
 naivebayes/CMakeFiles/naivebayes.dir/requires: naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o.requires
+naivebayes/CMakeFiles/naivebayes.dir/requires: naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o.requires
 
 .PHONY : naivebayes/CMakeFiles/naivebayes.dir/requires
 

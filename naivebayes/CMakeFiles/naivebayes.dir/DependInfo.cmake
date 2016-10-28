@@ -7,6 +7,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/zhezhang/Desktop/naivebayes/naivebayes/data_set.cpp" "/Users/zhezhang/Desktop/naivebayes/naivebayes/CMakeFiles/naivebayes.dir/data_set.cpp.o"
   "/Users/zhezhang/Desktop/naivebayes/naivebayes/instances.cpp" "/Users/zhezhang/Desktop/naivebayes/naivebayes/CMakeFiles/naivebayes.dir/instances.cpp.o"
   "/Users/zhezhang/Desktop/naivebayes/naivebayes/missing_values.cpp" "/Users/zhezhang/Desktop/naivebayes/naivebayes/CMakeFiles/naivebayes.dir/missing_values.cpp.o"
+  "/Users/zhezhang/Desktop/naivebayes/naivebayes/probability.cpp" "/Users/zhezhang/Desktop/naivebayes/naivebayes/CMakeFiles/naivebayes.dir/probability.cpp.o"
   "/Users/zhezhang/Desktop/naivebayes/naivebayes/variables.cpp" "/Users/zhezhang/Desktop/naivebayes/naivebayes/CMakeFiles/naivebayes.dir/variables.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")

@@ -1025,6 +1025,8 @@ iostream
 -
 time.h
 -
+unordered_map
+-
 ../../naivebayes/naivebayes.h
 /Users/zhezhang/Desktop/naivebayes/naivebayes/naivebayes.h
 
@@ -1049,6 +1051,10 @@ ctime
 -
 exception
 -
+utility
+-
+unordered_map
+-
 vector.h
 /Users/zhezhang/Desktop/naivebayes/naivebayes/vector.h
 matrix.h
@@ -1059,6 +1065,8 @@ variables.h
 /Users/zhezhang/Desktop/naivebayes/naivebayes/variables.h
 instances.h
 /Users/zhezhang/Desktop/naivebayes/naivebayes/instances.h
+probability.h
+/Users/zhezhang/Desktop/naivebayes/naivebayes/probability.h
 ../tinyxml2/tinyxml2.h
 /Users/zhezhang/Desktop/naivebayes/tinyxml2/tinyxml2.h
 
@@ -1150,6 +1158,12 @@ matrix.h
 vector.h
 /Users/zhezhang/Desktop/naivebayes/naivebayes/vector.h
 
+/Users/zhezhang/Desktop/naivebayes/naivebayes/probability.h
+string
+-
+unordered_map
+-
+
 /Users/zhezhang/Desktop/naivebayes/naivebayes/variables.h
 iostream
 -
@@ -1171,10 +1185,14 @@ ctime
 -
 exception
 -
+unordered_map
+-
 vector.h
 /Users/zhezhang/Desktop/naivebayes/naivebayes/vector.h
 matrix.h
 /Users/zhezhang/Desktop/naivebayes/naivebayes/matrix.h
+probability.h
+/Users/zhezhang/Desktop/naivebayes/naivebayes/probability.h
 limits
 -
 climits

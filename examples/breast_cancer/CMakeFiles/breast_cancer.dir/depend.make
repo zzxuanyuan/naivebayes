@@ -210,6 +210,7 @@ examples/breast_cancer/CMakeFiles/breast_cancer.dir/main.cpp.o: naivebayes/insta
 examples/breast_cancer/CMakeFiles/breast_cancer.dir/main.cpp.o: naivebayes/matrix.h
 examples/breast_cancer/CMakeFiles/breast_cancer.dir/main.cpp.o: naivebayes/missing_values.h
 examples/breast_cancer/CMakeFiles/breast_cancer.dir/main.cpp.o: naivebayes/naivebayes.h
+examples/breast_cancer/CMakeFiles/breast_cancer.dir/main.cpp.o: naivebayes/probability.h
 examples/breast_cancer/CMakeFiles/breast_cancer.dir/main.cpp.o: naivebayes/variables.h
 examples/breast_cancer/CMakeFiles/breast_cancer.dir/main.cpp.o: naivebayes/vector.h
 examples/breast_cancer/CMakeFiles/breast_cancer.dir/main.cpp.o: tinyxml2/tinyxml2.h

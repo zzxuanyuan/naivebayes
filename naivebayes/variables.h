@@ -26,11 +26,13 @@
 #include <stdexcept>
 #include <ctime>
 #include <exception>
+#include <unordered_map>
 
 // OpenNN includes
 
 #include "vector.h"
 #include "matrix.h"
+#include "probability.h"
 
 #include<limits>
 #include<climits>
@@ -43,223 +45,243 @@
 namespace NaiveBayes
 {
 
-/// This class is used to store information about the variables of a data set. 
-/// Variables in a data set can be used as inputs and targets.
-/// This class also stores information about the name, unit and description of all the variables.
+	/// This class is used to store information about the variables of a data set. 
+	/// Variables in a data set can be used as inputs and targets.
+	/// This class also stores information about the name, unit and description of all the variables.
 
-class Variables
-{
+	class Variables
+	{
 
-public:  
+		public:  
 
-   // DEFAULT CONSTRUCTOR
+			// DEFAULT CONSTRUCTOR
 
-   explicit Variables(void);
+			explicit Variables(void);
 
-   // VARIABLES NUMBER CONSTRUCTOR
+			// VARIABLES NUMBER CONSTRUCTOR
 
-   explicit Variables(const size_t&);
+			explicit Variables(const size_t&);
 
-   // INPUT AND TARGET VARIABLES NUMBER
+			// INPUT AND TARGET VARIABLES NUMBER
 
-   explicit Variables(const size_t&, const size_t&);
+			explicit Variables(const size_t&, const size_t&);
 
-   // XML CONSTRUCTOR
+			// XML CONSTRUCTOR
 
-   explicit Variables(const tinyxml2::XMLDocument&);
+			explicit Variables(const tinyxml2::XMLDocument&);
 
-   // COPY CONSTRUCTOR
+			// COPY CONSTRUCTOR
 
-   Variables(const Variables&);
+			Variables(const Variables&);
 
-   // DESTRUCTOR
+			// DESTRUCTOR
 
-   virtual ~Variables(void);
+			virtual ~Variables(void);
 
-   // ASSIGNMENT OPERATOR
+			// ASSIGNMENT OPERATOR
 
-   Variables& operator = (const Variables&);
+			Variables& operator = (const Variables&);
 
-   // EQUAL TO OPERATOR
+			// EQUAL TO OPERATOR
 
-   bool operator == (const Variables&) const;
+			bool operator == (const Variables&) const;
 
-   // ENUMERATIONS
+			// ENUMERATIONS
 
-   /// This enumeration represents the possible uses of a variable (input, target or unused).
+			/// This enumeration represents the possible uses of a variable (input, target or unused).
 
-   enum Use{Input, Target, Unused};
+			enum Use{Input, Target, Unused};
 
-   // STRUCTURES
+			// STRUCTURES
 
-   ///
-   /// This structure contains the information of a single variable.
-   ///
+			///
+			/// This structure contains the information of a single variable.
+			///
 
-   struct Item
-   {
-       /// Name of a variable.
+			struct Item
+			{
+				/// Prior probabilities of a variable.
 
-       std::string name;
+				PriorProbability prior_probability;//##
 
-       /// Units of a variable.
+				/// Name of a variable.
 
-       std::string units;
+				std::string name;
 
-       /// Description of a variable.
+				/// Units of a variable.
 
-       std::string description;
+				std::string units;
 
-       /// Use of a variable (none, input or target).
+				/// Description of a variable.
 
-       Use use;
-   };
+				std::string description;
 
-   // METHODS
+				/// All possible values for a variable.
 
-   const Vector<Item>& get_items(void) const;
+				Vector<double> range;//##
 
-   const Item& get_item(const size_t&) const;
+				/// Use of a variable (none, input or target).
 
-   /// Returns the total number of variables in the data set.
+				Use use;
+			};
 
-   inline size_t get_variables_number(void) const
-   {
-      return(items.size());
-   }
+			// METHODS
 
-   bool empty(void) const;
+			const Vector<Item>& get_items(void) const;
 
-   size_t count_used_variables_number(void) const;
-   size_t count_unused_variables_number(void) const;
-   size_t count_inputs_number(void) const;
-   size_t count_targets_number(void) const;
+			const Item& get_item(const size_t&) const;
 
-   Vector<size_t> count_uses(void) const;
+			/// Returns the total number of variables in the data set.
 
-   // Variables methods
+			inline size_t get_variables_number(void) const
+			{
+				return(items.size());
+			}
 
-   Vector<Use> arrange_uses(void) const;
-   Vector<std::string> write_uses(void) const;
+			bool empty(void) const;
 
-   const Use& get_use(const size_t&) const;
-   std::string write_use(const size_t&) const;
+			size_t count_used_variables_number(void) const;
+			size_t count_unused_variables_number(void) const;
+			size_t count_inputs_number(void) const;
+			size_t count_targets_number(void) const;
 
-   bool is_input(const size_t&) const;
-   bool is_target(const size_t&) const;
-   bool is_unused(const size_t&) const;
+			Vector<size_t> count_uses(void) const;
 
-   bool is_used(const size_t&) const;
+			// Variables methods
 
-   Vector<size_t> arrange_used_indices(void) const;
-   Vector<size_t> arrange_inputs_indices(void) const;
-   Vector<size_t> arrange_targets_indices(void) const;
-   Vector<size_t> arrange_unused_indices(void) const;
+			Vector< Vector<double> > arrange_ranges(void) const; //##
+			const Vector<double>& get_range(const size_t&) const;//##
 
-   // Information methods
+			Vector<PriorProbability> arrange_prior_probabilities(void) const; //##
+			const PriorProbability& get_prior_probability(const size_t&) const;//##
 
-   Vector<std::string> arrange_names(void) const;
-   Vector<std::string> arrange_used_names(void) const;
-   const std::string& get_name(const size_t&) const;
+			Vector<Use> arrange_uses(void) const;
+			Vector<std::string> write_uses(void) const;
 
-   bool has_names(void) const;
+			const Use& get_use(const size_t&) const;
+			std::string write_use(const size_t&) const;
 
-   Vector<std::string> arrange_units(void) const;
-   const std::string& get_unit(const size_t&) const;
+			bool is_input(const size_t&) const;
+			bool is_target(const size_t&) const;
+			bool is_unused(const size_t&) const;
 
-   Vector<std::string> arrange_descriptions(void) const;
-   const std::string& get_description(const size_t&) const;
+			bool is_used(const size_t&) const;
 
-   const bool& get_display(void) const;
+			Vector<size_t> arrange_used_indices(void) const;
+			Vector<size_t> arrange_inputs_indices(void) const;
+			Vector<size_t> arrange_targets_indices(void) const;
+			Vector<size_t> arrange_unused_indices(void) const;
 
-   // Set methods
+			// Information methods
 
-   void set(void);
-   void set(const size_t&);
-   void set(const size_t&, const size_t&);
-   void set(const tinyxml2::XMLDocument&);
+			Vector<std::string> arrange_names(void) const;
+			Vector<std::string> arrange_used_names(void) const;
+			const std::string& get_name(const size_t&) const;
 
-   void set_default(void);
+			bool has_names(void) const;
 
-   // Data methods
+			Vector<std::string> arrange_units(void) const;
+			const std::string& get_unit(const size_t&) const;
 
-   void set_variables_number(const size_t&);
+			Vector<std::string> arrange_descriptions(void) const;
+			const std::string& get_description(const size_t&) const;
 
-   // Variables methods
+			const bool& get_display(void) const;
 
-   void set_items(const Vector<Item>&);
+			// Set methods
 
-   void set_uses(const Vector<Use>&); 
-   void set_uses(const Vector<std::string>&);
+			void set(void);
+			void set(const size_t&);
+			void set(const size_t&, const size_t&);
+			void set(const tinyxml2::XMLDocument&);
 
-   void set_use(const size_t&, const Use&);
-   void set_use(const size_t&, const std::string&);
+			void set_default(void);
 
-   void set_input(void);
-   void set_target(void);
-   void set_unuse(void);
+			// Data methods
 
-   void set_default_uses(void);
+			void set_variables_number(const size_t&);
 
-   // Information methods
+			// Variables methods
 
-   void set_names(const Vector<std::string>&);
-   void set_name(const size_t&, const std::string&);
+			void set_items(const Vector<Item>&);
 
-   void set_units(const Vector<std::string>&);
-   void set_units(const size_t&, const std::string&);
+			void set_ranges(const Vector< Vector<double> >&); //##
+			void set_range(const size_t&, const Vector<double>&); //##
 
-   void set_descriptions(const Vector<std::string>&);
-   void set_description(const size_t&, const std::string&);
+			void set_prior_probabilities(const Vector<PriorProbability>&);//##
+			void set_prior_probability(const size_t&, const PriorProbability&);//##
 
-   void set_names(const Vector<std::string>&, const Vector< Vector<std::string> >&);
+			void set_uses(const Vector<Use>&); 
+			void set_uses(const Vector<std::string>&);
 
-   void set_display(const bool&);
+			void set_use(const size_t&, const Use&);
+			void set_use(const size_t&, const std::string&);
 
-   Matrix<std::string> arrange_information(void) const;
+			void set_input(void);
+			void set_target(void);
+			void set_unuse(void);
 
-   Vector<std::string> arrange_inputs_units(void) const;
-   Vector<std::string> arrange_targets_units(void) const;
+			void set_default_uses(void);
 
-   Vector<std::string> arrange_inputs_name(void) const;
-   Vector<std::string> arrange_targets_name(void) const;
+			// Information methods
 
-   Vector<std::string> arrange_inputs_description(void) const;
-   Vector<std::string> arrange_targets_description(void) const;
+			void set_names(const Vector<std::string>&);
+			void set_name(const size_t&, const std::string&);
 
-   Matrix<std::string> arrange_inputs_information(void) const;
-   Matrix<std::string> arrange_targets_information(void) const;
+			void set_units(const Vector<std::string>&);
+			void set_units(const size_t&, const std::string&);
 
-   void convert_time_series(const size_t&);
-   void convert_autoassociation(void);
+			void set_descriptions(const Vector<std::string>&);
+			void set_description(const size_t&, const std::string&);
 
-   // Serialization methods
+			void set_names(const Vector<std::string>&, const Vector< Vector<std::string> >&);
 
-   std::string to_string(void) const;
+			void set_display(const bool&);
 
-   tinyxml2::XMLDocument* to_XML(void) const;
-   void from_XML(const tinyxml2::XMLDocument&);
+			Matrix<std::string> arrange_information(void) const;
 
-   void write_XML(tinyxml2::XMLPrinter&) const;
-   //void read_XML(   );
+			Vector<std::string> arrange_inputs_units(void) const;
+			Vector<std::string> arrange_targets_units(void) const;
 
-private:
+			Vector<std::string> arrange_inputs_name(void) const;
+			Vector<std::string> arrange_targets_name(void) const;
 
-   static std::string unsigned_to_string(const size_t&);
-   static std::string prepend(const std::string&, const std::string&);
+			Vector<std::string> arrange_inputs_description(void) const;
+			Vector<std::string> arrange_targets_description(void) const;
 
+			Matrix<std::string> arrange_inputs_information(void) const;
+			Matrix<std::string> arrange_targets_information(void) const;
 
-   // MEMBERS
+			void convert_time_series(const size_t&);
+			void convert_autoassociation(void);
 
-   /// Vector of variable items.
-   /// Each item contains the name, units, description and use of a single variable.
+			// Serialization methods
 
-   Vector<Item> items;
+			std::string to_string(void) const;
 
-   /// Display messages to screen.
-   
-   bool display;
-};
+			tinyxml2::XMLDocument* to_XML(void) const;
+			void from_XML(const tinyxml2::XMLDocument&);
+
+			void write_XML(tinyxml2::XMLPrinter&) const;
+			//void read_XML(   );
+
+		private:
+
+			static std::string unsigned_to_string(const size_t&);
+			static std::string prepend(const std::string&, const std::string&);
+
+
+			// MEMBERS
+
+			/// Vector of variable items.
+			/// Each item contains the name, units, description and use of a single variable.
+
+			Vector<Item> items;
+
+			/// Display messages to screen.
+
+			bool display;
+	};
 
 }
 

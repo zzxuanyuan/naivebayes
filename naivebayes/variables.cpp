@@ -317,6 +317,38 @@ Vector<size_t> Variables::count_uses(void) const
     return(count);
 }
 
+// Vector< vector<double> > Variables::arrange_ranges(void) const
+
+/// Returns a vector of vector double containing the range of each variable.
+/// The size of the vector is equal to the number of variables.
+
+Vector< Vector<double> > Variables::arrange_ranges(void) const
+{
+    const size_t variables_number = get_variables_number();
+
+    Vector< Vector<double> > ranges(variables_number);
+
+    for(size_t i = 0; i < variables_number; i++)
+    {
+        ranges[i] = items[i].range;
+    }
+
+    return(ranges);
+}
+
+Vector<PriorProbability> Variables::arrange_prior_probabilities(void) const
+{
+    const size_t variables_number = get_variables_number();
+
+    Vector<PriorProbability> prior_probabilities(variables_number);
+
+    for(size_t i = 0; i < variables_number; i++)
+    {
+        prior_probabilities[i] = items[i].prior_probability;
+    }
+
+    return(prior_probabilities);
+}
 
 // Vector<Use> arrange_uses(void) const method
 
@@ -379,6 +411,20 @@ Vector<std::string> Variables::write_uses(void) const
    return(uses_string);
 }
 
+// const vector<double>& get_range(const size_t&) const method
+
+/// Returns the range of a single variable.
+/// @param i Variable index.
+
+const Vector<double>& Variables::get_range(const size_t& i) const
+{
+    return(items[i].range);
+}
+
+const PriorProbability& Variables::get_prior_probability(const size_t& i) const
+{
+    return(items[i].prior_probability);
+}
 
 // const Use& get_use(const size_t&) const method
 
@@ -1209,6 +1255,97 @@ void Variables::set_items(const Vector<Item>& new_items)
     items = new_items;
 }
 
+// void set_ranges(const Vector< Vector<double>&) method 
+
+/// Sets new rangess for the all the variables from a single vector.
+/// It does not modify the other information on the variables (name, units or description).
+/// @param new_ranges Vector of range elements.
+
+void Variables::set_ranges(const Vector< Vector<double> >& new_ranges)
+{
+    const size_t variables_number = get_variables_number();
+
+    for(size_t i = 0; i < variables_number; i++)
+    {
+        items[i].range = new_ranges[i];
+    }
+}
+
+// void set_range(const size_t&, const Vector<double>&) method
+
+/// Sets the range of a single variable.
+/// @param i Index of variable.
+/// @param new_range Vector<double> for that variable.
+
+void Variables::set_range(const size_t& i, const Vector<double>& new_range)
+{
+    // Control sentence (if debug)
+
+    #ifdef __OPENNN_DEBUG__
+
+    const size_t variables_number = get_variables_number();
+
+    if(i >= variables_number)
+    {
+        std::ostringstream buffer;
+
+        buffer << "OpenNN Exception Variables class.\n"
+               << "void set_range(const size_t&, const Vector<double>&) method.\n"
+               << "Index of variable must be less than number of variables.\n";
+
+        throw std::logic_error(buffer.str());
+    }
+
+    #endif
+
+    items[i].range = new_range;
+}
+
+// void set_prior_probabilities(const Vector<PriorProbability>&) method 
+
+/// Sets new prior probabilities for the all the variables from a single vector.
+/// It does not modify the other information on the variables (name, units or description).
+/// @param new_prior_probabilities Vector of prior probability elements.
+
+void Variables::set_prior_probabilities(const Vector<PriorProbability>& new_prior_probabilities)
+{
+    const size_t variables_number = get_variables_number();
+
+    for(size_t i = 0; i < variables_number; i++)
+    {
+        items[i].prior_probability = new_prior_probabilities[i];
+    }
+}
+
+// void set_prior_probability(const size_t&, const Vector<double>&) method
+
+/// Sets the range of a single variable.
+/// @param i Index of variable.
+/// @param new_prior_probability PriorProbability for that variable.
+
+void Variables::set_prior_probability(const size_t& i, const PriorProbability& new_prior_probability)
+{
+    // Control sentence (if debug)
+
+    #ifdef __OPENNN_DEBUG__
+
+    const size_t variables_number = get_variables_number();
+
+    if(i >= variables_number)
+    {
+        std::ostringstream buffer;
+
+        buffer << "OpenNN Exception Variables class.\n"
+               << "void set_range(const size_t&, const Vector<double>&) method.\n"
+               << "Index of variable must be less than number of variables.\n";
+
+        throw std::logic_error(buffer.str());
+    }
+
+    #endif
+
+    items[i].prior_probability = new_prior_probability;
+}
 
 // void set_uses(const Vector<Use>&) method 
 
